@@ -17,6 +17,7 @@
                             'top-deals' => 'Top Deals',
                             'help' => 'Help',
                             'blog' => 'Blog',
+                            'support' => 'Customer Support',
                             'wishlist' => 'Wishlist'
                         ];
                     @endphp
@@ -29,6 +30,8 @@
                                 hover:border-blue-500">
                             @if ($label === 'Wishlist')
                                 <i class="far fa-heart mr-1"></i>
+                            @elseif ($label === 'Customer Support')
+                                <i class="fas fa-robot mr-1"></i>
                             @endif
                             {{ $label }}
                         </a>

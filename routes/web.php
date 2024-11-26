@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\TourController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\SupportController;
 
 Route::get('/', function () {
     return view('user.home');
@@ -58,6 +59,7 @@ Route::get('/trip-details', function () {
     return view('user.trip-details');
 })  ->name('trip-details');
 
+Route::get('/support', [SupportController::class, 'index'])->name('support');
 
 Route::get('/admin', function () {
     return view('admin.home');
