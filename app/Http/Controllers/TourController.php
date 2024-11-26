@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Tour;
@@ -9,105 +10,199 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
+use function Laravel\Prompts\alert;
+
 class TourController extends Controller
 {
     public function create()
     {
         $locations = Location::all();
         
-        // Kiểm tra nếu là AJAX request
         if (request()->ajax()) {
-            // Trả về chỉ phần view content
             return view('admin.create', compact('locations'))->render();
         }
         
-        // Nếu không phải AJAX, trả về view đầy đủ với layout
         return view('admin.create', compact('locations'));
     }
 
-    public function store(Request $request) 
+    public function getFormData()
+    {
+        try {
+            $locations = Location::all();
+            return response()->json([
+                'success' => true,
+                'formData' => [
+                    'locations' => $locations,
+                    // Thêm data khác nếu cần
+                ]
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function tempStore(Request $request)
+    {
+        try {
+            // Validate dữ liệu tạm thời
+            $validated = $request->validate([
+                'tour_name' => 'nullable|string',
+                'duration_days' => 'nullable|integer', // Sửa từ duration thành duration_days
+                'max_participants' => 'nullable|integer', // Sửa từ group_size thành max_participants
+                'price' => 'nullable|numeric',
+                'category' => 'nullable|string', // Sửa từ tour_type thành category
+                'difficulty_level' => 'nullable|string', // Sửa từ difficulty thành difficulty_level
+                'inclusions' => 'nullable|array',
+                'start_location' => 'nullable|string',
+                'destination' => 'nullable|string', // Sửa từ destinations thành destination
+                'transportation' => 'nullable|string', // Thêm field transportation
+                'description' => 'nullable|string', // Thêm field description
+                'highlight_places' => 'nullable|string', // Thêm field highlight_places
+                'include_hotel' => 'nullable|boolean', // Thêm field include_hotel
+                'include_meal' => 'nullable|boolean', // Thêm field include_meal
+                'is_active' => 'nullable|boolean', // Thêm field is_active
+                'itinerary' => 'nullable|array', // Thêm validation cho itinerary
+                'itinerary.*.title' => 'nullable|string',
+                'itinerary.*.activities' => 'nullable|string',
+                'itinerary.*.accommodation' => 'nullable|string',
+                'itinerary.*.meals' => 'nullable|array',
+                'itinerary.*.meals.breakfast' => 'nullable|boolean',
+                'itinerary.*.meals.lunch' => 'nullable|boolean',
+                'itinerary.*.meals.dinner' => 'nullable|boolean'
+            ]);
+
+            // Lưu vào session
+            $request->session()->put('tour_form_data', $validated);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data temporarily stored',
+                'data' => $validated
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 422);
+        }
+    }
+
+
+    public function validateStep(Request $request, $step)
+    {
+        try {
+            $rules = $this->getValidationRules($step);
+            $validated = $request->validate($rules);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Step validation successful'
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
+        }
+    }
+
+    private function getValidationRules($step)
+    {
+        switch ($step) {
+            case 1:
+                return [
+                    'tour_name' => 'required|string|max:200',
+                    'duration_days' => 'required|integer|min:1',
+                    'max_participants' => 'nullable|integer|min:1',
+                    'category' => 'nullable|string|max:50',
+                    'transportation' => 'nullable|string|max:100',
+                    'description' => 'nullable|string'
+                ];
+            case 2:
+                return [
+                    'location_id' => 'nullable|exists:locations,location_id',
+                    'highlight_places' => 'nullable|string',
+                    'include_hotel' => 'boolean',
+                    'include_meal' => 'boolean'
+                ];
+            case 3:
+                return [
+                    'is_active' => 'boolean',
+                    'itinerary' => 'nullable|array',
+                    'itinerary.*.title' => 'required|string',  // Thay đổi từ day thành title
+                    'itinerary.*.activities' => 'required|string', // Thay đổi từ description thành activities
+                    'itinerary.*.accommodation' => 'nullable|string',
+                    'itinerary.*.meals' => 'nullable|array',
+                    'itinerary.*.meals.breakfast' => 'nullable|boolean',
+                    'itinerary.*.meals.lunch' => 'nullable|boolean',
+                    'itinerary.*.meals.dinner' => 'nullable|boolean'
+                ];
+            default:
+                return [];
+        }
+    }
+
+
+
+    public function store(Request $request)
     {
         try {
             $validated = $request->validate([
-                'tour_name' => 'required|string',
-                'duration_days' => 'required|integer',
-                'max_participants' => 'required|integer',
-                'category' => 'required|string',
-                'include_hotel' => 'required|boolean',
-                'include_meal' => 'required|boolean',
-                'highlight_places' => 'required|string',
-                'is_active' => 'required|boolean',
-                'location_id' => 'required|exists:locations,location_id',
-                'transportation' => 'nullable|string',
+                'tour_name' => 'required|string|max:200',
+                'description' => 'nullable|string',
+                'duration_days' => 'required|integer|min:1',
+                'max_participants' => 'nullable|integer|min:1',
+                'category' => 'nullable|string|max:50',
+                'transportation' => 'nullable|string|max:100',
+                'include_hotel' => 'boolean',
+                'include_meal' => 'boolean',
+                'highlight_places' => 'nullable|string',
+                'is_active' => 'boolean',
+                'location_id' => 'nullable|exists:locations,location_id'
             ]);
 
             DB::beginTransaction();
             
+            // Convert checkbox values
+            $validated['include_hotel'] = $request->has('include_hotel');
+            $validated['include_meal'] = $request->has('include_meal');
+            $validated['is_active'] = $request->has('is_active');
+            
             $tour = Tour::create($validated);
             
-            // Tạo price list
-            $priceList = PriceList::create([
-                'tour_id' => $tour->tour_id,
-                'price_list_name' => 'Default Price List',
-                'valid_from' => now(),
-                'valid_to' => now()->addYear(),
-                'is_default' => true
-            ]);
-
             DB::commit();
 
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Tour created successfully',
-                    'data' => $tour,
-                    // Thêm URL để redirect sau khi tạo thành công
-                    'redirect_url' => route('tours.create'),
-                ]);
-            }
-
-            // Nếu không phải AJAX request
-            return redirect()->route('tours.create')
-                           ->with('success', value: 'Tour created successfully');
+            return response()->json([
+                'success' => true,
+                'message' => 'Tour created successfully',
+                'data' => $tour,
+                'redirect_url' => route('tours.create')
+            ]);
 
         } catch (ValidationException $e) {
             DB::rollBack();
-            
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Validation failed',
-                    'errors' => $e->errors()
-                ], 422);
-            }
-            
-            return back()->withErrors($e->errors())
-                        ->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => 'Validation failed',
+                'errors' => $e->errors()
+            ], 422);
 
         } catch (\Exception $e) {
             DB::rollBack();
-            
-            if ($request->ajax()) {
-                return response()->json([
-                    'success' => false,
-                    'message' => $e->getMessage()
-                ], 500);
-            }
-            
-            return back()->with('error', $e->getMessage())
-                        ->withInput();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
         }
     }
 
-    // Thêm method để lấy partial view cho AJAX
-    public function getPartialView($viewName, $data = [])
-    {
-        if (request()->ajax()) {
-            return view("admin.partials.{$viewName}", $data)->render();
-        }
-        
-        abort(404);
-    }
+
+
+
 
     public function finalStore(Request $request)
     {
@@ -116,10 +211,12 @@ class TourController extends Controller
             // Lưu tour
             $tour = Tour::create($request->tour);
             
-            // Lưu location
-            $location = Location::create($request->location);
-            $tour->location()->associate($location);
-            $tour->save();
+            // Lưu location nếu cần
+            if ($request->has('location')) {
+                $location = Location::create($request->location);
+                $tour->location()->associate($location);
+                $tour->save();
+            }
             
             // Lưu price list
             $priceList = PriceList::create([
@@ -129,12 +226,14 @@ class TourController extends Controller
             ]);
             
             // Lưu price details
-            foreach($request->prices as $price) {
-                PriceDetail::create([
-                    'price_list_id' => $priceList->price_list_id,
-                    'customer_type' => $price['type'],
-                    'price' => $price['amount']
-                ]);
+            if ($request->has('prices')) {
+                foreach($request->prices as $price) {
+                    PriceDetail::create([
+                        'price_list_id' => $priceList->price_list_id,
+                        'customer_type' => $price['type'],
+                        'price' => $price['amount']
+                    ]);
+                }
             }
             
             DB::commit();
@@ -159,7 +258,7 @@ class TourController extends Controller
                     'message' => $e->getMessage()
                 ], 500);
             }
-
+            
             return back()->with('error', $e->getMessage())
                         ->withInput();
         }

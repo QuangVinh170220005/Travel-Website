@@ -12,6 +12,12 @@ class AuthController extends Controller
 {
     //
     public function showLoginForm() {
+        if (Auth::check()) {
+            if (Auth::user()->role === 'admin') {
+                return redirect()->intended('/admin');
+            }
+            return redirect()->intended('/home');
+        }
         return view('auth.login');
     }
     public function login(Request $request) {
@@ -29,7 +35,7 @@ class AuthController extends Controller
             if (Auth::user()->role === 'ADMIN') {
                 return redirect()->intended('/admin');
             }
-            return redirect()->intended('/');
+            return redirect()->intended('/home');
         }
         Log::error('Login failed for email: ' . $credentials['email']);
     

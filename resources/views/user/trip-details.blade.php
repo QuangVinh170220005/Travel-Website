@@ -3,52 +3,53 @@
 @section('title', 'Villa Pinewood')
 
 @php
-$villa = [
-    'name' => 'Villa Pinewood',
-    'location' => 'Milano, Lombardia, Italy',
-    'type' => 'Private Villa',
-    'max_guests' => 8,
-    'description' => 'Villa Pinewood is a spacious and elegant villa that offers a comfortable and relaxing stay for up to 8 guests. It features 4 bedrooms, 3 bathrooms, a fully-equipped kitchen, a living room, a dining room, and a private pool. The villa is located on a hilltop, overlooking the beautiful ocean and the lush greenery.',
-    'main_image' => 'https://media.istockphoto.com/id/1429367591/vi/anh/m%E1%BB%99t-gia-%C4%91%C3%ACnh-trong-k%E1%BB%B3-ngh%E1%BB%89-h%C3%A8-%C4%91%E1%BB%A9ng-b%C3%AAn-h%E1%BB%93-b%C6%A1i-v%C3%A0-t%E1%BA%ADn-h%C6%B0%E1%BB%9Fng-c%E1%BA%A3nh-ho%C3%A0ng-h%C3%B4n-tuy%E1%BB%87t-%C4%91%E1%BA%B9p.jpg?s=2048x2048&w=is&k=20&c=8nfsgkJNVCzOainEs-Jlq-mTpaqHKQXVAWEjcM3eXDs=',
-    'images' => [
-        'https://media.istockphoto.com/id/1526986072/vi/anh/m%C3%A1y-bay-bay-tr%C3%AAn-bi%E1%BB%83n-nhi%E1%BB%87t-%C4%91%E1%BB%9Bi-l%C3%BAc-ho%C3%A0ng-h%C3%B4n.jpg?s=2048x2048&w=is&k=20&c=SdCIpE5SDaSfokbkqHttOykEHkzw6MKHSPFQZgMOshM=',
-        'https://media.istockphoto.com/id/1412976847/vi/anh/anse-source-dargent-la-digue-seychelles-c%E1%BA%B7p-v%E1%BB%A3-ch%E1%BB%93ng-tr%E1%BA%BB-%C4%91%C3%A0n-%C3%B4ng-v%C3%A0-ph%E1%BB%A5-n%E1%BB%AF-tr%C3%AAn-m%E1%BB%99t-b%C3%A3i-bi%E1%BB%83n.jpg?s=2048x2048&w=is&k=20&c=wXUOy_UeoUHZvV9kpP96kC6ap2pdvI_6eAnQElNMbDY=',
-        'https://media.istockphoto.com/id/1499760492/vi/anh/c%E1%BA%B7p-%C4%91%C3%B4i-du-l%E1%BB%8Bch-h%E1%BA%A1nh-ph%C3%BAc-l%C3%A3ng-m%E1%BA%A1n-%C3%B4m-nhau-v%C3%A0-th%E1%BB%B1c-hi%E1%BB%87n-%C4%91i%E1%BB%81u-%C6%B0%E1%BB%9Bc-trong-thung-l%C5%A9ng-tuy%E1%BB%87t-%C4%91%E1%BA%B9p-%E1%BB%9F.jpg?s=2048x2048&w=is&k=20&c=mQngIjqowGZxp19TsgmUosBGE5ld5WGmvkojXNbjVWk=',
-    ],
-    'host' => [
-        'name' => 'Zoyhra Ivalline',
-        'avatar' => 'https://example.com/images/host_avatar.jpg',
-        'country' => 'Italia',
-        'years_hosting' => 5,
-    ],
-    'facilities' => [
-        ['icon' => '🛏️', 'name' => '4 Bedrooms'],
-        ['icon' => '🚽', 'name' => '3 Bathrooms'],
-        ['icon' => '🍳', 'name' => 'Kitchen'],
-        ['icon' => '🛋️', 'name' => 'Living Room'],
-        ['icon' => '📶', 'name' => 'Wifi'],
-        ['icon' => '🏊', 'name' => 'Private Pool'],
-        ['icon' => '🚗', 'name' => 'Parking Area'],
-    ],
-    'full_address' => 'Milano, Lombardia, Italy',
-    'latitude' => 45.4642,
-    'longitude' => 9.1900,
-    'nearby_places' => [
-        ['description' => '10 minutes to supermarket'],
-        ['description' => 'Strategic area'],
-        ['description' => '15 minutes to coffee shop'],
-        ['description' => '20 minutes to the highway'],
-    ],
-    'terms' => [
-        ['description' => 'Check In 02:00 PM and Check Out 12:00 PM'],
-        ['description' => 'No animals allowed'],
-        ['description' => 'Maximum 8 guests'],
-        ['description' => 'No Parties / Event'],
-    ],
-    'price_per_night' => 100,
-    'rating' => 4.8,
-    'reviews_count' => 24,
-];
+    $villa = [
+        'name' => 'Villa Pinewood',
+        'location' => 'Milano, Lombardia, Italy',
+        'type' => 'Private Villa',
+        'max_guests' => 8,
+        'description' => 'Villa Pinewood is a spacious and elegant villa that offers a comfortable and relaxing stay for up to 8 guests. It features 4 bedrooms, 3 bathrooms, a fully-equipped kitchen, a living room, a dining room, and a private pool. The villa is located on a hilltop, overlooking the beautiful ocean and the lush greenery.',
+        'main_image' => 'https://media.istockphoto.com/id/1429367591/vi/anh/m%E1%BB%99t-gia-%C4%91%C3%ACnh-trong-k%E1%BB%B3-ngh%E1%BB%89-h%C3%A8-%C4%91%E1%BB%A9ng-b%C3%AAn-h%E1%BB%93-b%C6%A1i-v%C3%A0-t%E1%BA%ADn-h%C6%B0%E1%BB%9Fng-c%E1%BA%A3nh-ho%C3%A0ng-h%C3%B4n-tuy%E1%BB%87t-%C4%91%E1%BA%B9p.jpg?s=2048x2048&w=is&k=20&c=8nfsgkJNVCzOainEs-Jlq-mTpaqHKQXVAWEjcM3eXDs=',
+        'images' => [
+            'https://media.istockphoto.com/id/1526986072/vi/anh/m%C3%A1y-bay-bay-tr%C3%AAn-bi%E1%BB%83n-nhi%E1%BB%87t-%C4%91%E1%BB%9Bi-l%C3%BAc-ho%C3%A0ng-h%C3%B4n.jpg?s=2048x2048&w=is&k=20&c=SdCIpE5SDaSfokbkqHttOykEHkzw6MKHSPFQZgMOshM=',
+            'https://media.istockphoto.com/id/1412976847/vi/anh/anse-source-dargent-la-digue-seychelles-c%E1%BA%B7p-v%E1%BB%A3-ch%E1%BB%93ng-tr%E1%BA%BB-%C4%91%C3%A0n-%C3%B4ng-v%C3%A0-ph%E1%BB%A5-n%E1%BB%AF-tr%C3%AAn-m%E1%BB%99t-b%C3%A3i-bi%E1%BB%83n.jpg?s=2048x2048&w=is&k=20&c=wXUOy_UeoUHZvV9kpP96kC6ap2pdvI_6eAnQElNMbDY=',
+            'https://media.istockphoto.com/id/1499760492/vi/anh/c%E1%BA%B7p-%C4%91%C3%B4i-du-l%E1%BB%8Bch-h%E1%BA%A1nh-ph%C3%BAc-l%C3%A3ng-m%E1%BA%A1n-%C3%B4m-nhau-v%C3%A0-th%E1%BB%B1c-hi%E1%BB%87n-%C4%91i%E1%BB%81u-%C6%B0%E1%BB%9Bc-trong-thung-l%C5%A9ng-tuy%E1%BB%87t-%C4%91%E1%BA%B9p-%E1%BB%9F.jpg?s=2048x2048&w=is&k=20&c=mQngIjqowGZxp19TsgmUosBGE5ld5WGmvkojXNbjVWk=',
+        ],
+
+        'host' => [
+            'name' => 'Zoyhra Ivalline',
+            'avatar' => 'https://media.istockphoto.com/id/1526986072/vi/anh/m%C3%A1y-bay-bay-tr%C3%AAn-bi%E1%BB%83n-nhi%E1%BB%87t-%C4%91%E1%BB%9Bi-l%C3%BAc-ho%C3%A0ng-h%C3%B4n.jpg?s=2048x2048&w=is&k=20&c=SdCIpE5SDaSfokbkqHttOykEHkzw6MKHSPFQZgMOshM=',
+            'country' => 'Italia',
+            'years_hosting' => 5,
+        ],
+        'facilities' => [
+            ['icon' => '🛏️', 'name' => '4 Bedrooms'],
+            ['icon' => '🚽', 'name' => '3 Bathrooms'],
+            ['icon' => '🍳', 'name' => 'Kitchen'],
+            ['icon' => '🛋️', 'name' => 'Living Room'],
+            ['icon' => '📶', 'name' => 'Wifi'],
+            ['icon' => '🏊', 'name' => 'Private Pool'],
+            ['icon' => '🚗', 'name' => 'Parking Area'],
+        ],
+        'full_address' => 'Milano, Lombardia, Italy',
+        'latitude' => 45.4642,
+        'longitude' => 9.1900,
+        'nearby_places' => [
+            ['description' => '10 minutes to supermarket'],
+            ['description' => 'Strategic area'],
+            ['description' => '15 minutes to coffee shop'],
+            ['description' => '20 minutes to the highway'],
+        ],
+        'terms' => [
+            ['description' => 'Check In 02:00 PM and Check Out 12:00 PM'],
+            ['description' => 'No animals allowed'],
+            ['description' => 'Maximum 8 guests'],
+            ['description' => 'No Parties / Event'],
+        ],
+        'price_per_night' => 100,
+        'rating' => 4.8,
+        'reviews_count' => 24,
+    ];
 
     // Rating distribution và width classes
     $ratingDistribution = [
@@ -107,20 +108,28 @@ $villa = [
 @section('content')
 <div class="container mx-auto px-4 py-8">
     <!-- Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-center mb-6">
-        <a href="{{ url()->previous() }}" class="text-lg flex items-center mb-4 sm:mb-0">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
-            </svg>
-            Back
-        </a>
-        <div class="flex gap-4">
-            <button class="p-2 hover:bg-gray-100 rounded-full">
+    <div class="w-full flex items-center mb-6">
+        <!-- All icons in one row -->
+        <div class="flex items-center gap-4 w-full">
+            <!-- Back Button -->
+            <a href="{{ url()->previous() }}" class="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                </svg>
+            </a>
+
+            <!-- Push remaining icons to the right -->
+            <div class="flex-grow"></div>
+
+            <!-- Share Button -->
+            <button class="p-2 hover:bg-gray-100 rounded-full transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z" />
                 </svg>
             </button>
-            <button class="p-2 hover:bg-gray-100 rounded-full">
+
+            <!-- Home Button -->
+            <button class="p-2 hover:bg-gray-100 rounded-full transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                 </svg>
@@ -186,7 +195,7 @@ $villa = [
                     <h2 class="text-xl sm:text-2xl font-semibold">Hosted by {{ $villa['host']['name'] }}</h2>
                     <p class="text-gray-600 text-sm">{{ $villa['host']['country'] }} • {{ $villa['host']['years_hosting'] }} years hosting</p>
                 </div>
-                <img src="{{ $villa['host']['avatar'] }}" alt="{{ $villa['host']['name'] }}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-full">
+                <!-- <img src="{{ $villa['host']['avatar'] }}" alt="{{ $villa['host']['name'] }}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-full"> -->
             </div>
 
             <!-- Facilities -->

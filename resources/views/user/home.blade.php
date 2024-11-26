@@ -3,6 +3,16 @@
 @section('title', 'Welcome to Traveling - Your Perfect Holiday Partner')
 
 @section('content')
+@php
+$home = [
+    'images' => [
+        'https://media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/12/3f/9b/42.jpg',
+        'https://d1629ugb7moz2f.cloudfront.net/ckeditor/ENfF1wy8I2nLdtpsLdPHQzdwXpUe9UbI6HOc4c8b.jpg',
+        'https://static.wixstatic.com/media/f5dab6_4c7b4d42caeb4ccb8c35de0e68ade473~mv2.jpg/v1/fill/w_980,h_654,al_c,q_85,usm_0.66_1.00_0.01,enc_auto/f5dab6_4c7b4d42caeb4ccb8c35de0e68ade473~mv2.jpg',
+        'https://hips.hearstapps.com/hmg-prod/images/great-ocean-road-174028267-1494616481.jpg?crop=1.00xw:1.00xh;0,0&resize=1200:*'
+    ],
+]
+@endphp
 <div class="relative">
     <!-- Hero Banner -->
     <div class="relative h-screen bg-cover bg-center" style="background-image: url('https://media.istockphoto.com/id/1429367591/vi/anh/m%E1%BB%99t-gia-%C4%91%C3%ACnh-trong-k%E1%BB%B3-ngh%E1%BB%89-h%C3%A8-%C4%91%E1%BB%A9ng-b%C3%AAn-h%E1%BB%93-b%C6%A1i-v%C3%A0-t%E1%BA%ADn-h%C6%B0%E1%BB%9Fng-c%E1%BA%A3nh-ho%C3%A0ng-h%C3%B4n-tuy%E1%BB%87t-%C4%91%E1%BA%B9p.jpg?s=2048x2048&w=is&k=20&c=8nfsgkJNVCzOainEs-Jlq-mTpaqHKQXVAWEjcM3eXDs=');">
@@ -63,7 +73,7 @@
     </div>
 
     <!-- Tour cards section -->
-    <div class="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+    <div class="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-7 sm:p-6 md:py-10 md:px-8">
         @foreach(range(1, 8) as $index)
             <div class="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                 <div class="h-48 w-full relative overflow-hidden">
@@ -162,7 +172,7 @@
         <h2 class="text-3xl font-bold text-gray-800 mb-8 font-['Kalam']">Latest Travel Libraries</h2>
 
         <!-- Grid container -->
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 relative">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-9 relative">
             <!-- Read All Blog Button (Center) -->
             <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
                 <button class="bg-blue-400 hover:bg-blue-500 text-white font-bold py-3 px-6 transition duration-300 shadow-lg rounded-full">
@@ -170,9 +180,9 @@
                 </button>
             </div>
 
-            <!-- Card 1 -->
-            <div class="relative overflow-hidden group" style="border-radius: 7% 8% 19% 5% / 9% 8% 34% 10% ">
-                <img src="/path-to-times-square-image.jpg" alt="Times Square" class="w-full h-[300px] object-cover">
+            <!-- Card 1 - Góc dưới phải được bo nhiều -->
+            <div class="relative overflow-hidden group" style="border-radius: 7% 8% 19% 5% / 9% 8% 20% 10%">
+                <img src="{{ $home['images'][0] }}" alt="Times Square" class="w-full h-[300px] object-cover">
                 <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/70 p-6 flex flex-col justify-end">
                     <h3 class="text-white text-2xl font-bold mb-2">Experience the iconic Times Square ball drop or a scenic river cruise.</h3>
                     <p class="text-gray-200 text-sm">
@@ -181,9 +191,9 @@
                 </div>
             </div>
 
-            <!-- Card 2 -->
-            <div class="relative overflow-hidden group" style="border-radius: 8% 5% 7% 19% / 8% 10% 9% 34%">
-                <img src="/path-to-riverside-image.jpg" alt="Riverside" class="w-full h-[300px] object-cover">
+            <!-- Card 2 - Góc dưới trái được bo nhiều -->
+            <div class="relative overflow-hidden group" style="border-radius: 8% 5% 7% 19% / 8% 10% 9% 20%">
+                <img src="{{ $home['images'][1] }}" alt="Riverside" class="w-full h-[300px] object-cover">
                 <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/70 p-6 flex flex-col justify-end">
                     <h3 class="text-white text-2xl font-bold mb-2">Revel in riverside festivities and rooftop views of the fireworks.</h3>
                     <p class="text-gray-200 text-sm">
@@ -192,9 +202,9 @@
                 </div>
             </div>
 
-            <!-- Card 3 -->
-            <div class="relative overflow-hidden group" style="border-radius: 5% 19% 8% 7% / 10% 34% 8% 9%">
-                <img src="/path-to-burj-khalifa-image.jpg" alt="Burj Khalifa" class="w-full h-[300px] object-cover">
+            <!-- Card 3 - Góc trên phải được bo nhiều -->
+            <div class="relative overflow-hidden group" style="border-radius: 5% 19% 8% 7% / 10% 20% 8% 9%">
+                <img src="{{ $home['images'][2] }}" alt="Travel Image" class="w-full h-[300px] object-cover">
                 <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/70 p-6 flex flex-col justify-end">
                     <h3 class="text-white text-2xl font-bold mb-2">Marvel at extravagant displays near Burj Khalifa and enjoy.</h3>
                     <p class="text-gray-200 text-sm">
@@ -203,11 +213,11 @@
                 </div>
             </div>
 
-            <!-- Card 4 -->
-            <div class="relative overflow-hidden group" style="border-radius: 19% 7% 5% 8% / 34% 9% 10% 8%">
-                <img src="/path-to-new-year-image.jpg" alt="New Year 2024" class="w-full h-[300px] object-cover">
+            <!-- Card 4 - Góc trên trái được bo nhiều -->
+            <div class="relative overflow-hidden group" style="border-radius: 19% 7% 5% 8% / 20% 9% 10% 8%">
+                <img src="{{ $home['images'][3] }}" alt="Travel Image" class="w-full h-[300px] object-cover">
                 <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/70 p-6 flex flex-col justify-end">
-                    <h3 class="text-white text-2xl font-bold mb-2">8 Amazing Places to Celebrate New Year 2024</h3>
+                    <h3 class="text-white text-2xl font-bold mb-2">Discover amazing destinations around the world.</h3>
                     <p class="text-gray-200 text-sm">
                         Europe, with its rich history, stunning landscapes, and vibrant culture, is a continent brimming with iconic attractions.
                     </p>
@@ -215,6 +225,8 @@
             </div>
         </div>
     </div>
+
+
 
     <!-- Testimonial Container -->
     <div class="bg-white rounded-xl shadow-lg p-6 md:p-8 container mx-auto">
@@ -310,32 +322,43 @@
         </div>
 
         <!-- Content Container -->
-        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 max-w-5xl mx-auto">
-            <!-- Heading -->
-            <h2 class="text-4xl md:text-5xl font-bold mb-6 text-gray-800" style="font-family: 'Caveat', cursive;">
-            Sign up to our travel e-News And get $20 off your Next Travel Booking
-            </h2>
-            
-            <!-- Description -->
-            <p class="text-base md:text-lg text-gray-600 mb-8 max-w-3xl">
-            We'll send our latest travel offers and exclusive packages straight to your inbox by signing up to this newsletter, you agree with our Privacy Policy and our Terms and Conditions
-            </p>
-            
-            <!-- Email Input Form -->
-            <div class="flex flex-col sm:flex-row gap-4 w-full max-w-2xl px-4">
-            <input 
-                type="email" 
-                placeholder="Enter Your Email address" 
-                class="flex-1 px-6 py-4 rounded-full border-2 border-gray-200 focus:outline-none focus:border-[#00b5e2] text-lg"
-            >
-            <button class="px-12 py-4 bg-[#00b5e2] text-white text-lg font-medium rounded-full hover:bg-[#0095bb] transition-colors">
-                Signup
-            </button>
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-4 sm:p-6 lg:p-8">
+            <div class="max-w-5xl mx-auto w-full">
+                <!-- Heading -->
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 text-gray-800 leading-tight" 
+                    style="font-family: 'Caveat', cursive;">
+                    Sign up to our travel e-News 
+                    <span class="block mt-2">And get $20 off your Next Travel Booking</span>
+                </h2>
+                
+                <!-- Description -->
+                <p class="text-sm sm:text-base lg:text-lg text-gray-600 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
+                    We'll send our latest travel offers and exclusive packages straight to your inbox by signing up to this newsletter, 
+                    you agree with our Privacy Policy and our Terms and Conditions
+                </p>
+                
+                <!-- Email Input Form -->
+                <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full max-w-2xl mx-auto px-4">
+                    <input 
+                        type="email" 
+                        placeholder="Enter Your Email address" 
+                        class="flex-1 px-4 sm:px-6 py-3 sm:py-4 rounded-full border-2 border-gray-200 
+                            focus:outline-none focus:border-[#00b5e2] text-base sm:text-lg
+                            placeholder:text-gray-400 w-full"
+                    >
+                    <button class="px-8 sm:px-12 py-3 sm:py-4 bg-[#00b5e2] text-white text-base sm:text-lg 
+                                font-medium rounded-full hover:bg-[#0095bb] transition-colors duration-300
+                                w-full sm:w-auto">
+                        Signup
+                    </button>
+                </div>
+                
+                <!-- Mobile Optimization for very small screens -->
+                <div class="mt-4 text-xs text-gray-500 px-4 sm:hidden">
+                    *Get exclusive travel deals directly in your inbox
+                </div>
             </div>
         </div>
-        </div>
     </div>
-    </div>
-
 </div>
 @endsection

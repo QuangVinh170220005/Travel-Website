@@ -5,7 +5,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tour extends Model
 {
-    protected $primaryKey = 'tour_id';
     protected $fillable = [
         'tour_name',
         'description',
@@ -20,6 +19,13 @@ class Tour extends Model
         'location_id'
     ];
 
+    protected $casts = [
+        'include_hotel' => 'boolean',
+        'include_meal' => 'boolean',
+        'is_active' => 'boolean',
+    ];
+
+    // Relationship with Location
     public function location()
     {
         return $this->belongsTo(Location::class, 'location_id', 'location_id');

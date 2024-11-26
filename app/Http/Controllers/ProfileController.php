@@ -9,14 +9,14 @@ use App\Models\User;
 
 class ProfileController extends Controller
 {
-    // public function show()
-    // {
-    //     $user = Auth::user();
-    //     // Thêm các dữ liệu khác nếu cần, ví dụ như booking history
-    //     $bookings = $user->bookings()->latest()->take(5)->get();
+    public function show()
+    {
+        $user = Auth::user();
+        // Thêm các dữ liệu khác nếu cần, ví dụ như booking history
+        // $bookings = $user->bookings()->latest()->take(5)->get();
         
-    //     return view('profile.index', compact('user', 'bookings'));
-    // }
+        return view('profile.index', compact('user', 'bookings'));
+    }
 
     // public function edit()
     // {

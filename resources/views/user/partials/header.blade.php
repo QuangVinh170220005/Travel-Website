@@ -4,7 +4,7 @@
             <div class="flex space-x-7">
                 <div>
                     <!-- Website Logo -->
-                    <a href="{{ url('/') }}" class="flex items-center py-4 px-2">
+                    <a href="{{ url('/home') }}" class="flex items-center py-4 px-2">
                         <span class="font-bold text-2xl text-blue-600 font-kalam">Traveling</span>
                     </a>
                 </div>
@@ -59,9 +59,9 @@
                                 class="flex items-center space-x-2 py-2 px-3 rounded-full hover:bg-gray-100 transition duration-300"
                                 @click.away="open = false">
                             <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white">
-                                {{ substr(Auth::user()->name, 0, 1) }}
+                                {{ substr(Auth::user()->full_name, 0, 1) }}
                             </div>
-                            <span class="font-roboto text-gray-700">{{ Auth::user()->name }}</span>
+                            <span class="font-roboto text-gray-700">{{ Auth::user()->full_name }}</span>
                             <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
@@ -97,6 +97,7 @@
                                     <i class="fas fa-sign-out-alt mr-2"></i>Sign out
                                 </button>
                             </form>
+                            <script src="//unpkg.com/alpinejs" defer></script>
                         </div>
                     </div>
                 @endguest
