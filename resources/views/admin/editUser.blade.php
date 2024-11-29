@@ -130,62 +130,62 @@
     </div>
 </div>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    const avatarInput = document.getElementById('avatar');
-    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const avatarInput = document.getElementById('avatar');
+        const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
 
-    // Handle form submission
-    if (form) {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const formData = new FormData(this);
-            
-            fetch(this.action, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-Requested-With': 'XMLHttpRequest',
-                    'X-CSRF-TOKEN': csrfToken
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
-                    window.location.href = '{{ route("userManagement") }}';
-                } else {
-                    alert(data.message || 'Error updating user');
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred while updating');
+        // Handle form submission
+        if (form) {
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const formData = new FormData(this);
+                
+                fetch(this.action, {
+                    method: 'POST',
+                    body: formData,
+                    headers: {
+                        'X-Requested-With': 'XMLHttpRequest',
+                        'X-CSRF-TOKEN': csrfToken
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert(data.message);
+                        window.location.href = '{{ route("userManagement") }}';
+                    } else {
+                        alert(data.message || 'Error updating user');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while updating');
+                });
             });
-        });
-    }
+        }
 
-    // Handle image preview
-    if (avatarInput) {
-        avatarInput.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const images = document.querySelectorAll('img.w-12.h-12, img.w-16.h-16');
-                    images.forEach(img => {
-                        img.src = e.target.result;
-                    });
+        // Handle image preview
+        if (avatarInput) {
+            avatarInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const images = document.querySelectorAll('img.w-12.h-12, img.w-16.h-16');
+                        images.forEach(img => {
+                            img.src = e.target.result;
+                        });
+                    }
+                    reader.readAsDataURL(file);
                 }
-                reader.readAsDataURL(file);
-            }
-        });
-    }
-});
+            });
+        }
+    });
 
-// Handle delete confirmation
-function confirmDelete() {
+    // Handle delete confirmation
+    function confirmDelete() {
     return confirm('Are you sure you want to delete this user?');
 }
 </script>

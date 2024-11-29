@@ -1,7 +1,6 @@
 @extends('admin.layouts.app')
 
 @section('content')
-@section('content')
 <style>
     .form-input-field {
         height: 3rem; /* h-12 */
@@ -88,6 +87,60 @@
     .checkbox-group:hover {
         background-color: #F9FAFB;
     }
+
+
+    /* Map styles */
+    #map {
+        height: 400px;
+        width: 100%;
+        z-index: 1;
+        position: relative;
+    }
+
+    .leaflet-container {
+        z-index: 1 !important;
+    }
+
+    .leaflet-pane,
+    .leaflet-tile,
+    .leaflet-marker-icon,
+    .leaflet-marker-shadow,
+    .leaflet-tile-container,
+    .leaflet-pane > svg,
+    .leaflet-pane > canvas,
+    .leaflet-zoom-box,
+    .leaflet-image-layer,
+    .leaflet-layer {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+
+    .leaflet-control-container .leaflet-top,
+    .leaflet-control-container .leaflet-bottom {
+        z-index: 1000 !important;
+    }
+
+
+    /* Error animation */
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .error-message {
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Form validation styles */
+    .form-input-field.border-red-500 {
+        border-color: #EF4444;
+    }
+
+    .form-input-field.border-red-500:focus {
+        box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
+    }
+
 </style>
 
 <div class="bg-gray-50 py-8">
@@ -231,7 +284,7 @@
                             </div>
 
                             <!-- Location -->
-                            <div class="input-group">
+                            <!-- <div class="input-group">
                                 <label for="location_id" class="form-label">Location</label>
                                 <select name="location_id" id="location_id" class="form-input-field w-full">
                                     <option value="">Select Location</option>
@@ -239,7 +292,7 @@
                                         <option value="{{ $location->location_id }}">{{ $location->location_name }}</option>
                                     @endforeach
                                 </select>
-                            </div>
+                            </div> -->
 
                             <!-- Highlight Places -->
                             <div class="input-group col-span-2">
@@ -342,8 +395,7 @@
                         </div>
                     </div>
                 </div>
-
-
+                
                 <!-- Step 2: Location Details -->
                 <div id="step2" class="step-content p-8 hidden">
                     <div class="space-y-8">
@@ -352,41 +404,389 @@
                             <p class="mt-1 text-sm text-gray-500">Specify the tour locations and destinations.</p>
                         </div>
 
-                        <div class="grid grid-cols-1 gap-6">
-                            <!-- Starting Point -->
-                            <div>
-                                <label for="start_location" class="block text-sm font-medium text-gray-700">Starting Point</label>
-                                <div class="mt-1">
-                                    <input type="text" name="start_location" id="start_location" 
-                                        class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                        placeholder="Tour starting location">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <!-- Starting Location -->
+                            <div class="input-group">
+                                <label for="start_location" class="form-label">Starting Point <span class="text-red-500">*</span></label>
+                                <input type="text" 
+                                    name="start_location" 
+                                    id="start_location"
+                                    required 
+                                    class="form-input-field w-full"
+                                    placeholder="Enter starting location">
+                            </div>
+
+                            <!-- Province -->
+                            <div class="input-group">
+                                <label for="province" class="form-label">Province</label>
+                                <input type="text" 
+                                    name="province" 
+                                    id="province"
+                                    class="form-input-field w-full"
+                                    placeholder="Enter province name">
+                            </div>
+
+                            <!-- Region -->
+                            <div class="input-group">
+                                <label for="region" class="form-label">Region</label>
+                                <select name="region" id="region" class="form-select-field w-full">
+                                    <option value="">Select Region</option>
+                                    <option value="north">North</option>
+                                    <option value="central">Central</option>
+                                    <option value="south">South</option>
+                                </select>
+                            </div>
+
+                            <!-- Best Time to Visit -->
+                            <div class="input-group">
+                                <label for="best_time" class="form-label">Best Time to Visit</label>
+                                <input type="text" 
+                                    name="best_time" 
+                                    id="best_time"
+                                    class="form-input-field w-full"
+                                    placeholder="e.g., October - March">
+                            </div>
+
+                            <!-- Weather Notes -->
+                            <div class="input-group col-span-2">
+                                <label for="weather_notes" class="form-label">Weather Information</label>
+                                <textarea name="weather_notes" 
+                                    id="weather_notes"
+                                    rows="2"
+                                    class="form-textarea-field w-full"
+                                    placeholder="Enter weather information and seasonal notes"></textarea>
+                            </div>
+
+                            <!-- Coordinates -->
+                            <div class="input-group col-span-2">
+                                <label class="form-label">Location Coordinates</label>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <input type="text" 
+                                        name="latitude" 
+                                        id="latitude"
+                                        class="form-input-field"
+                                        placeholder="Latitude">
+                                    <input type="text" 
+                                        name="longitude" 
+                                        id="longitude"
+                                        class="form-input-field"
+                                        placeholder="Longitude">
                                 </div>
                             </div>
 
-                            <!-- Destination Points -->
-                            <div>
-                                <label for="destinations" class="block text-sm font-medium text-gray-700">Key Destinations</label>
-                                <div class="mt-1">
-                                    <textarea name="destinations" id="destinations" rows="4" 
-                                        class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md"
-                                        placeholder="List main destinations (one per line)"></textarea>
-                                </div>
-                            </div>
-
-                            <!-- Map Preview (Placeholder) -->
-                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
-                                <div class="space-y-1">
-                                    <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/>
-                                    </svg>
-                                    <div class="text-sm text-gray-600">
-                                        Map preview will be available soon
+                            <!-- Key Destinations -->
+                            <div class="input-group col-span-2">
+                                <label for="destinations" class="form-label">Key Destinations <span class="text-red-500">*</span></label>
+                                <div class="space-y-3">
+                                    <div id="destinations-container">
+                                        <!-- Initial destination input -->
+                                        <div class="destination-entry flex gap-2 mb-2">
+                                            <input type="text" 
+                                                name="destinations[]" 
+                                                class="form-input-field flex-1"
+                                                placeholder="Enter destination name"
+                                                required>
+                                            <button type="button" class="remove-destination px-2 py-1 text-red-500 hover:text-red-700">
+                                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                                                </svg>
+                                            </button>
+                                        </div>
                                     </div>
+                                    <button type="button" 
+                                        id="add-destination"
+                                        class="inline-flex items-center px-3 py-1.5 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                                        </svg>
+                                        Add Destination
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Location Description -->
+                            <div class="input-group col-span-2">
+                                <label for="location_description" class="form-label">Location Description</label>
+                                <textarea name="location_description" 
+                                    id="location_description"
+                                    rows="4"
+                                    class="form-textarea-field w-full"
+                                    placeholder="Provide a detailed description of the location and its attractions"></textarea>
+                            </div>
+
+                            <!-- Map Preview -->
+                            <div class="col-span-2 border rounded-lg p-4 relative">
+                                <div class="mb-4">
+                                    <label class="form-label">Map Preview</label>
+                                    <div class="flex items-center space-x-2">
+                                        <input type="text" 
+                                            id="map-search" 
+                                            class="form-input-field flex-1"
+                                            placeholder="Search for a location">
+                                        <button type="button" 
+                                            id="search-location"
+                                            class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                                            Search
+                                        </button>
+                                    </div>
+                                </div>
+                                <div id="map" class="relative w-full h-96 bg-gray-100 rounded-lg">
+                                    <a href="https://www.maptiler.com" style="position:absolute;left:10px;bottom:10px;z-index:999;"><img src="https://api.maptiler.com/resources/logo.svg" alt="MapTiler logo"></a>
+                                    <p>
+                                        <a href="https://www.maptiler.com/copyright/" target="_blank" rel="noopener">&copy; MapTiler</a>
+                                        <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">&copy; OpenStreetMap contributors</a>
+                                    </p>
+                                    <script>
+                                        const key = 'N6BQXkJPkkKbfmNYjKwr';
+                                        const map = L.map('map').setView([49.2125578, 16.62662018], 14); //starting position
+                                        L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${key}`,{ //style URL
+                                            tileSize: 512,
+                                            zoomOffset: -1,
+                                            minZoom: 1,
+                                            attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
+                                            crossOrigin: true
+                                        }).addTo(map);
+                                        var marker = L.marker([20.9101,107.1839]).addTo(map);
+                                    </script>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+
+                <script>
+                    // Handle Step 2 Location Details
+                    // document.addEventListener('DOMContentLoaded', function() {
+                    //     // Initialize variables
+                    //     const destinationsContainer = document.getElementById('destinations-container');
+                    //     const addDestinationBtn = document.getElementById('add-destination');
+                    //     let map;
+                    //     let marker;
+
+                    //     // Handle dynamic destinations
+                    //     addDestinationBtn.addEventListener('click', function() {
+                    //         const newDestination = document.createElement('div');
+                    //         newDestination.className = 'destination-entry flex gap-2 mb-2';
+                    //         newDestination.innerHTML = `
+                    //             <input type="text" 
+                    //                 name="destinations[]" 
+                    //                 class="form-input-field flex-1"
+                    //                 placeholder="Enter destination name"
+                    //                 required>
+                    //             <button type="button" class="remove-destination px-2 py-1 text-red-500 hover:text-red-700">
+                    //                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    //                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    //                 </svg>
+                    //             </button>
+                    //         `;
+                    //         destinationsContainer.appendChild(newDestination);
+                    //     });
+
+                    //     // Remove destination
+                    //     destinationsContainer.addEventListener('click', function(e) {
+                    //         if (e.target.closest('.remove-destination')) {
+                    //             const destinationEntry = e.target.closest('.destination-entry');
+                    //             if (destinationsContainer.children.length > 1) {
+                    //                 destinationEntry.remove();
+                    //             } else {
+                    //                 // If it's the last destination, just clear the input
+                    //                 const input = destinationEntry.querySelector('input');
+                    //                 input.value = '';
+                    //             }
+                    //         }
+                    //     });
+
+                    //     // Initialize map
+                    //     function initMap() {
+                    //         // Initialize map centered on Vietnam
+                    //         map = L.map('map').setView([16.047079, 108.206230], 12);
+
+                    //         // Add OpenStreetMap tiles
+                    //         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    //             attribution: '© OpenStreetMap contributors'
+                    //         }).addTo(map);
+
+                    //         // Add draggable marker
+                    //         marker = L.marker([16.047079, 108.206230], {
+                    //             draggable: true
+                    //         }).addTo(map);
+
+                    //         // Update coordinates when marker is dragged
+                    //         marker.on('dragend', function(event) {
+                    //             const position = marker.getLatLng();
+                    //             document.getElementById('latitude').value = position.lat.toFixed(6);
+                    //             document.getElementById('longitude').value = position.lng.toFixed(6);
+                    //             updateLocationInfo(position.lat, position.lng);
+                    //         });
+                    //     }
+
+                    //     // Search location function
+                    //     async function searchLocation() {
+                    //         const searchInput = document.getElementById('map-search');
+                    //         const query = searchInput.value;
+
+                    //         if (!query) return;
+
+                    //         // Show loading state
+                    //         const searchBtn = document.getElementById('search-location');
+                    //         const originalText = searchBtn.innerHTML;
+                    //         searchBtn.innerHTML = 'Searching...';
+                    //         searchBtn.disabled = true;
+
+                    //         try {
+                    //             const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}`);
+                    //             const data = await response.json();
+
+                    //             if (data.length > 0) {
+                    //                 const location = data[0];
+                    //                 const lat = parseFloat(location.lat);
+                    //                 const lng = parseFloat(location.lon);
+
+                    //                 // Update map and marker
+                    //                 map.setView([lat, lng], 15);
+                    //                 marker.setLatLng([lat, lng]);
+
+                    //                 // Update form fields
+                    //                 document.getElementById('latitude').value = lat.toFixed(6);
+                    //                 document.getElementById('longitude').value = lng.toFixed(6);
+
+                    //                 // Update location info
+                    //                 updateLocationInfo(lat, lng);
+                    //             } else {
+                    //                 showError('Location not found. Please try a different search term.');
+                    //             }
+                    //         } catch (error) {
+                    //             console.error('Error searching location:', error);
+                    //             showError('Error searching location. Please try again.');
+                    //         } finally {
+                    //             // Restore button state
+                    //             searchBtn.innerHTML = originalText;
+                    //             searchBtn.disabled = false;
+                    //         }
+                    //     }
+
+                    //     // Update location information based on coordinates
+                    //     async function updateLocationInfo(lat, lng) {
+                    //         try {
+                    //             const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+                    //             const data = await response.json();
+
+                    //             if (data.address) {
+                    //                 // Auto-fill province if empty
+                    //                 const provinceInput = document.getElementById('province');
+                    //                 if (!provinceInput.value && data.address.state) {
+                    //                     provinceInput.value = data.address.state;
+                    //                 }
+
+                    //                 // Update location description if empty
+                    //                 const descriptionTextarea = document.getElementById('location_description');
+                    //                 if (!descriptionTextarea.value) {
+                    //                     let description = '';
+                    //                     if (data.address.city || data.address.town) {
+                    //                         description += `Located in ${data.address.city || data.address.town}, `;
+                    //                     }
+                    //                     if (data.address.state) {
+                    //                         description += `${data.address.state}, `;
+                    //                     }
+                    //                     if (data.address.country) {
+                    //                         description += data.address.country;
+                    //                     }
+                    //                     descriptionTextarea.value = description;
+                    //                 }
+                    //             }
+                    //         } catch (error) {
+                    //             console.error('Error updating location info:', error);
+                    //         }
+                    //     }
+
+                    //     // Show error message
+                    //     function showError(message) {
+                    //         const errorDiv = document.createElement('div');
+                    //         errorDiv.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mt-2';
+                    //         errorDiv.role = 'alert';
+                    //         errorDiv.innerHTML = `
+                    //             <span class="block sm:inline">${message}</span>
+                    //             <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+                    //                 <svg class="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                    //                     <title>Close</title>
+                    //                     <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
+                    //                 </svg>
+                    //             </span>
+                    //         `;
+                            
+                    //         // Remove error after 5 seconds
+                    //         setTimeout(() => {
+                    //             errorDiv.remove();
+                    //         }, 5000);
+
+                    //         // Add to form
+                    //         document.querySelector('#step2').insertBefore(errorDiv, document.querySelector('#step2 .space-y-8'));
+                    //     }
+
+                    //     // Validate Step 2
+                    //     function validateStep2() {
+                    //         const requiredFields = [
+                    //             { id: 'start_location', message: 'Starting location is required' },
+                    //             { id: 'latitude', message: 'Please select a location on the map' },
+                    //             { id: 'longitude', message: 'Please select a location on the map' }
+                    //         ];
+
+                    //         let isValid = true;
+                    //         const errors = [];
+
+                    //         // Check required fields
+                    //         requiredFields.forEach(field => {
+                    //             const element = document.getElementById(field.id);
+                    //             if (!element.value.trim()) {
+                    //                 isValid = false;
+                    //                 errors.push(field.message);
+                    //                 element.classList.add('border-red-500');
+                    //             } else {
+                    //                 element.classList.remove('border-red-500');
+                    //             }
+                    //         });
+
+                    //         // Check if at least one destination is entered
+                    //         const destinations = document.querySelectorAll('input[name="destinations[]"]');
+                    //         let hasValidDestination = false;
+                    //         destinations.forEach(dest => {
+                    //             if (dest.value.trim()) {
+                    //                 hasValidDestination = true;
+                    //             }
+                    //         });
+
+                    //         if (!hasValidDestination) {
+                    //             isValid = false;
+                    //             errors.push('At least one destination is required');
+                    //         }
+
+                    //         // Show errors if any
+                    //         if (!isValid) {
+                    //             errors.forEach(error => showError(error));
+                    //         }
+
+                    //         return isValid;
+                    //     }
+
+                    //     // Event Listeners
+                    //     const searchBtn = document.getElementById('search-location');
+                    //     const searchInput = document.getElementById('map-search');
+
+                    //     searchBtn.addEventListener('click', searchLocation);
+                    //     searchInput.addEventListener('keypress', function(e) {
+                    //         if (e.key === 'Enter') {
+                    //             e.preventDefault();
+                    //             searchLocation();
+                    //         }
+                    //     });
+
+                    //     // Initialize map
+                    //     initMap();
+
+                    //     // Export validation function for use in main form handling
+                    //     window.validateStep2 = validateStep2;
+                    // });
+                </script>
 
                 <!-- Step 3: Itinerary -->
                 <div id="step3" class="step-content p-8 hidden">
@@ -480,6 +880,7 @@
                         </button>
                     </div>
                 </div>
+                
 
                 <!-- Step 4: Review -->
                 <div id="step4" class="step-content p-8 hidden">
@@ -563,8 +964,8 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </div>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    
+    document.addEventListener('DOMContentLoaded', function() {
+
     let currentStep = 1;
     const totalSteps = 4;
     const form = document.getElementById('tourForm');
