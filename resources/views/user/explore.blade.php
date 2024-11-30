@@ -9,25 +9,25 @@ $featuredExperiences = [
     [
         'id' => 'han-river-cruise',
         'title' => 'Du thuyền đêm trên sông Hàn',
-        'image' => 'images/experiences/han-river-cruise.jpg',
+        'image' => 'https://static.vinwonders.com/2022/12/du-thuyen-tren-song-han-banner.jpg',
         'slug' => 'du-thuyen-dem-tren-song-han'
     ],
     [
         'id' => 'bana-hills-ticket',
         'title' => 'Vé Sun World Ba Na Hills',
-        'image' => 'images/experiences/bana-hills.jpg',
+        'image' => 'https://owa.bestprice.vn/images/tickets/uploads/ve-sunworld-ba-na-hills-608fa9d49f3a4.jpg',
         'slug' => 've-sun-world-ba-na-hills'
     ],
     [
         'id' => 'bana-hills-tour',
         'title' => 'Tour Bà Nà Hills trọn ngày với bữa trưa buffet',
-        'image' => 'images/experiences/bana-hills-tour.jpg',
+        'image' => 'https://havatravel.vn/upload/images/tour-ba-na-hill-1-ngay%20-havatravel(1).jpeg',
         'slug' => 'tour-ba-na-hills-tron-ngay'
     ],
     [
         'id' => 'coconut-forest',
         'title' => 'Tour rừng dừa bằng thuyền thúng',
-        'image' => 'images/experiences/coconut-forest.jpg',
+        'image' => 'https://vpdt.vietrantour.com.vn/data/upload/2024/0129/vietrantour-65b785209e3051.jpg',
         'slug' => 'tour-rung-dua-bang-thuyen-thung'
     ]
 ];
@@ -36,21 +36,21 @@ $popularDestinations = [
     [
         'id' => 'hochiminh',
         'name' => 'TP. Hồ Chí Minh',
-        'image' => 'images/destinations/hochiminh.jpg',
+        'image' => 'https://dulichkhatvongviet.com/wp-content/uploads/2022/06/dia-diem-du-lich.jpg',
         'activities' => '1491 hoạt động',
         'slug' => 'ho-chi-minh'
     ],
     [
         'id' => 'danang',
         'name' => 'Đà Nẵng',
-        'image' => 'images/destinations/danang.jpg',
+        'image' => 'https://danangsensetravel.com/view/at_ve-dep-thanh-pho-da-nang-giu-tron-tung-khoanh-khac_6b555585df3ca96d931cf6f4378c9488.jpg',
         'activities' => '2583 hoạt động',
         'slug' => 'da-nang'
     ],
     [
         'id' => 'hanoi',
         'name' => 'Hà Nội',
-        'image' => 'images/destinations/hanoi.jpg',
+        'image' => 'https://iwater.vn/Image/Picture/Dia-danh/ha-noi.jpg',
         'activities' => '3969 hoạt động',
         'slug' => 'ha-noi'
     ]

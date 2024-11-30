@@ -19,10 +19,10 @@ class TourController extends Controller
         $locations = Location::all();
         
         if (request()->ajax()) {
-            return view('admin.create', compact('locations'))->render();
+            return view('admin.tours.create', compact('locations'))->render();
         }
         
-        return view('admin.create', compact('locations'));
+        return view('admin.tours.create', compact('locations'));
     }
 
     public function getFormData()
