@@ -1,0 +1,19 @@
+<div class="chat-widget">
+    <button class="chat-button" onclick="toggleChat()">
+        <i class="fas fa-comments"></i>
+    </button>
+    
+    <div class="chat-container" id="chatContainer" style="display: none;">
+        <div class="chat-header">
+            <h3>AI Assistant</h3>
+            <button onclick="toggleChat()" class="close-button">&times;</button>
+        </div>
+        <div class="chat-box" id="chatBox">
+            <!-- Tin nhắn sẽ hiển thị ở đây -->
+        </div>
+        <div class="chat-input">
+            <input type="text" id="userInput" placeholder="Nhập tin nhắn...">
+            <button onclick="sendMessage()">Gửi</button>
+        </div>
+    </div>
+</div> 
