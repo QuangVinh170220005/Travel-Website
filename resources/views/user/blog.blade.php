@@ -695,6 +695,73 @@ $categories = [
                 </div>
             </div>
         </main>
+        <script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Thêm CSRF token vào header
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+    
+    async function submitComment(form) {
+        const postId = form.dataset.postId;
+        const content = form.querySelector('input[name="content"]').value;
+        const parentId = form.dataset.parentId || null;
+
+        try {
+            const response = await fetch('/comments', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                body: JSON.stringify({
+                    post_id: postId,
+                    content: content,
+                    parent_id: parentId
+                })
+            });
+
+            const data = await response.json();
+            
+            if (data.success) {
+                // Thêm comment mới vào DOM
+                const commentsContainer = form.closest('.post-comments').querySelector('.comments-list');
+                commentsContainer.insertAdjacentHTML('afterbegin', createCommentHTML(data.comment));
+                form.reset();
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function createCommentHTML(comment) {
+        return `
+            <div class="flex space-x-3 mb-4">
+                <img src="${comment.user.avatar}" 
+                     alt="${comment.user.name}" 
+                     class="w-8 h-8 rounded-full">
+                <div class="flex-1 bg-gray-100 rounded-lg p-3">
+                    <p class="font-medium">${comment.user.name}</p>
+                    <p class="text-sm text-gray-600">${comment.content}</p>
+                    <div class="flex items-center space-x-4 mt-2 text-sm text-gray-500">
+                        <button class="hover:text-blue-500">Thích</button>
+                        <button class="hover:text-blue-500 reply-btn" data-comment-id="${comment.id}">Trả lời</button>
+                        <span>${comment.created_at}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+    // Xử lý submit form comment
+    document.querySelectorAll('.comment-form').forEach(form => {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            submitComment(this);
+        });
+    });
+});
+</script>
+
+
 
         <footer class="bg-gray-800 text-white py-8 mt-12">
             <div class="container mx-auto px-4">

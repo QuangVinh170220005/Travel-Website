@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\ContactController; // Thay đổi ở đây
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\CommentController;
 
 // Public routes
 Route::get('/home', function () {
@@ -89,6 +90,11 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::put('/editUser/update/{user}', [AdminUserController::class, 'update'])->name('update');
     });
 });
+Route::middleware(['auth'])->group(function () {
+    Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+    Route::delete('/comments/{comment}', [CommentController::class, 'destroy'])->name('comments.destroy');
+});
+
 
 // tours route
 Route::prefix('tours')->group(function () {
