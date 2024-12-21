@@ -6,6 +6,7 @@ use App\Http\Controllers\TourController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\BookingController;
 use Illuminate\Support\Facades\Auth;
 
 // Public routes
@@ -26,6 +27,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'show'])->name('settings');
 });
 
+// User routes
+Route::get('/explore', function () {
+    return view('user.explore');
+})->name('explore');
 
 Route::get('/explore/all', function () {
     return view('user.explore.all');
@@ -80,22 +85,27 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::delete('/deleteUser/{user}', action: [AdminUserController::class, 'delete'])->name('deleteUser');
         Route::put('/editUser/update/{user}', [AdminUserController::class, 'update'])->name('update');
     });
-});
 
-// tours route
-Route::prefix('tours')->group(function () {
-    Route::get('/create', [TourController::class, 'create'])->name('tours.create');
-    Route::post('/store', [TourController::class, 'store'])->name('tours.store');
-    Route::get('/get-form-data', [TourController::class, 'getFormData'])->name('tours.get.form.data');
-    Route::post('/temp-store', [TourController::class, 'tempStore'])->name('tours.temp.store');
-    Route::post('/final-store', [TourController::class, 'finalStore'])->name('tours.final.store');
-    Route::post('/validate-step-{step}', [TourController::class, 'validateStep'])->name('tours.validate.step');
-   
+    // tours route
+    Route::prefix('tours')->group(function () {
+        Route::get('/create', [TourController::class, 'create'])->name('tours.create');
+        Route::post('/store', [TourController::class, 'store'])->name('tours.store');
+        Route::get('/get-form-data', [TourController::class, 'getFormData'])->name('tours.get.form.data');
+        Route::post('/temp-store', [TourController::class, 'tempStore'])->name('tours.temp.store');
+        Route::post('/final-store', [TourController::class, 'finalStore'])->name('tours.final.store');
+        Route::post('/validate-step-{step}', [TourController::class, 'validateStep'])->name('tours.validate.step');
+    });
+
+    Route::prefix('bookings')->group(function () {
+        Route::get('/all', [BookingController::class, 'all'])->name('admin.bookings.all');
+        Route::get('/{booking}', [BookingController::class, 'show'])->name('admin.bookings.show');
+        Route::patch('/{booking}/status', [BookingController::class, 'updateStatus'])->name('admin.bookings.updateStatus');
+        Route::get('/statistics', [BookingController::class, 'statistics'])->name('admin.bookings.statistics');
+        Route::get('/export', [BookingController::class, 'export'])->name('admin.bookings.export');
+    });
+
+    Route::post('/tours/search-address', [TourController::class, 'searchAddress'])->name('tours.search.address');
+    Route::post('/tours/place-detail', [TourController::class, 'getPlaceDetail'])->name('tours.place.detail');
 });
 Route::get('/explore', [TourController::class, 'explore'])->name('explore');
 Route::get('/explore/schedule/{tour}', [TourController::class, 'scheduleTour'])->name('tour.schedule');
-
-
-
-
-

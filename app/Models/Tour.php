@@ -1,13 +1,11 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
 class Tour extends Model
 {
-    protected $table = 'tours'; 
-    protected $primaryKey = 'tour_id'; 
-    public $timestamps = false;
     protected $fillable = [
         'tour_name',
         'description',
@@ -34,6 +32,11 @@ class Tour extends Model
         return $this->belongsTo(Location::class, 'location_id', 'location_id');
     }
 
+    public function images()
+    {
+        return $this->hasMany(TourImage::class, 'tour_id');
+    }
+
     public function priceLists()
     {
         return $this->hasMany(PriceList::class, 'tour_id', 'tour_id');
@@ -42,5 +45,4 @@ class Tour extends Model
     {
         return $this->hasMany(TourSchedule::class, 'tour_id');
     }
-
 }

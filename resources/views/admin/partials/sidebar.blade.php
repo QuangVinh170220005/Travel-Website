@@ -127,7 +127,7 @@
                      x-transition:leave-end="opacity-0 transform -translate-y-2"
                      class="pl-4 mt-2 space-y-1">
                     <a href="" 
-                       data-route="{{ route('admin') }}"
+                       data-route="{{ route('admin.bookings.all') }}"
                        onclick="loadContent(this); return false;"
                        class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white rounded-lg">All Bookings</a>
                     <a href="" 
