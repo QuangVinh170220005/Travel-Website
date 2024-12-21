@@ -7,6 +7,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\BookingController;
+Route::post('/contact-form', [ContactController::class, 'submit'])->name('contact.submit'); // Thay đổi ở đây
+Route::post('/chat', [ChatController::class, 'chat']);
 use Illuminate\Support\Facades\Auth;
 
 // Public routes
@@ -20,6 +22,8 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
+Route::post('/contact-form', [ContactController::class, 'submit'])->name('contact.submit'); // Thay đổi ở đây
+Route::post('/chat', [ChatController::class, 'chat']);
 
 // Protected routes
 Route::middleware(['auth'])->group(function () {
