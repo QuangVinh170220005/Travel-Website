@@ -3,6 +3,19 @@
 @section('title', 'Help Page')
 
 @section('content')
+    <!-- Simple Notification -->
+    <div id="notification" 
+         class="fixed top-4 right-4 p-4 rounded-lg shadow-lg hidden transition-all duration-300 z-50">
+        <div class="flex items-center">
+            <span id="notificationMessage" class="text-white mr-3"></span>
+            <button onclick="closeNotification()" class="text-white hover:text-gray-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
     <div class="min-h-screen bg-blue-900 text-white">
         <!-- Hero Section -->
         <div class="bg-gradient-to-b from-blue-800 to-blue-900 py-16">
@@ -44,7 +57,6 @@
                             <button @click="openModal = 'booking1'" class="text-left hover:text-yellow-500">
                                 How to book a tour online?
                             </button>
-                            <!-- Modal -->
                             <div x-show="openModal === 'booking1'" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
                                 <div class="min-h-screen px-4 flex items-center justify-center">
                                     <div class="fixed inset-0 bg-black opacity-50"></div>
@@ -610,11 +622,74 @@
             </div>
 
             <!-- Still Need Help Section -->
-            <div class="mt-16 text-center">
+            <div class="mt-16 text-center" x-data="{ showContactForm: false }">
                 <h3 class="text-2xl font-semibold mb-6">Still need help?</h3>
-                <button class="px-6 py-3 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition">
+                <button @click="showContactForm = true" 
+                        class="px-6 py-3 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition">
                     Contact us now
                 </button>
+
+                <!-- Contact Form Modal -->
+                <div x-show="showContactForm" 
+                     x-cloak
+                     class="fixed inset-0 z-50 overflow-y-auto">
+                    <div class="min-h-screen px-4 flex items-center justify-center">
+                        <div class="fixed inset-0 bg-black opacity-50"></div>
+                        <div class="relative bg-blue-800 rounded-lg p-8 max-w-md w-full">
+                            <!-- Notification -->
+                            <div id="formNotification" class="hidden mb-4 p-4 rounded-lg text-white text-center"></div>
+                            
+                            <h2 class="text-2xl font-bold mb-6 text-white">Contact Form</h2>
+                            
+                            <form id="contactForm" method="POST" action="{{ url('/contact-form') }}" class="space-y-4">
+                                @csrf
+                                <!-- Name Field -->
+                                <div>
+                                    <label for="name" class="block text-white mb-2">Name:</label>
+                                    <input type="text" 
+                                           name="name" 
+                                           id="name" 
+                                           required
+                                           class="w-full px-4 py-2 rounded-lg bg-blue-700 border border-blue-600 text-white focus:outline-none focus:border-yellow-500">
+                                </div>
+
+                                <!-- Email Field -->
+                                <div>
+                                    <label for="email" class="block text-white mb-2">Email:</label>
+                                    <input type="email" 
+                                           name="email" 
+                                           id="email" 
+                                           required
+                                           class="w-full px-4 py-2 rounded-lg bg-blue-700 border border-blue-600 text-white focus:outline-none focus:border-yellow-500">
+                                </div>
+
+                                <!-- Message Field -->
+                                <div>
+                                    <label for="message" class="block text-white mb-2">Message:</label>
+                                    <textarea name="message" 
+                                              id="message" 
+                                              required
+                                              rows="4"
+                                              class="w-full px-4 py-2 rounded-lg bg-blue-700 border border-blue-600 text-white focus:outline-none focus:border-yellow-500"></textarea>
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="flex justify-end space-x-4 mt-6">
+                                    <button type="button" 
+                                            @click="showContactForm = false"
+                                            class="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-500 transition">
+                                        Cancel
+                                    </button>
+                                    <button type="submit"
+                                            id="submitButton"
+                                            class="px-6 py-2 bg-yellow-500 text-blue-900 font-semibold rounded-lg hover:bg-yellow-400 transition">
+                                        Send Message
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- Travel Tips Section -->
@@ -784,5 +859,101 @@
             </div>
         </div>
     </div>
+
+    <!-- Add JavaScript for AJAX form submission -->
+    @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.getElementById('contactForm');
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Reset error messages
+            document.querySelectorAll('.error-message').forEach(el => el.remove());
+            
+            try {
+                const formData = new FormData(this);
+                
+                // Hiển thị loading
+                Swal.fire({
+                    title: 'Đang gửi...',
+                    didOpen: () => {
+                        Swal.showLoading();
+                    },
+                    allowOutsideClick: false
+                });
+
+                const response = await fetch("{{ route('contact.submit') }}", { // Đã sửa ở đây
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // Thành công
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Thành công!',
+                        text: data.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    
+                    // Reset form
+                    form.reset();
+                    
+                    // Đóng modal sau 2 giây
+                    setTimeout(() => {
+                        const modal = document.querySelector('[x-data]').__x.$data;
+                        if (modal.showContactForm) {
+                            modal.showContactForm = false;
+                        }
+                    }, 2000);
+                    
+                } else {
+                    // Có lỗi
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi!',
+                        text: data.message || 'Đã có lỗi xảy ra'
+                    });
+                    
+                    // Hiển thị lỗi validation
+                    if (data.errors) {
+                        Object.keys(data.errors).forEach(key => {
+                            const input = form.querySelector(`[name="${key}"]`);
+                            if (input) {
+                                const error = document.createElement('span');
+                                error.className = 'error-message text-red-500 text-sm mt-1';
+                                error.textContent = data.errors[key][0];
+                                input.parentNode.appendChild(error);
+                            }
+                        });
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi!',
+                    text: 'Đã xảy ra lỗi khi gửi tin nhắn'
+                });
+            }
+        });
+    }
+});
+
+</script>
+@endpush
+
+
 
 @endsection

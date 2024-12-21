@@ -18,7 +18,6 @@ class CreateUsersTable extends Migration
             $table->text('address')->nullable();
             $table->string('id_card', 20)->nullable();
             $table->enum('role', ['ADMIN', 'STAFF', 'CUSTOMER'])->default('CUSTOMER');
-            $table->timestamps();
         });
     }
 
