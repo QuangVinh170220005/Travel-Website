@@ -24,6 +24,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'remember_token',
     ];
 
 
@@ -32,10 +33,10 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    // protected $hidden = [
+    //     'password',
+    //     'remember_token',
+    // ];
     // public function setPasswordAttribute($value)
     // {
     //     $this->attributes['password'] = Hash::make($value);

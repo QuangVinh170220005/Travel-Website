@@ -54,7 +54,8 @@ class AuthController extends Controller
             'full_name'=> $request -> full_name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role'=>'CUSTOMER'
+            'role'=>'CUSTOMER',
+            'remember_token' => null
         ]);
         // Auth::login($user);
         return redirect()->route('login')->with('success', 'Đăng ký thành công');
