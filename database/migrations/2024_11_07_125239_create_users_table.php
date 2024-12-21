@@ -17,7 +17,6 @@ class CreateUsersTable extends Migration
             $table->string('phone', 20)->nullable();
             $table->text('address')->nullable();
             $table->string('id_card', 20)->nullable();
-            $table->timestamp('created_at')->useCurrent();
             $table->enum('role', ['ADMIN', 'STAFF', 'CUSTOMER'])->default('CUSTOMER');
             $table->timestamps();
         });

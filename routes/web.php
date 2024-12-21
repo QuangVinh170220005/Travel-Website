@@ -26,10 +26,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'show'])->name('settings');
 });
 
-// User routes
-Route::get('/explore', function () {
-    return view('user.explore');
-})->name('explore');
 
 Route::get('/explore/all', function () {
     return view('user.explore.all');
@@ -94,4 +90,12 @@ Route::prefix('tours')->group(function () {
     Route::post('/temp-store', [TourController::class, 'tempStore'])->name('tours.temp.store');
     Route::post('/final-store', [TourController::class, 'finalStore'])->name('tours.final.store');
     Route::post('/validate-step-{step}', [TourController::class, 'validateStep'])->name('tours.validate.step');
+   
 });
+Route::get('/explore', [TourController::class, 'explore'])->name('explore');
+Route::get('/explore/schedule/{tour}', [TourController::class, 'scheduleTour'])->name('tour.schedule');
+
+
+
+
+

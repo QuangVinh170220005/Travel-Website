@@ -1,14 +1,16 @@
 @extends('user.layouts.app')
 
-@section('title', 'Villa Pinewood')
+@section('title', $tour->tour_name)
+
+@section('content')
 
 @php
     $villa = [
-        'name' => 'Villa Pinewood',
         'location' => 'Milano, Lombardia, Italy',
         'type' => 'Private Villa',
         'max_guests' => 8,
         'description' => 'Villa Pinewood is a spacious and elegant villa that offers a comfortable and relaxing stay for up to 8 guests. It features 4 bedrooms, 3 bathrooms, a fully-equipped kitchen, a living room, a dining room, and a private pool. The villa is located on a hilltop, overlooking the beautiful ocean and the lush greenery.',
+        'chedule' => '',
         'main_image' => 'https://media.istockphoto.com/id/1429367591/vi/anh/m%E1%BB%99t-gia-%C4%91%C3%ACnh-trong-k%E1%BB%B3-ngh%E1%BB%89-h%C3%A8-%C4%91%E1%BB%A9ng-b%C3%AAn-h%E1%BB%93-b%C6%A1i-v%C3%A0-t%E1%BA%ADn-h%C6%B0%E1%BB%9Fng-c%E1%BA%A3nh-ho%C3%A0ng-h%C3%B4n-tuy%E1%BB%87t-%C4%91%E1%BA%B9p.jpg?s=2048x2048&w=is&k=20&c=8nfsgkJNVCzOainEs-Jlq-mTpaqHKQXVAWEjcM3eXDs=',
         'images' => [
             'https://media.istockphoto.com/id/1526986072/vi/anh/m%C3%A1y-bay-bay-tr%C3%AAn-bi%E1%BB%83n-nhi%E1%BB%87t-%C4%91%E1%BB%9Bi-l%C3%BAc-ho%C3%A0ng-h%C3%B4n.jpg?s=2048x2048&w=is&k=20&c=SdCIpE5SDaSfokbkqHttOykEHkzw6MKHSPFQZgMOshM=',
@@ -106,6 +108,8 @@
 @endphp
 
 @section('content')
+@if($tour->schedules)
+@foreach($tour->schedules as $schedule)
 <div class="container mx-auto px-4 py-8">
     <!-- Header -->
     <div class="w-full flex items-center mb-6">
@@ -136,10 +140,10 @@
             </button>
         </div>
     </div>
-
-    <h1 class="text-2xl sm:text-3xl font-bold mb-2">{{ $villa['name'] }}</h1>
-    <p class="text-gray-600 text-sm sm:text-base">{{ $villa['location'] }} • {{ $villa['type'] }} • Max {{ $villa['max_guests'] }} Guests</p>
-
+@endforeach
+    <h1 class="text-2xl sm:text-3xl font-bold mb-2">{{ $tour->tour_name }}</h1>
+    @foreach($tour->schedules as $schedule)
+   
     <!-- Image Gallery -->
     <div class="mb-4 mt-4">
         <div class="flex flex-col md:flex-row gap-2">
@@ -190,13 +194,13 @@
         <!-- Left Column -->
         <div class="w-full lg:w-2/3">
             <!-- Host Info -->
-            <div class="flex justify-between items-center mb-6">
+            <!-- <div class="flex justify-between items-center mb-6">
                 <div>
                     <h2 class="text-xl sm:text-2xl font-semibold">Hosted by {{ $villa['host']['name'] }}</h2>
                     <p class="text-gray-600 text-sm">{{ $villa['host']['country'] }} • {{ $villa['host']['years_hosting'] }} years hosting</p>
                 </div>
-                <!-- <img src="{{ $villa['host']['avatar'] }}" alt="{{ $villa['host']['name'] }}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-full"> -->
-            </div>
+                <img src="{{ $villa['host']['avatar'] }}" alt="{{ $villa['host']['name'] }}" class="w-12 h-12 sm:w-16 sm:h-16 rounded-full">
+            </div> -->
 
             <!-- Facilities -->
             <div class="mb-6">
@@ -210,27 +214,24 @@
                     @endforeach
                 </div>
             </div>
-
+    @endforeach
             <!-- Description -->
             <div class="my-6">
                 <h3 class="text-lg sm:text-xl font-semibold mb-3">About this place</h3>
-                <p class="text-gray-700 text-sm sm:text-base">{{ $villa['description'] }}</p>
+                <p class="text-gray-700 text-sm sm:text-base">{{$tour->description}}</p>
             </div>
-
+     @foreach($tour->schedules as $schedule)
+            <div class="my-6">
+                <h3 class="text-lg sm:text-xl font-semibold mb-3">Lịch trình của chuyến đi</h3>
+                        <p class="text-gray-700 text-sm sm:text-base">{{ $schedule->description }}</p>
+            </div>
             <!-- Map -->
             <div class="my-12">
                 <h3 class="text-lg sm:text-xl font-semibold mb-3">Where you'll be</h3>
-                <p class="text-gray-700 text-sm sm:text-base mb-2">{{ $villa['full_address'] }}</p>
+                <p class="text-gray-700 text-sm sm:text-base mb-2">{{ $schedule -> status }}</p>
                 
                 <div class="w-full rounded-lg overflow-hidden mb-4">
-                    <iframe 
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3835.7340250132493!2d108.25064671170686!3d15.975260284626842!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3142108997dc971f%3A0x1295cb3d313469c9!2zVHLGsOG7nW5nIMSQ4bqhaSBo4buNYyBDw7RuZyBuZ2jhu4cgVGjDtG5nIHRpbiB2w6AgVHJ1eeG7gW4gdGjDtG5nIFZp4buHdCAtIEjDoG4sIMSQ4bqhaSBo4buNYyDEkMOgIE7hurVuZw!5e0!3m2!1svi!2s!4v1731079126683!5m2!1svi!2s" 
-                        class="w-full h-[300px] sm:h-[400px]"
-                        style="border:0;" 
-                        allowfullscreen="" 
-                        loading="lazy" 
-                        referrerpolicy="no-referrer-when-downgrade">
-                    </iframe>
+                    <div id="map" class="w-full h-[300px] sm:h-[400px]"></div>
                 </div>
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -244,9 +245,12 @@
                     @endforeach
                 </div>
             </div>
-
             <div class="border-b border-gray-200 mb-6"></div>
-
+    <!-- kết thúc for scheduleschedule -->
+    @endforeach
+     @else
+        <p class="text-gray-500 text-sm sm:text-base">Chưa có lịch trình cho chuyến đi này.</p>
+    @endif
             <!-- Reviews -->
             <div class="container mx-auto py-6">
                 <div class="mb-8">
@@ -384,4 +388,24 @@
         </div>
     </div>
 </div>
+<script src="https://cdn.jsdelivr.net/npm/@goongmaps/goong-js@1.0.9/dist/goong-js.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/@goongmaps/goong-js@1.0.9/dist/goong-js.css" rel="stylesheet" />
+
+<script>
+    const API_KEY = 'wCJbks0Q8BSaJobLRuaVpxLTMR47V9PtGZFK9f7i';
+    const MAPTILES_KEY = 'tN9ukc25KjSGFzfG41uzlgWP3AzHXN0TcsOd3A3K';
+    
+    const [lat, lng] = "{{ $tour->location->coordinates }}".split(',').map(Number);
+
+    goongjs.accessToken = MAPTILES_KEY;
+    const map = new goongjs.Map({
+        container: 'map',
+        style: 'https://tiles.goong.io/assets/goong_map_web.json', 
+        center: [lng, lat], 
+        zoom: 15
+    });
+    new goongjs.Marker()
+        .setLngLat([lng, lat])
+        .addTo(map);
+</script>
 @endsection

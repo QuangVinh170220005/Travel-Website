@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Tour;
 use App\Models\User;
 use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
@@ -14,7 +15,7 @@ class AdminUserController extends Controller
 {
     public function index(){
         $users = User::all();
-        return view('admin.userManagement', compact('users'));
+        return view('admin.userManagement', compact(var_name: 'users'));
     }
 
     public function showInfor($user_id){
@@ -84,5 +85,4 @@ class AdminUserController extends Controller
         return redirect()->route('userManagement', $user->user_id)
             ->with('success', 'User information updated successfully');
     }
-    
 }

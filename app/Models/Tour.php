@@ -5,6 +5,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tour extends Model
 {
+    protected $table = 'tours'; 
+    protected $primaryKey = 'tour_id'; 
+    public $timestamps = false;
     protected $fillable = [
         'tour_name',
         'description',
@@ -35,4 +38,9 @@ class Tour extends Model
     {
         return $this->hasMany(PriceList::class, 'tour_id', 'tour_id');
     }
+    public function schedules()
+    {
+        return $this->hasMany(TourSchedule::class, 'tour_id');
+    }
+
 }
