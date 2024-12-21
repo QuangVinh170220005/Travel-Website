@@ -27,10 +27,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'show'])->name('settings');
 });
 
-// User routes
-Route::get('/explore', function () {
-    return view('user.explore');
-})->name('explore');
 
 Route::get('/explore/all', function () {
     return view('user.explore.all');
@@ -85,7 +81,6 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::delete('/deleteUser/{user}', action: [AdminUserController::class, 'delete'])->name('deleteUser');
         Route::put('/editUser/update/{user}', [AdminUserController::class, 'update'])->name('update');
     });
-
     // tours route
     Route::prefix('tours')->group(function () {
         Route::get('/create', [TourController::class, 'create'])->name('tours.create');
@@ -107,4 +102,5 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::post('/tours/search-address', [TourController::class, 'searchAddress'])->name('tours.search.address');
     Route::post('/tours/place-detail', [TourController::class, 'getPlaceDetail'])->name('tours.place.detail');
 });
-
+Route::get('/explore', [TourController::class, 'explore'])->name('explore');
+Route::get('/explore/schedule/{tour}', [TourController::class, 'scheduleTour'])->name('tour.schedule');
