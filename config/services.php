@@ -35,4 +35,7 @@ return [
         ],
     ],
 
+    'goong' => [
+        'key' => env('GOONG_API_KEY'),
+    ],
 ];

@@ -9,16 +9,16 @@ class CreateLocationsTable extends Migration
     public function up()
     {
         Schema::create('locations', function (Blueprint $table) {
-            $table->id('location_id');
+            $table->bigIncrements('location_id');
             $table->string('location_name', 100);
-            $table->string('province', 50);
-            $table->string('region', 50)->nullable();
+            $table->string('location_address', 50);
+            $table->string('location_map')->nullable();
             $table->text('description')->nullable();
-            $table->string('coordinates', 50)->nullable();
-            $table->boolean('is_popular')->default(false);
+            $table->tinyInteger('is_popular')->default(0);
             $table->string('best_time_to_visit', 100)->nullable();
             $table->text('weather_notes')->nullable();
             $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrentOnUpdate();
         });
     }
 

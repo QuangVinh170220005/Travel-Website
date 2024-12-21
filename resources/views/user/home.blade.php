@@ -175,9 +175,9 @@ $home = [
         <div class="grid grid-cols-1 md:grid-cols-2 gap-9 relative">
             <!-- Read All Blog Button (Center) -->
             <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-10">
-                <button class="bg-blue-400 hover:bg-blue-500 text-white font-bold py-3 px-6 transition duration-300 shadow-lg rounded-full">
+                <a href="{{ route('blog') }}" class="bg-blue-400 hover:bg-blue-500 text-white font-bold py-3 px-6 transition duration-300 shadow-lg rounded-full">
                     Read All Blog
-                </button>
+                </a>
             </div>
 
             <!-- Card 1 - Góc dưới phải được bo nhiều -->

@@ -103,5 +103,8 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::get('/statistics', [BookingController::class, 'statistics'])->name('admin.bookings.statistics');
         Route::get('/export', [BookingController::class, 'export'])->name('admin.bookings.export');
     });
+
+    Route::post('/tours/search-address', [TourController::class, 'searchAddress'])->name('tours.search.address');
+    Route::post('/tours/place-detail', [TourController::class, 'getPlaceDetail'])->name('tours.place.detail');
 });
 

@@ -6,7 +6,9 @@ use App\Models\Tour;
 use App\Models\Location;
 use App\Models\PriceList;
 use App\Models\PriceDetail;
+use App\Models\TourImage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -17,11 +19,11 @@ class TourController extends Controller
     public function create()
     {
         $locations = Location::all();
-        
+
         if (request()->ajax()) {
             return view('admin.tours.create', compact('locations'))->render();
         }
-        
+
         return view('admin.tours.create', compact('locations'));
     }
 
@@ -42,6 +44,30 @@ class TourController extends Controller
                 'message' => $e->getMessage()
             ], 500);
         }
+    }
+
+    public function searchAddress(Request $request)
+    {
+        $query = $request->input('query');
+
+        $response = Http::get('https://rsapi.goong.io/Place/AutoComplete', [
+            'api_key' => config('services.goong.key'),
+            'input' => $query
+        ]);
+
+        return response()->json($response->json());
+    }
+
+    public function getPlaceDetail(Request $request)
+    {
+        $placeId = $request->input('place_id');
+
+        $response = Http::get('https://rsapi.goong.io/Place/Detail', [
+            'place_id' => $placeId,
+            'api_key' => config('services.goong.key')
+        ]);
+
+        return response()->json($response->json());
     }
 
     public function tempStore(Request $request)
@@ -82,7 +108,6 @@ class TourController extends Controller
                 'message' => 'Data temporarily stored',
                 'data' => $validated
             ]);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
@@ -120,14 +145,16 @@ class TourController extends Controller
                     'max_participants' => 'nullable|integer|min:1',
                     'category' => 'nullable|string|max:50',
                     'transportation' => 'nullable|string|max:100',
-                    'description' => 'nullable|string'
+                    'description' => 'nullable|string',
+                    'highlight_places' => 'nullable|string',
+                    'tour_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:10240',
+                    'include_hotel' => 'boolean',
+                    'include_meal' => 'boolean'
                 ];
             case 2:
                 return [
-                    'location_id' => 'nullable|exists:locations,location_id',
-                    'highlight_places' => 'nullable|string',
-                    'include_hotel' => 'boolean',
-                    'include_meal' => 'boolean'
+                    'location_id' => 'nullable|exists:locations,location_id'
+
                 ];
             case 3:
                 return [
@@ -162,18 +189,34 @@ class TourController extends Controller
                 'include_meal' => 'boolean',
                 'highlight_places' => 'nullable|string',
                 'is_active' => 'boolean',
-                'location_id' => 'nullable|exists:locations,location_id'
+                'location_id' => 'nullable|exists:locations,location_id',
+                'tour_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:10240', // max 10MB
             ]);
 
             DB::beginTransaction();
-            
+
             // Convert checkbox values
             $validated['include_hotel'] = $request->has('include_hotel');
             $validated['include_meal'] = $request->has('include_meal');
             $validated['is_active'] = $request->has('is_active');
-            
+
             $tour = Tour::create($validated);
-            
+
+            // Xử lý upload ảnh
+            if ($request->hasFile('tour_images')) {  // Giữ nguyên tên field 'tour_images' nếu form đang dùng name="tour_images[]"
+                foreach ($request->file('tour_images') as $index => $image) {
+                    // Sửa cách lưu file và đường dẫn
+                    $path = $image->store('tours', 'public');  // Lưu vào storage/app/public/tours
+                    
+                    TourImage::create([
+                        'tour_id' => $tour->tour_id,  // Đảm bảo dùng đúng tên cột primary key của bảng tours
+                        'image_path' => $path,  // Không cần str_replace vì store() đã trả về đường dẫn tương đối
+                        'is_main' => $index === 0
+                    ]);
+                }
+            }            
+
+
             DB::commit();
 
             return response()->json([
@@ -182,7 +225,6 @@ class TourController extends Controller
                 'data' => $tour,
                 'redirect_url' => route('tours.create')
             ]);
-
         } catch (ValidationException $e) {
             DB::rollBack();
             return response()->json([
@@ -190,7 +232,6 @@ class TourController extends Controller
                 'message' => 'Validation failed',
                 'errors' => $e->errors()
             ], 422);
-
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -210,24 +251,24 @@ class TourController extends Controller
         try {
             // Lưu tour
             $tour = Tour::create($request->tour);
-            
+
             // Lưu location nếu cần
             if ($request->has('location')) {
                 $location = Location::create($request->location);
                 $tour->location()->associate($location);
                 $tour->save();
             }
-            
+
             // Lưu price list
             $priceList = PriceList::create([
                 'tour_id' => $tour->tour_id,
                 'price_list_name' => 'Default Price List',
                 'is_default' => true
             ]);
-            
+
             // Lưu price details
             if ($request->has('prices')) {
-                foreach($request->prices as $price) {
+                foreach ($request->prices as $price) {
                     PriceDetail::create([
                         'price_list_id' => $priceList->price_list_id,
                         'customer_type' => $price['type'],
@@ -235,7 +276,7 @@ class TourController extends Controller
                     ]);
                 }
             }
-            
+
             DB::commit();
 
             if ($request->ajax()) {
@@ -247,8 +288,7 @@ class TourController extends Controller
             }
 
             return redirect()->route('tours.create')
-                           ->with('success', 'Tour created successfully');
-
+                ->with('success', 'Tour created successfully');
         } catch (\Exception $e) {
             DB::rollback();
 
@@ -258,9 +298,9 @@ class TourController extends Controller
                     'message' => $e->getMessage()
                 ], 500);
             }
-            
+
             return back()->with('error', $e->getMessage())
-                        ->withInput();
+                ->withInput();
         }
     }
 }
