@@ -291,7 +291,7 @@ $categories = [
                     <button 
                         @click="openModal = 'featured'" 
                         class="text-left w-full hover:text-yellow-200 transition-colors">
-                        <h1 class="text-4xl font-bold mt-4 mb-2">
+                        <h1 class="text-4xl font-bold mt-4 mb-2 font-roboto">
                             {{ $featuredPost['title'] }}
                         </h1>
                         <p class="text-gray-200 mb-4">
@@ -348,7 +348,7 @@ $categories = [
 
                             <!-- Post Content -->
                             <span class="text-sm text-blue-500">{{ $featuredPost['category']['name'] }}</span>
-                            <h2 class="text-2xl font-bold my-4">{{ $featuredPost['title'] }}</h2>
+                            <h2 class="text-2xl font-bold my-4 font-roboto">{{ $featuredPost['title'] }}</h2>
                             <div class="prose max-w-none mb-6">
                                 {!! $featuredPost['content'] !!}
                             </div>
@@ -484,7 +484,7 @@ $categories = [
         <main class="container mx-auto px-4 py-8">
             <div class="flex justify-between items-center mb-8">
                 <div>
-                    <h2 class="text-2xl font-bold mb-2">Latest Posts</h2>
+                    <h2 class="text-2xl font-bold mb-2 font-roboto">Latest Posts</h2>
                     <p class="text-gray-600">
                         Discover travel tips, destination guides, and inspiring stories.
                     </p>
@@ -567,7 +567,7 @@ $categories = [
 
                                     <!-- Post Title & Category -->
                                     <span class="text-sm text-blue-500">{{ $post['category']['name'] }}</span>
-                                    <h2 class="text-2xl font-bold my-4">{{ $post['title'] }}</h2>
+                                    <h2 class="text-2xl font-bold my-4 font-roboto">{{ $post['title'] }}</h2>
 
                                     <!-- Post Excerpt -->
                                     <p class="text-gray-600 mb-4">{{ $post['excerpt'] }}</p>

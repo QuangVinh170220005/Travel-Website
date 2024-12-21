@@ -45,5 +45,4 @@ class TourSchedule extends Model
     {
         return $this->belongsTo(PriceList::class, 'price_list_id');
     }
-    
 }

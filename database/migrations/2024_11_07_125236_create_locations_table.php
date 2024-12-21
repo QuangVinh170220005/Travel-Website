@@ -10,14 +10,15 @@ class CreateLocationsTable extends Migration
     {
         Schema::create('locations', function (Blueprint $table) {
             $table->bigIncrements('location_id');
-            $table->string('location_name', 100)->charset('utf8mb4');
-            $table->string('location_address', 50)->charset('utf8mb4');
-            $table->text('description')->nullable()->charset('utf8mb4');
-            $table->string('location_map', 255)->nullable()->charset('utf8');
+            $table->string('location_name', 100);
+            $table->string('location_address', 50);
+            $table->string('coordinates')->nullable();
+            $table->text('description')->nullable();
             $table->tinyInteger('is_popular')->default(0);
-            $table->string('best_time_to_visit', 100)->nullable()->charset('utf8mb4');
-            $table->text('weather_notes')->nullable()->charset('utf8mb4');
-            $table->timestamp('created_at');
+            $table->string('best_time_to_visit', 100)->nullable();
+            $table->text('weather_notes')->nullable();
+            $table->timestamp('created_at')->useCurrent();
+            $table->timestamp('updated_at')->useCurrentOnUpdate();
         });
     }
     public function down()
