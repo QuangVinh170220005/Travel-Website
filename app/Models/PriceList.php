@@ -19,4 +19,5 @@ class PriceList extends Model
     {
         return $this->hasMany(PriceDetail::class, 'price_list_id', 'price_list_id');
     }
+    
 }

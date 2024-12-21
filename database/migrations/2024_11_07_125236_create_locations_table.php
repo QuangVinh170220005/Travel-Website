@@ -21,7 +21,6 @@ class CreateLocationsTable extends Migration
             $table->timestamp('updated_at')->useCurrentOnUpdate();
         });
     }
-
     public function down()
     {
         Schema::dropIfExists('locations');

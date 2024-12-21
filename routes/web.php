@@ -107,4 +107,5 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::post('/tours/search-address', [TourController::class, 'searchAddress'])->name('tours.search.address');
     Route::post('/tours/place-detail', [TourController::class, 'getPlaceDetail'])->name('tours.place.detail');
 });
-
+Route::get('/explore', [TourController::class, 'explore'])->name('explore');
+Route::get('/explore/schedule/{tour}', [TourController::class, 'scheduleTour'])->name('tour.schedule');

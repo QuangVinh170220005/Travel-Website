@@ -10,6 +10,7 @@ use App\Models\TourImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 
 use function Laravel\Prompts\alert;
@@ -327,6 +328,33 @@ class TourController extends Controller
 
             return back()->with('error', $e->getMessage())
                 ->withInput();
+        }
+    }
+    public function explore()
+    {
+        try {
+            $tours = Tour::with(['priceLists.priceDetails' => function ($query) {
+                $query->where('customer_type', 'ADULT');
+            }])->get();
+
+            return view('user.explore', compact('tours'));
+        } catch (\Exception $e) {
+            dd($e->getMessage()); 
+        }
+    }
+
+    // lịch trình
+    public function scheduleTour($tour_id)
+    {
+        try {
+            $tour = Tour::with(['schedules','location'])->findOrFail($tour_id);
+            
+            Log::info('Tour data:', ['tour' => $tour->toArray()]);
+            
+            return view('user.trip-details', compact('tour'));
+        } catch (\Exception $e) {
+            Log::error('Error in scheduleTour: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Không tìm thấy tour: ' . $e->getMessage());
         }
     }
 }
