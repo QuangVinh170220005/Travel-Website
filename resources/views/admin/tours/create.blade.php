@@ -2,6 +2,24 @@
 
 @section('content')
 <link href="{{ asset('css/tours/create.css') }}" rel="stylesheet">
+<!-- Thêm vào phần head -->
+<script src="https://cdn.jsdelivr.net/npm/@goongmaps/goong-js@1.0.9/dist/goong-js.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/@goongmaps/goong-js@1.0.9/dist/goong-js.css" rel="stylesheet">
+<style>
+    .suggestion-item:hover {
+        background-color: #374151;
+        cursor: pointer;
+    }
+
+    .marker {
+        background-image: url('https://docs.goong.io/assets/markers/marker-red.png');
+        background-size: cover;
+        width: 32px;
+        height: 32px;
+        cursor: pointer;
+    }
+</style>
+
 
 <div class="bg-gray-50 py-8">
     <div class="mx-auto px-4 sm:px-6 lg:px-8">
@@ -288,7 +306,7 @@
                             <p class="mt-1 text-sm text-gray-500">Vui lòng cung cấp thông tin chi tiết về địa điểm du lịch</p>
                         </div>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 gap-6">
                             <!-- Tên địa điểm -->
                             <div class="input-group">
                                 <label for="location_name" class="form-label">Tên địa điểm <span class="text-red-500">*</span></label>
@@ -310,14 +328,22 @@
                                     required
                                     class="form-input-field w-full"
                                     placeholder="Nhập địa chỉ...">
-                                <div id="address-suggestions"
-                                    class="absolute z-10 w-full mt-1 bg-white shadow-lg rounded-md border border-gray-200 hidden">
+                                <div id="suggestions"
+                                    class="absolute z-10 w-full mt-1 bg-gray-700 border border-gray-600 rounded-lg shadow-lg hidden">
                                 </div>
                             </div>
 
+                            <!-- Map Container -->
+                            <div id="mapContainer" class="mt-4 hidden">
+                                <div id="map" class="w-full h-[400px] rounded-lg"></div>
+                            </div>
+
+                            <!-- Hidden input for coordinates -->
+                            <input type="hidden" name="coordinates" id="coordinates">
+
 
                             <!-- Mô tả -->
-                            <div class="input-group col-span-2">
+                            <div class="input-group">
                                 <label for="description" class="form-label">Mô tả</label>
                                 <textarea
                                     name="description"
@@ -325,17 +351,6 @@
                                     rows="4"
                                     class="form-input-field w-full"
                                     placeholder="Nhập mô tả về địa điểm"></textarea>
-                            </div>
-
-                            <!-- Link bản đồ -->
-                            <div class="input-group col-span-2">
-                                <label for="location_map" class="form-label">Link bản đồ</label>
-                                <input type="text"
-                                    name="location_map"
-                                    id="location_map"
-                                    maxlength="255"
-                                    class="form-input-field w-full"
-                                    placeholder="Nhập link Google Maps">
                             </div>
 
                             <!-- Thời điểm tốt nhất để ghé thăm -->
@@ -361,7 +376,7 @@
                             </div>
 
                             <!-- Địa điểm nổi tiếng -->
-                            <div class="input-group col-span-2">
+                            <div class="input-group">
                                 <label class="form-label mb-2">Trạng thái địa điểm</label>
                                 <div class="flex items-center gap-3">
                                     <input type="hidden" name="is_popular" value="0">
@@ -1223,6 +1238,142 @@
             }
         }
 
+    });
+
+    // Thêm vào phần script
+    const API_KEY = 'wCJbks0Q8BSaJobLRuaVpxLTMR47V9PtGZFK9f7i'; // Thay thế bằng API key của bạn
+    const MAPTILES_KEY = 'tN9ukc25KjSGFzfG41uzlgWP3AzHXN0TcsOd3A3K'; // Thay thế bằng Maptiles key của bạn
+
+    let map = null;
+    let currentMarker = null;
+
+    // Khởi tạo map
+    const initializeMap = (lngLat) => {
+        if (map) {
+            addMarker(lngLat);
+            return;
+        }
+
+        const mapContainer = document.getElementById('mapContainer');
+        mapContainer.classList.remove('hidden');
+
+        goongjs.accessToken = MAPTILES_KEY;
+        map = new goongjs.Map({
+            container: 'map',
+            style: 'https://tiles.goong.io/assets/goong_map_web.json',
+            center: lngLat,
+            zoom: 15
+        });
+
+        map.addControl(new goongjs.NavigationControl());
+        map.addControl(new goongjs.FullscreenControl());
+
+        addMarker(lngLat);
+    };
+
+    const addMarker = (lngLat) => {
+        if (currentMarker) {
+            currentMarker.remove();
+        }
+
+        const el = document.createElement('div');
+        el.className = 'marker';
+
+        currentMarker = new goongjs.Marker(el)
+            .setLngLat(lngLat)
+            .addTo(map);
+
+        map.flyTo({
+            center: lngLat,
+            zoom: 15
+        });
+
+        // Cập nhật giá trị coordinates
+        document.getElementById('coordinates').value = `${lngLat[0]},${lngLat[1]}`;
+    };
+
+    // Xử lý tìm kiếm địa chỉ
+    const addressInput = document.getElementById('location_address');
+    const suggestionsContainer = document.getElementById('suggestions');
+
+    const searchPlaces = async (query) => {
+        if (query.length < 2) {
+            suggestionsContainer.classList.add('hidden');
+            return;
+        }
+
+        try {
+            const response = await fetch(
+                `https://rsapi.goong.io/Place/AutoComplete?api_key=${API_KEY}&input=${encodeURIComponent(query)}`
+            );
+            const data = await response.json();
+
+            if (data.status === 'OK') {
+                suggestionsContainer.innerHTML = '';
+                suggestionsContainer.classList.remove('hidden');
+
+                data.predictions.forEach(prediction => {
+                    const div = document.createElement('div');
+                    div.className = 'suggestion-item p-3 text-sm text-gray-200';
+                    div.textContent = prediction.description;
+
+                    div.addEventListener('click', async () => {
+                        addressInput.value = prediction.description;
+                        suggestionsContainer.classList.add('hidden');
+
+                        // Lấy chi tiết địa điểm
+                        const placeDetail = await getPlaceDetail(prediction.place_id);
+                        if (placeDetail && placeDetail.result) {
+                            const location = placeDetail.result.geometry.location;
+                            initializeMap([location.lng, location.lat]);
+                        }
+                    });
+
+                    suggestionsContainer.appendChild(div);
+                });
+            }
+        } catch (error) {
+            console.error('Lỗi khi tìm kiếm:', error);
+        }
+    };
+
+    const getPlaceDetail = async (placeId) => {
+        try {
+            const response = await fetch(
+                `https://rsapi.goong.io/Place/Detail?place_id=${placeId}&api_key=${API_KEY}`
+            );
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            console.error('Lỗi khi lấy chi tiết địa điểm:', error);
+            return null;
+        }
+    };
+
+    // Debounce function
+    function debounce(func, wait) {
+        let timeout;
+        return function executedFunction(...args) {
+            const later = () => {
+                clearTimeout(timeout);
+                func(...args);
+            };
+            clearTimeout(timeout);
+            timeout = setTimeout(later, wait);
+        };
+    }
+
+    const debouncedSearch = debounce((query) => searchPlaces(query), 300);
+
+    addressInput.addEventListener('input', (e) => {
+        debouncedSearch(e.target.value);
+    });
+
+    // Ẩn gợi ý khi click ra ngoài
+    document.addEventListener('click', (e) => {
+        if (!addressInput.contains(e.target) && !suggestionsContainer.contains(e.target)) {
+            suggestionsContainer.classList.add('hidden');
+        }
     });
 </script>
 @endsection

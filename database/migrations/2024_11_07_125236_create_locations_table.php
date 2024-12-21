@@ -12,7 +12,7 @@ class CreateLocationsTable extends Migration
             $table->bigIncrements('location_id');
             $table->string('location_name', 100);
             $table->string('location_address', 50);
-            $table->string('location_map')->nullable();
+            $table->string('coordinates')->nullable();
             $table->text('description')->nullable();
             $table->tinyInteger('is_popular')->default(0);
             $table->string('best_time_to_visit', 100)->nullable();

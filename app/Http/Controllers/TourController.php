@@ -153,8 +153,14 @@ class TourController extends Controller
                 ];
             case 2:
                 return [
-                    'location_id' => 'nullable|exists:locations,location_id'
-
+                    'location_id' => 'nullable|exists:locations,location_id',
+                    'location_name' => 'required|string|max:100',
+                    'location_address' => 'required|string|max:100',
+                    'coordinates' => 'required|string',
+                    'description' => 'nullable|string',
+                    'best_time_to_visit' => 'nullable|string',
+                    'weather_notes' => 'nullable|string',
+                    'is_popular' => 'boolean'
                 ];
             case 3:
                 return [
@@ -191,7 +197,26 @@ class TourController extends Controller
                 'is_active' => 'boolean',
                 'location_id' => 'nullable|exists:locations,location_id',
                 'tour_images.*' => 'image|mimes:jpeg,png,jpg,gif|max:10240', // max 10MB
+
+
+                'location_name' => 'required|string|max:100',
+                'location_address' => 'required|string|max:100',
+                'coordinates' => 'required|string',
+                'is_popular' => 'boolean',
+                'best_time_to_visit' => 'nullable|string',
+                'weather_notes' => 'nullable|string',
             ]);
+
+            $location = Location::create([
+                'location_name' => $validated['location_name'],
+                'location_address' => $validated['location_address'],
+                'coordinates' => $validated['coordinates'], // Lưu trực tiếp string coordinates
+                'description' => $validated['description'],
+                'is_popular' => $validated['is_popular'] ?? false,
+                'best_time_to_visit' => $validated['best_time_to_visit'],
+                'weather_notes' => $validated['weather_notes'],
+            ]);
+     
 
             DB::beginTransaction();
 
@@ -200,6 +225,8 @@ class TourController extends Controller
             $validated['include_meal'] = $request->has('include_meal');
             $validated['is_active'] = $request->has('is_active');
 
+            $validated['location_id'] = $location->location_id;
+
             $tour = Tour::create($validated);
 
             // Xử lý upload ảnh
@@ -207,15 +234,14 @@ class TourController extends Controller
                 foreach ($request->file('tour_images') as $index => $image) {
                     // Sửa cách lưu file và đường dẫn
                     $path = $image->store('tours', 'public');  // Lưu vào storage/app/public/tours
-                    
+
                     TourImage::create([
                         'tour_id' => $tour->tour_id,  // Đảm bảo dùng đúng tên cột primary key của bảng tours
                         'image_path' => $path,  // Không cần str_replace vì store() đã trả về đường dẫn tương đối
                         'is_main' => $index === 0
                     ]);
                 }
-            }            
-
+            }
 
             DB::commit();
 
