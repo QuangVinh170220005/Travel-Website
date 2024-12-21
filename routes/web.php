@@ -7,8 +7,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\BookingController;
-Route::post('/contact-form', [ContactController::class, 'submit'])->name('contact.submit'); // Thay đổi ở đây
-Route::post('/chat', [ChatController::class, 'chat']);
+use App\Http\Controllers\ContactController; // Thay đổi ở đây
+use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Auth;
 
 // Public routes
