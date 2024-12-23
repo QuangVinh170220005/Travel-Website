@@ -403,8 +403,8 @@
     try {
         // Tách chuỗi tọa độ và chuyển thành số
         const coordinates = "{{ $tour->location->coordinates }}".split(',').map(Number);
-        const lng = coordinates[0]; // Kinh độ (longitude) đầu tiên
-        const lat = coordinates[1]; // Vĩ độ (latitude) thứ hai
+        const lng = coordinates[0]; // Kinh độ 
+        const lat = coordinates[1]; // Vĩ độ 
         
         console.log("Parsed coordinates:", {lng, lat});
 

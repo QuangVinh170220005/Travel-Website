@@ -25,13 +25,12 @@
                         class="w-full h-full object-cover transition-all duration-500 transform group-hover:scale-110 filter brightness-90" 
                         >
                 </div>
-                
                 <div class="p-6">
-                <h3 class="text-xl font-semibold mb-4">
-                    <a href="{{ route('tour.schedule', $tour->tour_id) }}">
-                        {{ $tour->tour_name ?? 'Chưa có tên' }} 
-                    </a>
-                </h3>
+                    <h3 class="text-xl font-semibold mb-4">
+                        <a href="{{ route('tour.schedule', $tour->tour_id) }}">
+                            {{ $tour->tour_name ?? 'Chưa có tên' }} 
+                        </a>
+                    </h3>
                     <div class="space-y-2">
                         @foreach([
                             ['icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', 'text' => $tour->duration_days . ' ngày ' . ($tour->duration_nights ?? ($tour->duration_days - 1)) . ' đêm'],
@@ -72,13 +71,17 @@
                             Xem chi tiết
                         </a>
                     </div>
-                </div>
+                    </div>
             </div>
         @endforeach
     @else
-        <div class="col-span-full text-center py-10">
-            <p class="text-gray-500">Không có tour nào</p>
-        </div>
+        <p class="text-center col-span-full">Không có tour nào để hiển thị.</p>
     @endif
 </div>
-@endsection
+
+<!-- Pagination -->
+<div class="px-6 py-4 bg-white border-t border-gray-200">
+    <div class="w-full">
+        {{ $tours->onEachSide(1)->links('vendor.pagination.tailwind') }}
+    </div>
+</div>

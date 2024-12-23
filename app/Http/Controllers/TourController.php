@@ -347,7 +347,7 @@ class TourController extends Controller
         try {
             $tours = Tour::with(['priceLists.priceDetails' => function ($query) {
                 $query->where('customer_type', 'ADULT');
-            }, 'mainImage'])->get();
+            }, 'mainImage'])->paginate(12);
 
             return view('user.explore', compact('tours'));
         } catch (\Exception $e) {
