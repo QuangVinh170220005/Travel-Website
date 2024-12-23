@@ -122,4 +122,6 @@ Route::get('/explore', [TourController::class, 'explore'])->name('explore');
 
 Route::post('/wishlist/add', [WishlistController::class, 'addToWishlist'])->name('wishlist.add');
 Route::get('/wishlist', [WishlistController::class, 'getWishlist'])->name('wishlist');
+Route::post('/wishlist/remove', [WishlistController::class, 'removeFromWishlist'])->name('wishlist.remove');
+
 

@@ -293,10 +293,6 @@ class TourController extends Controller
         }
     }
 
-
-
-
-
     public function finalStore(Request $request)
     {
         DB::beginTransaction();

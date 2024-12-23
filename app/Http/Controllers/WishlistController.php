@@ -8,11 +8,38 @@ use Illuminate\Support\Facades\DB;
 
 class WishlistController extends Controller
 {
+    public function addToWishlist(Request $request)
+{
+    $userId = Auth::id();
+
+    // Lấy tour_id từ request
+    $tourId = $request->input('tour_id');
+
+    // Kiểm tra xem tour đã tồn tại trong wishlist chưa
+    $exists = DB::table('wishlists')
+        ->where('user_id', $userId)
+        ->where('tour_id', $tourId)
+        ->exists();
+
+    if (!$exists) {
+        DB::table('wishlists')->insert([
+            'user_id' => $userId,
+            'tour_id' => $tourId,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        return response()->json(['success' => true, 'message' => 'Tour đã được thêm vào danh sách yêu thích.']);
+    }
+    return response()->json(['success' => false, 'message' => 'Tour đã có trong danh sách yêu thích.']);
+}
+
     public function getWishlist()
     {
         $userId = Auth::id();  // lấy user của người dùng đăng nhập
 
         $wishlistedTours = DB::table('wishlists')
+        ->where('wishlists.user_id', $userId)
         ->join('tours', 'wishlists.tour_id', '=', 'tours.tour_id')
         ->leftJoin('price_lists', 'tours.tour_id', '=', 'price_lists.tour_id')
         ->leftJoin('price_details', 'price_lists.price_list_id', '=', 'price_details.price_list_id')
@@ -56,5 +83,27 @@ class WishlistController extends Controller
         });
         return view('user.wishlist', ['tours' => $formattedTours]);
     }
+    public function removeFromWishlist(Request $request)
+    {
+        $userId = Auth::id();
+        $tourId = $request->input('tour_id'); // Lấy tour_id từ request
 
+        // Kiểm tra xem tour có tồn tại trong wishlist của người dùng không
+        $exists = DB::table('wishlists')
+            ->where('user_id', $userId)
+            ->where('tour_id', $tourId)
+            ->exists();
+
+        if ($exists) {
+            // Nếu tồn tại, xóa tour khỏi wishlist
+            DB::table('wishlists')
+                ->where('user_id', $userId)
+                ->where('tour_id', $tourId)
+                ->delete();
+
+            return response()->json(['success' => true, 'message' => 'Tour đã được xóa khỏi danh sách yêu thích.']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Tour không tồn tại trong danh sách yêu thích.']);
+    }
 }

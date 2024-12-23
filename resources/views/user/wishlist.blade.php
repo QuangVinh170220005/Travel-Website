@@ -14,6 +14,7 @@
                     <th class="py-3 px-4 text-center">Quantity</th>
                     <th class="py-3 px-4 text-right">Total</th>
                     <th class="py-3 px-4 text-center">Select</th>
+                    <th class="py-3 px-4 text-center">Select</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,10 +53,58 @@
                     <td class="py-4 px-4 text-center">
                         <input type="checkbox" class="select-tour" data-tour-id="{{ $tour['tour_id'] }}">
                     </td>
+                    <td class="py-4 px-4 text-center">
+                    <button 
+                        class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-300 remove-tour" 
+                        data-tour-id="{{ $tour['tour_id'] }}">
+                        Remove
+                    </button>
+
+
+
+                </td>
+
                 </tr>
                 @endforeach
             </tbody>
         </table>
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+    // Lấy tất cả các nút có class "remove-tour"
+            const removeButtons = document.querySelectorAll('.remove-tour');
+
+            // Gắn sự kiện click cho từng nút
+            removeButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const tourId = this.getAttribute('data-tour-id'); // Lấy tour_id từ thuộc tính data-tour-id
+                    const row = this.closest('tr'); // Lấy hàng chứa nút bấm
+
+                    // Gửi request để xóa tour khỏi wishlist
+                    fetch('{{ route("wishlist.remove") }}', {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ tour_id: tourId })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Xóa hàng khỏi giao diện
+                            row.remove();
+                            alert(data.message);
+                        } else {
+                            console.error(data.message);
+                        }
+                    })
+                    .catch(error => console.error('Error:', error));
+                });
+            });
+        });
+
+
+        </script>
     </div>
 
     <div class="bg-white rounded-lg shadow-md p-4 mb-6">

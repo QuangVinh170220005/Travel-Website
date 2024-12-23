@@ -93,8 +93,8 @@ class AdminUserController extends Controller
             'password' => 'required|min:6',
             'phone' => 'nullable|string|max:20',
             'address' => 'nullable|string|max:255',
-            'role' => 'required|in:USER,ADMIN'
-        ]);
+            'role' => 'required|in:,ADMIN,CUSTOMER'
+        ]); 
 
         $user = User::create([
             'full_name' => $validated['full_name'],
