@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use App\Models\Comment;
+use App\Policies\CommentPolicy;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Nếu bạn muốn đăng ký policy ở đây (không khuyến nghị)
+        // $this->app['config']->set('policies.' . Comment::class, CommentPolicy::class);
     }
 }

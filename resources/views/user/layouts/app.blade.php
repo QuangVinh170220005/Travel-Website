@@ -2,11 +2,13 @@
 <html lang="en">
 
 <head>
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+   
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Traveling')</title>
 
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +21,6 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <script defer src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
-    <!-- Tailwind Config -->
     <script>
         tailwind.config = {
             theme: {
@@ -336,7 +337,6 @@
             this.scrollToBottom();
 
             try {
-                // Thêm context về du lịch vào prompt
                 const travelContext = `Bạn là một chuyên gia tư vấn du lịch với kiến thức sâu rộng về:
                 - Các điểm du lịch nổi tiếng và địa điểm thú vị trên khắp thế giới
                 - Văn hóa và phong tục địa phương
@@ -346,6 +346,7 @@
                 - Các hoạt động giải trí và trải nghiệm địa phương
                 - Ngân sách và chi phí du lịch
                 - An toàn và các lưu ý khi du lịch
+                
                 
                 Hãy trả lời câu hỏi sau một cách chi tiết và hữu ích nhất: ${userMessage}`;
 

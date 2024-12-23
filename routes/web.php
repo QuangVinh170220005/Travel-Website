@@ -6,9 +6,12 @@ use App\Http\Controllers\TourController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\CommentController;
+use App\Models\Comment;
 use Illuminate\Support\Facades\Auth;
 
 // Public routes
@@ -25,11 +28,19 @@ Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/contact-form', [ContactController::class, 'submit'])->name('contact.submit'); // Thay đổi ở đây
 Route::post('/chat', [ChatController::class, 'chat']);
+Route::get('/blog', [BlogController::class, 'index'])->name('blog');
+Route::get('/blog/{id}', [BlogController::class, 'show'])->name('blog.show');
+Route::post('/comments', [CommentController::class, 'store'])->name('comments.store');
+
+
+
 
 // Protected routes
 Route::middleware(['auth'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
     Route::get('/settings', [SettingsController::class, 'show'])->name('settings');
+    Route::post('/comments/{comment}/like', 'CommentController@like');
+    Route::delete('/comments/{comment}', 'CommentController@destroy');
 });
 
 // User routes
