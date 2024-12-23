@@ -26,10 +26,9 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/contact-form', [ContactController::class, 'submit'])->name('contact.submit'); // Thay đổi ở đây
 Route::post('/chat', [ChatController::class, 'chat']);
 
-// Protected routes
 Route::middleware(['auth'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
-    Route::get('/settings', [SettingsController::class, 'show'])->name('settings');
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
+    Route::get('/settings/{section?}', [SettingsController::class, 'show'])->name('settings.show');
 });
 
 // User routes
@@ -98,6 +97,12 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::get('/{tour}/edit', [TourController::class, 'edit'])->name('tours.edit'); // Form chỉnh sửa
         Route::put('/{tour}', [TourController::class, 'update'])->name('tours.update'); // Cập nhật
         Route::delete('/{tour}', [TourController::class, 'destroy'])->name('tours.destroy'); // Xóa
+
+
+        Route::get('/{tour}/pricing', [TourController::class, 'pricing'])->name('tours.pricing');
+        Route::post('/{tour}/pricing', [TourController::class, 'storePricing'])->name('tours.pricing.store');
+        Route::put('/{tour}/pricing/{price}', [TourController::class, 'updatePricing'])->name('tours.pricing.update');
+        Route::delete('/{tour}/pricing/{price}', [TourController::class, 'deletePricing'])->name('tours.pricing.destroy');
     });
 
     Route::prefix('bookings')->group(function () {

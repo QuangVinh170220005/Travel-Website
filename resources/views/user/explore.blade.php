@@ -3,7 +3,7 @@
 @section('title', 'Explore')
 
 @section('content')
-<div class="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-7 sm:p-6 md:py-10 md:px-8">
+<div class="container mx-auto mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-7 sm:p-6 md:py-10 md:px-8">
     @if($tours->count() > 0)
         @foreach($tours as $tour)
             <div class="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition-all duration-300 transform hover:scale-105">
