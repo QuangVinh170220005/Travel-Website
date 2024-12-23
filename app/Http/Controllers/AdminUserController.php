@@ -31,17 +31,21 @@ class AdminUserController extends Controller
     }
     
     public function delete(User $user){
-        try{
-            // if(Auth::user()->user_id === $user->user_id){
-            //     return redirect()->back()->with('error', 'You cannot delete yourself.');
-            // }
+        try {
+            // Kiểm tra xem user có vai trò ADMIN không
+            if ($user->role === 'ADMIN') {
+                return redirect()->back()->with('error', 'Cannot delete admin accounts.');
+            }
+    
+            // Tiến hành xóa nếu không phải ADMIN
             $user->delete();
             return redirect()->back()->with('success', 'User deleted successfully.');
-        }catch(\Exception $e){
+        } catch(\Exception $e) {
             Log::error('Error deleting user: ' . $e->getMessage()); 
             return redirect()->back()->with('error', 'Error occurred while deleting user.');
         }
     }
+    
 
     public function update(Request $request, $user_id){
         $user = User::findOrFail($user_id);
@@ -53,18 +57,6 @@ class AdminUserController extends Controller
             'address' => 'nullable|string|max:255',
             'avatar' => 'nullable|image|max:2048'
         ]);
-
-        // if ($request->hasFile('avatar')) {
-        //     // Xóa avatar cũ nếu có
-        //     if ($user->avatar_url) {
-        //         Storage::delete('public/avatars/' . $user->avatar_url);
-        //     }
-            
-        //     // Upload avatar mới
-        //     $avatarName = time().'.'.$request->avatar->extension();
-        //     $request->avatar->storeAs('public/avatars', $avatarName);
-        //     $user->avatar_url = $avatarName;
-        // }
         
         // cập nhập thông tin
         $user -> full_name = $request -> full_name;
@@ -85,4 +77,36 @@ class AdminUserController extends Controller
         return redirect()->route('userManagement', $user->user_id)
             ->with('success', 'User information updated successfully');
     }
+
+
+    // Thêm tài khoản người dùng
+    public function create()
+    {
+        return view('admin.createUser');
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'full_name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'password' => 'required|min:6',
+            'phone' => 'nullable|string|max:20',
+            'address' => 'nullable|string|max:255',
+            'role' => 'required|in:,ADMIN,CUSTOMER'
+        ]); 
+
+        $user = User::create([
+            'full_name' => $validated['full_name'],
+            'email' => $validated['email'],
+            'password' => bcrypt($validated['password']),
+            'phone' => $validated['phone'],
+            'address' => $validated['address'],
+            'role' => $validated['role']
+        ]);
+
+        return redirect()->route('userManagement')
+            ->with('success', 'User created successfully');
+    }
+
 }

@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminUserController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Auth;
 
 // Public routes
@@ -81,6 +82,10 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::get('/{user}/editUser', [AdminUserController::class, 'showInFor'])->name('showInFor');
         Route::delete('/deleteUser/{user}', action: [AdminUserController::class, 'delete'])->name('deleteUser');
         Route::put('/editUser/update/{user}', [AdminUserController::class, 'update'])->name('update');
+        //add tài khoản người dùngdùng
+        Route::get('/admin/users/create', [AdminUserController::class, 'create'])->name('createUser');
+        Route::post('/store', [AdminUserController::class, 'store'])->name('storeUser');
+
     });
 
     // tours route
@@ -118,3 +123,10 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
 });
 Route::get('/tour/{tour}', [TourController::class, 'scheduleTour'])->name('tour.schedule');
 Route::get('/explore', [TourController::class, 'explore'])->name('explore');
+
+
+Route::post('/wishlist/add', [WishlistController::class, 'addToWishlist'])->name('wishlist.add');
+Route::get('/wishlist', [WishlistController::class, 'getWishlist'])->name('wishlist');
+Route::post('/wishlist/remove', [WishlistController::class, 'removeFromWishlist'])->name('wishlist.remove');
+
+
