@@ -35,14 +35,14 @@ Route::middleware(['auth'])->group(function () {
 // Trong nhóm middleware auth
 Route::middleware(['auth'])->group(function () {
     // Các route booking hiện tại của bạn
-    Route::post('/booking/{tour}/create', [BookingController::class, 'create'])->name('booking.create');
+    Route::get('/booking/{tour}/create', [BookingController::class, 'create'])->name('booking.create');
     Route::get('/my-bookings', [BookingController::class, 'myBookings'])->name('booking.my-bookings');
     Route::get('/booking/{booking}', [BookingController::class, 'show'])->name('booking.show');
     Route::post('/booking/{booking}/cancel', [BookingController::class, 'cancel'])->name('booking.cancel');
     
     // Thêm các route mới
     // Route để lưu booking
-    Route::post('/booking/store', [BookingController::class, 'store'])->name('booking.store');
+    Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
     
     // Route để hiển thị trang xác nhận booking
     Route::get('/booking/{tour}/confirm', [BookingController::class, 'showConfirmation'])->name('booking.confirm');

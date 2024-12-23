@@ -395,7 +395,7 @@
                     </div>
                 </div>
 
-                <form method="POST" action="{{ route('booking.create', ['tour' => $tour->tour_id]) }}">
+                <form method="GET" action="{{ route('booking.create', ['tour' => $tour->tour_id]) }}">
                     @csrf
                     <div class="mb-4">
                         <div class="flex items-center justify-between border rounded-md p-3">

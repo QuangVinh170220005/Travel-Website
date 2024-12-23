@@ -109,6 +109,7 @@
                         <input type="hidden" name="child_count" value="{{ $validated['child_count'] ?? 0 }}">
                         <input type="hidden" name="total_amount" value="{{ $totalAmount }}">
 
+
                         <!-- Họ tên -->
                         <div class="mb-4">
                             <label class="block text-sm font-medium text-gray-700 mb-1">Họ và tên</label>
