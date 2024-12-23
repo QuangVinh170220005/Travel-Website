@@ -21,16 +21,17 @@
                             </path>
                         </svg>
                     </button>
-                    <img src="{{ $tour->image_url ?? 'https://i.pinimg.com/736x/70/35/00/703500d5da9cf9eb3d60e39844da7e5e.jpg' }}" 
+                    <img src="{{ asset('storage/' . ($tour->mainImage->image_path ?? 'default.jpg')) }}" 
                         class="w-full h-full object-cover transition-all duration-500 transform group-hover:scale-110 filter brightness-90" 
-                        alt="{{ $tour->tour_name ?? 'Tour image' }}">
+                        >
                 </div>
+                
                 <div class="p-6">
-                    <h3 class="text-xl font-semibold mb-4 transition-all duration-300 hover:text-blue-600">
+                <h3 class="text-xl font-semibold mb-4">
                     <a href="{{ route('tour.schedule', $tour->tour_id) }}">
-                        {{ $tour->tour_name ?? 'Chưa có tên' }}
+                        {{ $tour->tour_name ?? 'Chưa có tên' }} 
                     </a>
-                    </h3>
+                </h3>
                     <div class="space-y-2">
                         @foreach([
                             ['icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', 'text' => $tour->duration_days . ' ngày ' . ($tour->duration_nights ?? ($tour->duration_days - 1)) . ' đêm'],
@@ -49,7 +50,7 @@
                         </div>
                         @endforeach
                     </div>
-                    <div classt-4">
+                    <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-sm text-gray-500">Giá từ</span>
                             <div class="flex items-center">

@@ -25,13 +25,13 @@
             'years_hosting' => 5,
         ],
         'facilities' => [
-            ['icon' => '🛏️', 'name' => '4 Bedrooms'],
-            ['icon' => '🚽', 'name' => '3 Bathrooms'],
-            ['icon' => '🍳', 'name' => 'Kitchen'],
-            ['icon' => '🛋️', 'name' => 'Living Room'],
-            ['icon' => '📶', 'name' => 'Wifi'],
-            ['icon' => '🏊', 'name' => 'Private Pool'],
-            ['icon' => '🚗', 'name' => 'Parking Area'],
+            ['icon' => '🛏️', 'name' => ' Không gian phòng ngủ rộng rãi, thoải mái cho giấc ngủ ngon.'],
+            ['icon' => '🚪', 'name' => 'Check-in nhanh chóng, tiện lợi'],
+            ['icon' => '🥘', 'name' => 'Ẩm thực đặc sản - Tour ẩm thực'],
+            ['icon' => '🛎️', 'name' => 'Dịch vụ chu đáo, chuyên nghiệp'],
+            ['icon' => '🎨', 'name' => 'Văn hóa - Khám phá nghệ thuật, lịch sử'],
+            ['icon' => '🚗', 'name' => 'Phương tiện di chuyển tiện lợi, an toàn'],
+            ['icon' => '📞', 'name' => 'Hỗ trợ khách hàng 24/7'],
         ],
         'full_address' => 'Milano, Lombardia, Italy',
         'latitude' => 45.4642,
@@ -142,52 +142,51 @@
     </div>
 @endforeach
     <h1 class="text-2xl sm:text-3xl font-bold mb-2">{{ $tour->tour_name }}</h1>
-    @foreach($tour->schedules as $schedule)
    
-    <!-- Image Gallery -->
-    <div class="mb-4 mt-4">
-        <div class="flex flex-col md:flex-row gap-2">
-            <div class="w-full md:w-2/3 relative">
-                <img id="mainImage" 
-                    src="{{ $villa['main_image'] }}" 
-                    alt="Villa Pinewood Main" 
-                    class="w-full h-[300px] md:h-[525px] object-cover rounded-3xl">
-                <button class="absolute bottom-4 left-4 bg-white px-4 py-2 rounded-full shadow-md hover:bg-gray-50 text-sm">
-                    Show all photos
-                </button>
-            </div>
-            <div class="w-full md:w-1/3 flex flex-row md:flex-col gap-2 md:gap-4">
-                @foreach($villa['images'] as $index => $image)
-                    <img src="{{ $image }}" 
-                        alt="Villa Image {{ $index + 1 }}" 
-                        onclick="swapImages(this)"
-                        class="w-1/3 md:w-full h-[100px] md:h-[164px] object-cover rounded-2xl cursor-pointer hover:opacity-80 transition-opacity"
-                        data-original-index="{{ $index }}">
-                @endforeach
-            </div>
+   <!-- Image Gallery -->
+<div class="mb-4 mt-4">
+    <div class="flex flex-col md:flex-row gap-2">
+        <div class="w-full md:w-2/3 relative">
+            <!-- Ảnh chính -->
+            <img id="mainImage" 
+                src="{{ asset('storage/' . ($tour->mainImage->image_path ?? 'default.jpg')) }}" 
+                alt="Main Tour Image" 
+                class="w-full h-[300px] md:h-[525px] object-cover rounded-3xl">
         </div>
+        <div class="w-full md:w-1/3 flex flex-row md:flex-col gap-2 md:gap-4">
+            @foreach($tour->images->filter(fn($image) => $image->image_path !== $tour->mainImage->image_path)->take(3) as $index => $image)
+                <img src="{{ asset('storage/' . $image->image_path) }}" 
+                    alt="Tour Image {{ $index + 1 }}" 
+                    onclick="swapImages(this)"
+                    class="w-1/3 md:w-full h-[100px] md:h-[164px] object-cover rounded-2xl cursor-pointer hover:opacity-80 transition-opacity"
+                    data-original-index="{{ $index }}">
+            @endforeach
+        </div>
+
     </div>
+</div>
 
-    <script>
-        function swapImages(clickedImage) {
-            const mainImage = document.getElementById('mainImage');
-            const mainImageSrc = mainImage.src;
-            const clickedImageSrc = clickedImage.src;
-            
-            // Thực hiện hoán đổi
-            mainImage.src = clickedImageSrc;
-            clickedImage.src = mainImageSrc;
-            
-            // Thêm hiệu ứng fade
-            mainImage.style.opacity = '0';
-            setTimeout(() => {
-                mainImage.style.opacity = '1';
-            }, 50);
-        }
+<script>
+    function swapImages(clickedImage) {
+        const mainImage = document.getElementById('mainImage');
+        const mainImageSrc = mainImage.src;
+        const clickedImageSrc = clickedImage.src;
+        
+        // Hoán đổi ảnh
+        mainImage.src = clickedImageSrc;
+        clickedImage.src = mainImageSrc;
 
-        // Thêm hiệu ứng transition cho main image
-        document.getElementById('mainImage').style.transition = 'opacity 0.3s ease-in-out';
-    </script>
+        // Hiệu ứng fade
+        mainImage.style.opacity = '0';
+        setTimeout(() => {
+            mainImage.style.opacity = '1';
+        }, 50);
+    }
+
+    // Thêm hiệu ứng transition cho ảnh chính
+    document.getElementById('mainImage').style.transition = 'opacity 0.3s ease-in-out';
+</script>
+
 
     <!-- Main Content -->
     <div class="flex flex-col lg:flex-row gap-8">
@@ -214,21 +213,26 @@
                     @endforeach
                 </div>
             </div>
-    @endforeach
             <!-- Description -->
             <div class="my-6">
                 <h3 class="text-lg sm:text-xl font-semibold mb-3">About this place</h3>
                 <p class="text-gray-700 text-sm sm:text-base">{{$tour->description}}</p>
-            </div>
-     @foreach($tour->schedules as $schedule)
+            </div> 
+            <h3 class="text-lg sm:text-xl font-semibold mb-3">Lịch trình của chuyến đi</h3>
+            @if($tour->schedules->count() > 0)
+        
+        @foreach($tour->schedules as $schedule)
             <div class="my-6">
-                <h3 class="text-lg sm:text-xl font-semibold mb-3">Lịch trình của chuyến đi</h3>
-                        <p class="text-gray-700 text-sm sm:text-base">{{ $schedule->description }}</p>
+                <p class="text-gray-700 text-sm sm:text-base">{{ $schedule->description }}</p>
             </div>
+        @endforeach
+            @else
+                <p class="text-gray-500 text-sm sm:text-base">Chưa có lịch trình cho chuyến đi này.</p>
+            @endif
+
             <!-- Map -->
             <div class="my-12">
                 <h3 class="text-lg sm:text-xl font-semibold mb-3">Where you'll be</h3>
-                <p class="text-gray-700 text-sm sm:text-base mb-2">{{ $schedule -> status }}</p>
                 
                 <div class="w-full rounded-lg overflow-hidden mb-4">
                     <div id="map" class="w-full h-[300px] sm:h-[400px]"></div>
@@ -246,11 +250,9 @@
                 </div>
             </div>
             <div class="border-b border-gray-200 mb-6"></div>
-    <!-- kết thúc for scheduleschedule -->
-    @endforeach
-     @else
-        <p class="text-gray-500 text-sm sm:text-base">Chưa có lịch trình cho chuyến đi này.</p>
-    @endif
+            @else
+                <p class="text-gray-500 text-sm sm:text-base">Chưa có lịch trình cho chuyến đi này.</p>
+            @endif
             <!-- Reviews -->
             <div class="container mx-auto py-6">
                 <div class="mb-8">
@@ -395,17 +397,31 @@
     const API_KEY = 'wCJbks0Q8BSaJobLRuaVpxLTMR47V9PtGZFK9f7i';
     const MAPTILES_KEY = 'tN9ukc25KjSGFzfG41uzlgWP3AzHXN0TcsOd3A3K';
     
-    const [lat, lng] = "{{ $tour->location->coordinates }}".split(',').map(Number);
+    // Thêm logging để debug
+    console.log("Raw coordinates:", "{{ $tour->location->coordinates }}");
+    
+    try {
+        // Tách chuỗi tọa độ và chuyển thành số
+        const coordinates = "{{ $tour->location->coordinates }}".split(',').map(Number);
+        const lng = coordinates[0]; // Kinh độ (longitude) đầu tiên
+        const lat = coordinates[1]; // Vĩ độ (latitude) thứ hai
+        
+        console.log("Parsed coordinates:", {lng, lat});
 
-    goongjs.accessToken = MAPTILES_KEY;
-    const map = new goongjs.Map({
-        container: 'map',
-        style: 'https://tiles.goong.io/assets/goong_map_web.json', 
-        center: [lng, lat], 
-        zoom: 15
-    });
-    new goongjs.Marker()
-        .setLngLat([lng, lat])
-        .addTo(map);
+        goongjs.accessToken = MAPTILES_KEY;
+        const map = new goongjs.Map({
+            container: 'map',
+            style: 'https://tiles.goong.io/assets/goong_map_web.json',
+            center: [lng, lat], // Đúng thứ tự [longitude, latitude]
+            zoom: 15
+        });
+        
+        new goongjs.Marker()
+            .setLngLat([lng, lat])
+            .addTo(map);
+    } catch (error) {
+        console.error("Error initializing map:", error);
+    }
 </script>
+
 @endsection

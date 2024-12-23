@@ -72,18 +72,18 @@ $home = [
         </div>
     </div>
 
-    <!-- Tour cards section -->
-    <div class="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-7 sm:p-6 md:py-10 md:px-8">
-        @foreach(range(1, 8) as $index)
-            <div class="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition-all duration-300 transform hover:scale-105">
+   <!-- Tour cards section -->
+<div class="container mx-auto px-4 py-8">
+    <div class="flex overflow-x-auto gap-6 pb-6">
+        @foreach($popularTours as $tour)
+            <div class="flex-none w-[300px] bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition-all duration-300">
                 <div class="h-48 w-full relative overflow-hidden">
-                    <!-- Thêm nút yêu thích -->
+                    <!-- Nút yêu thích -->
                     <button class="absolute top-4 right-4 z-10 p-2 bg-white bg-opacity-70 rounded-full hover:bg-opacity-100 transition-all duration-300 group">
                         <svg class="w-6 h-6 text-gray-600 group-hover:text-red-500 transition-colors duration-300 favorite-icon" 
                             fill="none" 
                             stroke="currentColor" 
-                            viewBox="0 0 24 24" 
-                            xmlns="http://www.w3.org/2000/svg">
+                            viewBox="0 0 24 24">
                             <path stroke-linecap="round" 
                                 stroke-linejoin="round" 
                                 stroke-width="2" 
@@ -91,45 +91,50 @@ $home = [
                             </path>
                         </svg>
                     </button>
-                    <img src="https://i.pinimg.com/736x/70/35/00/703500d5da9cf9eb3d60e39844da7e5e.jpg" 
-                        class="w-full h-full object-cover transition-all duration-500 transform group-hover:scale-110 filter brightness-90" 
-                        alt="Night city">
+                    <img src="{{ asset('storage/' . ($tour->mainImage->image_path ?? 'default.jpg')) }}" 
+                         class="w-full h-full object-cover" 
+                         alt="">
                 </div>
                 <div class="p-6">
-                    <h3 class="text-xl font-semibold mb-4 transition-all duration-300 hover:text-blue-600">Best in Derby</h3>
+                    <h3 class="text-xl font-semibold mb-4">{{ $tour->tour_name }}</h3>
                     <div class="space-y-2">
+                        <!-- Tour details -->
                         @foreach([
-                            ['icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', 'text' => '19 days and 18 night'],
-                            ['icon' => 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064', 'text' => 'Return international flight*'],
+                            ['icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', 'text' => $tour->duration_days . ' ngày ' . ($tour->duration_nights ?? ($tour->duration_days - 1)) . ' đêm'],
+                            ['icon' => 'M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064', 'text' =>  $tour->max_participants . ' người'],
                             ['icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z', 'text' => '7 Mar - Nov 2024'],
                             ['icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', 'text' => 'Book by 30 October 2024']
                         ] as $item)
-                        <div class="flex items-center group">
-                            <svg class="w-5 h-5 mr-2 text-gray-400 group-hover:text-blue-500 transition-colors duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div class="flex items-center">
+                            <svg class="w-5 h-5 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path d="{{ $item['icon'] }}"></path>
                             </svg>
-                            <span class="group-hover:text-blue-600 transition-colors duration-300">{{ $item['text'] }}</span>
+                            <span>{{ $item['text'] }}</span>
                         </div>
                         @endforeach
                     </div>
                     <div class="mt-4">
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-sm text-gray-500">From</span>
-                            <div class="flex items-center">
-                                <span class="text-sm text-gray-500 line-through mr-2">$20,999</span>
-                                <span class="text-xl font-bold text-green-600 transition-all duration-300 hover:text-green-700 hover:text-2xl">$14,395</span>
-                            </div>
+                            <span class="text-sm text-gray-500">Giá từ</span>
+                            <span class="text-xl font-bold text-green-600">
+                                @if($tour->priceLists->isNotEmpty() && $tour->priceLists->first()->priceDetails->isNotEmpty())
+                                    ${{ number_format($tour->priceLists->first()->priceDetails->first()->price, 0) }}
+                                @else
+                                    Giá chưa cập nhật
+                                @endif
+                            </span>
                         </div>
-                        <p class="text-sm text-gray-500 mb-4">Per Person twin Share</p>
-                        <a href="{{ route('trip-details') }}" class="inline-block w-full py-2 text-center bg-gray-100 text-gray-800 rounded-md hover:bg-blue-500 hover:text-white transition-all duration-300 transform hover:scale-105">
-                            Enquire Now
+                        <p class="text-sm text-gray-500 mb-4">Giá/người (phòng đôi)</p>
+                        <a href="{{ route('tour.schedule', $tour->tour_id) }}" 
+                           class="inline-block w-full py-2 text-center bg-gray-100 text-gray-800 rounded-md hover:bg-blue-500 hover:text-white">
+                            Xem chi tiết
                         </a>
                     </div>
                 </div>
             </div>
         @endforeach
-      </div>
     </div>
+</div>
 
     <!-- Special Offers -->
     <section class="py-16 bg-gray-100">

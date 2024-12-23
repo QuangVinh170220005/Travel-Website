@@ -231,16 +231,28 @@ class TourController extends Controller
             $tour = Tour::create($validated);
 
             // Xử lý upload ảnh
-            if ($request->hasFile('tour_images')) {  // Giữ nguyên tên field 'tour_images' nếu form đang dùng name="tour_images[]"
-                foreach ($request->file('tour_images') as $index => $image) {
-                    // Sửa cách lưu file và đường dẫn
-                    $path = $image->store('tours', 'public');  // Lưu vào storage/app/public/tours
+            if ($request->hasFile('tour_images')) {
+                // Tạo mảng lưu các hash của ảnh để kiểm tra trùng lặp
+                $processedImageHashes = [];
 
+                foreach ($request->file('tour_images') as $index => $image) {
+                    // Tạo hash từ nội dung file
+                    $imageHash = md5_file($image->getRealPath());
+
+                    // Kiểm tra nếu ảnh đã được xử lý
+                    if (in_array($imageHash, $processedImageHashes)) {
+                        continue; // Bỏ qua nếu ảnh trùng lặp
+                    }
+
+                    $path = $image->store('tours', 'public');
                     TourImage::create([
-                        'tour_id' => $tour->tour_id,  // Đảm bảo dùng đúng tên cột primary key của bảng tours
-                        'image_path' => $path,  // Không cần str_replace vì store() đã trả về đường dẫn tương đối
+                        'tour_id' => $tour->tour_id,
+                        'image_path' => $path,
                         'is_main' => $index === 0
                     ]);
+
+                    // Thêm hash vào mảng đã xử lý
+                    $processedImageHashes[] = $imageHash;
                 }
             }
 
@@ -335,7 +347,7 @@ class TourController extends Controller
         try {
             $tours = Tour::with(['priceLists.priceDetails' => function ($query) {
                 $query->where('customer_type', 'ADULT');
-            }])->get();
+            }, 'mainImage'])->get();
 
             return view('user.explore', compact('tours'));
         } catch (\Exception $e) {
@@ -347,14 +359,37 @@ class TourController extends Controller
     public function scheduleTour($tour_id)
     {
         try {
-            $tour = Tour::with(['schedules','location'])->findOrFail($tour_id);
-            
-            Log::info('Tour data:', ['tour' => $tour->toArray()]);
-            
+            $tour = Tour::with(['schedules', 'location', 'images'])->findOrFail($tour_id); // Load thêm 'images'
             return view('user.trip-details', compact('tour'));
         } catch (\Exception $e) {
             Log::error('Error in scheduleTour: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Không tìm thấy tour: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Không tìm thấy tour');
         }
     }
+    
+
+
+
+// Tour phổ biến
+// Thêm method mới trong TourController
+public function getPopularLocationTours()
+{
+    try {
+        $popularTours = Tour::with(['location', 'mainImage', 'priceLists.priceDetails' => function ($query) {
+            $query->where('customer_type', 'ADULT');
+        }])
+        ->whereHas('location', function($query) {
+            $query->where('is_popular', true);
+        })
+        ->get();
+
+        return view('user.home', compact('popularTours'));
+    } catch (\Exception $e) {
+        Log::error('Error in getPopularLocationTours: ' . $e->getMessage());
+        return view('user.home')->with('error', 'Không thể tải dữ liệu tour');
+    }
+}
+
+
+
 }
