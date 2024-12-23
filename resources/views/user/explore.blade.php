@@ -3,24 +3,26 @@
 @section('title', 'Explore')
 
 @section('content')
-<div class="container mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-7 sm:p-6 md:py-10 md:px-8">
+<div class="container mx-auto mt-20 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 px-7 sm:p-6 md:py-10 md:px-8">
     @if($tours->count() > 0)
         @foreach($tours as $tour)
             <div class="bg-white rounded-lg overflow-hidden shadow hover:shadow-lg transition-all duration-300 transform hover:scale-105">
                 <div class="h-48 w-full relative overflow-hidden">
-                    <button class="absolute top-4 right-4 z-10 p-2 bg-white bg-opacity-70 rounded-full hover:bg-opacity-100 transition-all duration-300 group">
-                        <svg class="w-6 h-6 text-gray-600 group-hover:text-red-500 transition-colors duration-300 favorite-icon" 
-                            fill="none" 
-                            stroke="currentColor" 
-                            viewBox="0 0 24 24" 
-                            xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" 
-                                stroke-linejoin="round" 
-                                stroke-width="2" 
-                                d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
-                            </path>
-                        </svg>
-                    </button>
+                <button class="absolute top-4 right-4 z-10 p-2 bg-white bg-opacity-70 rounded-full hover:bg-opacity-100 transition-all duration-300 group add-to-wishlist"
+                    data-tour-id="{{ $tour->tour_id }}">
+                    <svg class="w-6 h-6 text-gray-600 group-hover:text-red-500 transition-colors duration-300 favorite-icon" 
+                        fill="none" 
+                        stroke="currentColor" 
+                        viewBox="0 0 24 24" 
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" 
+                            stroke-linejoin="round" 
+                            stroke-width="2" 
+                            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z">
+                        </path>
+                    </svg>
+                </button>
+
                     <img src="{{ asset('storage/' . ($tour->mainImage->image_path ?? 'default.jpg')) }}" 
                         class="w-full h-full object-cover transition-all duration-500 transform group-hover:scale-110 filter brightness-90" 
                         >
@@ -85,3 +87,36 @@
         {{ $tours->onEachSide(1)->links('vendor.pagination.tailwind') }}
     </div>
 </div>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const wishlistButtons = document.querySelectorAll('.add-to-wishlist');
+
+        wishlistButtons.forEach(button => {
+            button.addEventListener('click', function () {
+                const tourId = this.getAttribute('data-tour-id');
+
+                fetch('{{ route("wishlist.add") }}', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ tour_id: tourId })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Đổi màu trái tim
+                        this.querySelector('svg').classList.remove('text-gray-600');
+                        this.querySelector('svg').classList.add('text-red-500');
+                    } else {
+                        console.error('Failed to add tour to wishlist.');
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            });
+        });
+    });
+</script>
+
+

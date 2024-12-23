@@ -293,10 +293,6 @@ class TourController extends Controller
         }
     }
 
-
-
-
-
     public function finalStore(Request $request)
     {
         DB::beginTransaction();
@@ -360,7 +356,9 @@ class TourController extends Controller
         try {
             $tours = Tour::with(['priceLists.priceDetails' => function ($query) {
                 $query->where('customer_type', 'ADULT');
-            }, 'mainImage'])->paginate(12);
+            }, 'mainImage'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(12);
 
             return view('user.explore', compact('tours'));
         } catch (\Exception $e) {
@@ -372,7 +370,7 @@ class TourController extends Controller
     public function scheduleTour($tour_id)
     {
         try {
-            $tour = Tour::with(['schedules', 'location', 'images'])->findOrFail($tour_id); // Load thêm 'images'
+            $tour = Tour::with(['schedules', 'location', 'images'])->findOrFail($tour_id);
             Log::info('Tour data:', ['tour' => $tour->toArray()]);
             return view('user.trip-details', compact('tour'));
         } catch (\Exception $e) {
@@ -395,6 +393,7 @@ public function getPopularLocationTours()
         ->whereHas('location', function($query) {
             $query->where('is_popular', true);
         })
+        ->orderBy('created_at', 'desc')
         ->get();
 
         return view('user.home', compact('popularTours'));

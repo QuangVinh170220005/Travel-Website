@@ -54,7 +54,7 @@ $home = [
     <div class="container mx-auto px-4 py-16">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-6 gap-4">
-                <h1 class="text-4xl font-bold text-center md:text-left transition-all duration-300 hover:text-5xl hover:text-blue-600">Best holiday deals</h1>
+                <h1 class="text-4xl font-bold text-center md:text-left transition-all duration-300 hover:text-5xl hover:text-blue-600">Popular Tours</h1>
                 
                 <div class="flex items-center bg-white rounded-full border shadow-sm w-full md:w-auto transition-all duration-300 hover:shadow-lg">
                     <input type="text" placeholder="SEARCH YOUR NEXT CITY" class="px-6 py-3 rounded-l-full outline-none text-gray-600 w-full md:w-80 transition-all duration-300 focus:ring-2 focus:ring-blue-500">
