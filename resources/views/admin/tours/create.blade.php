@@ -394,98 +394,99 @@
 
 
 
-                <!-- Step 3: Itinerary -->
+                <!-- Step 3: Schedule -->
                 <div id="step3" class="step-content p-8 hidden">
                     <div class="space-y-8">
                         <div class="border-b border-gray-200 pb-4">
-                            <h2 class="text-xl font-semibold text-gray-900">Tour Itinerary</h2>
-                            <p class="mt-1 text-sm text-gray-500">Create a detailed day-by-day itinerary for the tour.</p>
+                            <h2 class="text-xl font-semibold text-gray-900">Tour Schedules</h2>
+                            <p class="mt-1 text-sm text-gray-500">Set up departure schedules and meeting points for the tour.</p>
                         </div>
 
-                        <div id="itinerary-container" class="space-y-6">
-                            <!-- Day 1 Template -->
-                            <div class="itinerary-day bg-gray-50 p-6 rounded-lg">
-                                <div class="flex items-center justify-between mb-4">
-                                    <h3 class="text-lg font-medium text-gray-900">Day 1</h3>
-                                    <button type="button" class="text-gray-400 hover:text-gray-500">
-                                        <span class="sr-only">Remove day</span>
-                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                                        </svg>
-                                    </button>
-                                </div>
-
-                                <div class="space-y-4">
-                                    <!-- Title -->
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700">Day Title</label>
-                                        <input type="text" name="itinerary[0][title]"
-                                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                            placeholder="e.g., Arrival and City Tour">
+                        <div id="schedule-container" class="space-y-6">
+                            <!-- Schedule Template -->
+                            <div class="schedule-item border border-gray-200 rounded-lg p-6">
+                                <div class="space-y-6">
+                                    <!-- Header with Remove Button -->
+                                    <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+                                        <h3 class="text-lg font-medium text-gray-900">Schedule #1</h3>
+                                        <input type="hidden" name="schedules[0][day_number]" value="1">
+                                        <button type="button" class="remove-schedule text-gray-400 hover:text-red-500 transition-colors">
+                                            <span class="sr-only">Remove schedule</span>
+                                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                                            </svg>
+                                        </button>
                                     </div>
 
-                                    <!-- Activities -->
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700">Activities</label>
-                                        <textarea name="itinerary[0][activities]" rows="3"
-                                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                            placeholder="Describe the day's activities"></textarea>
-                                    </div>
-
-                                    <!-- Meals Included -->
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700">Meals Included</label>
-                                        <div class="mt-2 space-x-4">
-                                            <label class="inline-flex items-center">
-                                                <input type="hidden" name="itinerary[0][meals][breakfast]" value="0">
-                                                <input type="checkbox"
-                                                    name="itinerary[0][meals][breakfast]"
-                                                    value="1"
-                                                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                                <span class="ml-2 text-sm text-gray-600">Breakfast</span>
-                                            </label>
-
-                                            <label class="inline-flex items-center">
-                                                <input type="hidden" name="itinerary[0][meals][lunch]" value="0">
-                                                <input type="checkbox"
-                                                    name="itinerary[0][meals][lunch]"
-                                                    value="1"
-                                                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                                <span class="ml-2 text-sm text-gray-600">Lunch</span>
-                                            </label>
-
-                                            <label class="inline-flex items-center">
-                                                <input type="hidden" name="itinerary[0][meals][dinner]" value="0">
-                                                <input type="checkbox"
-                                                    name="itinerary[0][meals][dinner]"
-                                                    value="1"
-                                                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                                <span class="ml-2 text-sm text-gray-600">Dinner</span>
-                                            </label>
+                                    <!-- Schedule Form Fields -->
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <!-- Departure Date -->
+                                        <div class="input-group">
+                                            <label class="form-label">Departure Date <span class="text-red-500">*</span></label>
+                                            <input type="datetime-local"
+                                                name="schedules[0][departure_date]"
+                                                class="form-input-field w-full"
+                                                required>
                                         </div>
-                                    </div>
 
-                                    <!-- Accommodation -->
-                                    <div>
-                                        <label class="block text-sm font-medium text-gray-700">Accommodation</label>
-                                        <input type="text" name="itinerary[0][accommodation]"
-                                            class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                                            placeholder="Hotel/Accommodation name">
+                                        <!-- Meeting Time -->
+                                        <div class="input-group">
+                                            <label class="form-label">Meeting Time <span class="text-red-500">*</span></label>
+                                            <input type="time"
+                                                name="schedules[0][meeting_time]"
+                                                class="form-input-field w-full"
+                                                required>
+                                        </div>
+
+                                        <!-- Meeting Point with Autocomplete -->
+                                        <div class="input-group col-span-2">
+                                            <label class="form-label">Meeting Point <span class="text-red-500">*</span></label>
+                                            <div class="relative">
+                                                <input type="text"
+                                                    name="schedules[0][meeting_point]"
+                                                    class="schedule-meeting-point form-input-field w-full"
+                                                    placeholder="Enter meeting location..."
+                                                    required>
+                                                <div class="suggestions absolute z-10 w-full mt-1 bg-gray-700 border border-gray-600 rounded-lg shadow-lg hidden"></div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Map Container -->
+                                        <div class="schedule-map-container col-span-2 hidden">
+                                            <div class="schedule-map w-full h-[300px] rounded-lg"></div>
+                                        </div>
+
+                                        <!-- Description -->
+                                        <div class="input-group col-span-2">
+                                            <label class="form-label">Description</label>
+                                            <textarea
+                                                name="schedules[0][description]"
+                                                rows="3"
+                                                class="form-input-field w-full"
+                                                placeholder="Additional information about this schedule"></textarea>
+                                        </div>
+
+                                        <!-- Hidden Coordinates Input -->
+                                        <input type="hidden" name="schedules[0][coordinates]" class="schedule-coordinates">
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Add Day Button -->
-                        <button type="button" id="add-day"
-                            class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                            </svg>
-                            Add Another Day
-                        </button>
+                        <!-- Add Schedule Button -->
+                        <div class="flex justify-center pt-4">
+                            <button type="button" id="add-schedule"
+                                class="inline-flex items-center px-6 py-3 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
+                                <svg class="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                </svg>
+                                Add New Schedule
+                            </button>
+                        </div>
                     </div>
                 </div>
+
+
 
 
                 <!-- Step 4: Review -->
@@ -496,55 +497,80 @@
                             <p class="mt-1 text-sm text-gray-500">Please review all information before submitting.</p>
                         </div>
 
-                        <div class="space-y-6">
-                            <!-- Basic Information Review -->
-                            <div class="bg-gray-50 rounded-lg p-6">
-                                <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
-                                <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-4">
-                                    <div>
-                                        <dt class="text-sm font-medium text-gray-500">Tour Name</dt>
-                                        <dd class="mt-1 text-sm text-gray-900" id="review-tour-name"></dd>
-                                    </div>
-                                    <div>
-                                        <dt class="text-sm font-medium text-gray-500">Duration</dt>
-                                        <dd class="mt-1 text-sm text-gray-900" id="review-duration"></dd>
-                                    </div>
-                                    <div>
-                                        <dt class="text-sm font-medium text-gray-500">Price per Person</dt>
-                                        <dd class="mt-1 text-sm text-gray-900" id="review-price"></dd>
-                                    </div>
-                                    <div>
-                                        <dt class="text-sm font-medium text-gray-500">Tour Type</dt>
-                                        <dd class="mt-1 text-sm text-gray-900" id="review-type"></dd>
-                                    </div>
-                                </dl>
-                            </div>
-
-                            <!-- Location Review -->
-                            <div class="bg-gray-50 rounded-lg p-6">
-                                <h3 class="text-lg font-medium text-gray-900 mb-4">Location Details</h3>
-                                <dl class="space-y-4">
-                                    <div>
-                                        <dt class="text-sm font-medium text-gray-500">Starting Point</dt>
-                                        <dd class="mt-1 text-sm text-gray-900" id="review-start-location"></dd>
-                                    </div>
-                                    <div>
-                                        <dt class="text-sm font-medium text-gray-500">Key Destinations</dt>
-                                        <dd class="mt-1 text-sm text-gray-900" id="review-destinations"></dd>
-                                    </div>
-                                </dl>
-                            </div>
-
-                            <!-- Itinerary Summary -->
-                            <div class="bg-gray-50 rounded-lg p-6">
-                                <h3 class="text-lg font-medium text-gray-900 mb-4">Itinerary Summary</h3>
-                                <div id="review-itinerary" class="space-y-4">
-                                    <!-- Itinerary days will be populated here -->
+                        <!-- Basic Information Review (Step 1) -->
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Basic Information</h3>
+                            <dl class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Tour Name</dt>
+                                    <dd class="mt-1 text-sm text-gray-900" id="review-tour-name"></dd>
                                 </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Duration (Days)</dt>
+                                    <dd class="mt-1 text-sm text-gray-900" id="review-duration"></dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Category</dt>
+                                    <dd class="mt-1 text-sm text-gray-900" id="review-category"></dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Max Participants</dt>
+                                    <dd class="mt-1 text-sm text-gray-900" id="review-max-participants"></dd>
+                                </div>
+                                <div class="col-span-2">
+                                    <dt class="text-sm font-medium text-gray-500">Description</dt>
+                                    <dd class="mt-1 text-sm text-gray-900" id="review-description"></dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Transportation</dt>
+                                    <dd class="mt-1 text-sm text-gray-900" id="review-transportation"></dd>
+                                </div>
+                                <div class="col-span-2">
+                                    <dt class="text-sm font-medium text-gray-500">Highlight Places</dt>
+                                    <dd class="mt-1 text-sm text-gray-900" id="review-highlight-places"></dd>
+                                </div>
+                                <div class="col-span-2">
+                                    <dt class="text-sm font-medium text-gray-500">Tour Images</dt>
+                                    <dd class="mt-2 grid grid-cols-2 md:grid-cols-4 gap-4" id="review-images">
+                                        <!-- Images will be populated here -->
+                                    </dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <!-- Location Details Review (Step 2) -->
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Location Details</h3>
+                            <dl class="grid grid-cols-1 gap-6">
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Location Name</dt>
+                                    <dd class="mt-1 text-sm text-gray-900" id="review-location-name"></dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Address</dt>
+                                    <dd class="mt-1 text-sm text-gray-900" id="review-location-address"></dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Best Time to Visit</dt>
+                                    <dd class="mt-1 text-sm text-gray-900" id="review-best-time"></dd>
+                                </div>
+                                <div>
+                                    <dt class="text-sm font-medium text-gray-500">Weather Notes</dt>
+                                    <dd class="mt-1 text-sm text-gray-900" id="review-weather-notes"></dd>
+                                </div>
+                            </dl>
+                        </div>
+
+                        <!-- Schedule Review (Step 3) -->
+                        <div class="bg-gray-50 rounded-lg p-6">
+                            <h3 class="text-lg font-medium text-gray-900 mb-4">Tour Schedules</h3>
+                            <div id="review-schedules" class="space-y-6">
+                                <!-- Schedules will be populated here -->
                             </div>
                         </div>
                     </div>
                 </div>
+
 
                 <!-- Navigation Buttons -->
                 <div class="flex justify-between items-center px-8 py-4 bg-gray-50 border-t rounded-b-xl">
@@ -716,16 +742,15 @@
 
         nextBtn.addEventListener('click', async function(e) {
             e.preventDefault();
-            // Validate current step
             const isValid = await validateStep(currentStep);
 
             if (isValid) {
-                // Save form data
                 await saveFormData();
-
-                // Move to next step
                 if (currentStep < totalSteps) {
                     currentStep++;
+                    if (currentStep === 4) {
+                        updateReview(); // Cập nhật review khi chuyển đến step 4
+                    }
                     updateStepVisibility();
                     window.scrollTo(0, 0);
                 }
@@ -859,146 +884,6 @@
             });
         }
 
-        const itineraryContainer = document.getElementById('itinerary-container');
-        const addDayButton = document.getElementById('add-day');
-        let dayCount = 1;
-
-        // Thêm event listener cho nút "Add Day"
-        addDayButton.addEventListener('click', function() {
-            addNewDay();
-        });
-
-        // Hàm thêm ngày mới
-        function addNewDay() {
-            const newDay = document.createElement('div');
-            newDay.className = 'itinerary-day bg-gray-50 p-6 rounded-lg';
-            newDay.innerHTML = `
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="text-lg font-medium text-gray-900">Day ${dayCount + 1}</h3>
-                <button type="button" class="remove-day text-gray-400 hover:text-gray-500">
-                    <span class="sr-only">Remove day</span>
-                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-            
-            <div class="space-y-4">
-                <!-- Title -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Day Title</label>
-                    <input type="text" name="itinerary[${dayCount}][title]" 
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        placeholder="e.g., Arrival and City Tour">
-                </div>
-
-                <!-- Activities -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Activities</label>
-                    <textarea name="itinerary[${dayCount}][activities]" rows="3" 
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        placeholder="Describe the day's activities"></textarea>
-                </div>
-
-                <!-- Meals Included -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Meals Included</label>
-                    <div class="mt-2 space-x-4">
-                        <label class="inline-flex items-center">
-                            <input type="hidden" name="itinerary[${dayCount}][meals][breakfast]" value="0">
-                            <input type="checkbox" 
-                                name="itinerary[${dayCount}][meals][breakfast]" 
-                                value="1"
-                                class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            <span class="ml-2 text-sm text-gray-600">Breakfast</span>
-                        </label>
-                        
-                        <label class="inline-flex items-center">
-                            <input type="hidden" name="itinerary[${dayCount}][meals][lunch]" value="0">
-                            <input type="checkbox" 
-                                name="itinerary[${dayCount}][meals][lunch]" 
-                                value="1"
-                                class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            <span class="ml-2 text-sm text-gray-600">Lunch</span>
-                        </label>
-                        
-                        <label class="inline-flex items-center">
-                            <input type="hidden" name="itinerary[${dayCount}][meals][dinner]" value="0">
-                            <input type="checkbox" 
-                                name="itinerary[${dayCount}][meals][dinner]" 
-                                value="1"
-                                class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                            <span class="ml-2 text-sm text-gray-600">Dinner</span>
-                        </label>
-                    </div>
-                </div>
-
-                <!-- Accommodation -->
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Accommodation</label>
-                    <input type="text" name="itinerary[${dayCount}][accommodation]"
-                        class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        placeholder="Hotel/Accommodation name">
-                </div>
-            </div>
-        `;
-
-            itineraryContainer.appendChild(newDay);
-            dayCount++;
-            updateDayNumbers();
-
-            // Thêm event listener cho nút remove của ngày mới
-            const removeButton = newDay.querySelector('.remove-day');
-            removeButton.addEventListener('click', function() {
-                newDay.remove();
-                updateDayNumbers();
-            });
-        }
-
-        // Thêm event listener cho nút remove của ngày đầu tiên
-        const firstDayRemoveButton = document.querySelector('.itinerary-day .remove-day');
-        if (firstDayRemoveButton) {
-            firstDayRemoveButton.addEventListener('click', function() {
-                if (itineraryContainer.children.length > 1) {
-                    firstDayRemoveButton.closest('.itinerary-day').remove();
-                    updateDayNumbers();
-                }
-            });
-        }
-
-        // Hàm cập nhật số thứ tự ngày
-        function updateDayNumbers() {
-            const days = itineraryContainer.querySelectorAll('.itinerary-day');
-            days.forEach((day, index) => {
-                const dayTitle = day.querySelector('h3');
-                dayTitle.textContent = `Day ${index + 1}`;
-
-                // Cập nhật lại các name attribute
-                const inputs = day.querySelectorAll('input[name^="itinerary["], textarea[name^="itinerary["]');
-                inputs.forEach(input => {
-                    const currentName = input.getAttribute('name');
-                    const newName = currentName.replace(/itinerary\[\d+\]/, `itinerary[${index}]`);
-                    input.setAttribute('name', newName);
-                });
-            });
-        }
-
-
-        // Price calculation (if needed)
-        const adultPrice = document.querySelector('input[name="adult_price"]');
-        const childPrice = document.querySelector('input[name="child_price"]');
-        const totalPrice = document.getElementById('totalPrice');
-
-        if (adultPrice && childPrice && totalPrice) {
-            function calculateTotal() {
-                const adult = parseFloat(adultPrice.value) || 0;
-                const child = parseFloat(childPrice.value) || 0;
-                totalPrice.textContent = `Total: $${(adult + child).toFixed(2)}`;
-            }
-
-            adultPrice.addEventListener('input', calculateTotal);
-            childPrice.addEventListener('input', calculateTotal);
-        }
 
         // Form validation helper functions
         function validateRequired(value) {
@@ -1166,7 +1051,13 @@
             e.stopPropagation();
         }
 
+
         // Highlight drop zone when item is dragged over it
+
+        function handleFiles(files) {
+            Array.from(files).forEach(previewFile);
+        }
+
         ['dragenter', 'dragover'].forEach(eventName => {
             dropZone.addEventListener(eventName, highlight, false);
         });
@@ -1197,8 +1088,7 @@
         fileInput.addEventListener('change', function(e) {
             handleFiles(this.files);
         });
-
-
+        
         function previewFile(file) {
             // Validate file type
             if (!file.type.startsWith('image/')) {
@@ -1376,5 +1266,274 @@
             suggestionsContainer.classList.add('hidden');
         }
     });
+
+    const scheduleContainer = document.getElementById('schedule-container');
+    const addScheduleButton = document.getElementById('add-schedule');
+    let scheduleCount = 1;
+
+    // Add new schedule
+    addScheduleButton.addEventListener('click', function() {
+        const newSchedule = document.createElement('div');
+        newSchedule.className = 'schedule-item border border-gray-200 rounded-lg p-6';
+        newSchedule.innerHTML = `
+            <div class="space-y-6">
+                <!-- Header with Remove Button -->
+                <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+                    <h3 class="text-lg font-medium text-gray-900">Schedule #${scheduleCount + 1}</h3>
+                    <button type="button" class="remove-schedule text-gray-400 hover:text-red-500 transition-colors">
+                        <span class="sr-only">Remove schedule</span>
+                        <input type="hidden" name="schedules[${scheduleCount}][day_number]" value="${scheduleCount + 1}">
+                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Schedule Form Fields -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Departure Date -->
+                    <div class="input-group">
+                        <label class="form-label">Departure Date <span class="text-red-500">*</span></label>
+                        <input type="datetime-local" 
+                            name="schedules[${scheduleCount}][departure_date]"
+                            class="form-input-field w-full"
+                            required>
+                    </div>
+
+                    <!-- Meeting Time -->
+                    <div class="input-group">
+                        <label class="form-label">Meeting Time <span class="text-red-500">*</span></label>
+                        <input type="time" 
+                            name="schedules[${scheduleCount}][meeting_time]"
+                            class="form-input-field w-full"
+                            required>
+                    </div>
+
+                    <!-- Meeting Point with Autocomplete -->
+                    <div class="input-group col-span-2">
+                        <label class="form-label">Meeting Point <span class="text-red-500">*</span></label>
+                        <div class="relative">
+                            <input type="text"
+                                name="schedules[${scheduleCount}][meeting_point]"
+                                class="schedule-meeting-point form-input-field w-full"
+                                placeholder="Enter meeting location..."
+                                required>
+                            <div class="suggestions absolute z-10 w-full mt-1 bg-gray-700 border border-gray-600 rounded-lg shadow-lg hidden"></div>
+                        </div>
+                    </div>
+
+                    <!-- Map Container -->
+                    <div class="schedule-map-container col-span-2 hidden">
+                        <div class="schedule-map w-full h-[300px] rounded-lg"></div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="input-group col-span-2">
+                        <label class="form-label">Description</label>
+                        <textarea 
+                            name="schedules[${scheduleCount}][description]"
+                            rows="3"
+                            class="form-input-field w-full"
+                            placeholder="Additional information about this schedule"></textarea>
+                    </div>
+
+                    <!-- Hidden Coordinates Input -->
+                    <input type="hidden" name="schedules[${scheduleCount}][coordinates]" class="schedule-coordinates">
+                </div>
+            </div>
+        `;
+
+        scheduleContainer.appendChild(newSchedule);
+        scheduleCount++;
+        initializeGoongPlacesForElement(newSchedule.querySelector('.schedule-meeting-point'));
+
+        // Add remove button handler
+        newSchedule.querySelector('.remove-schedule').addEventListener('click', function() {
+            if (document.querySelectorAll('.schedule-item').length > 1) {
+                newSchedule.remove();
+                updateScheduleNumbers();
+            } else {
+                // Show error message if trying to remove the last schedule
+                Swal.fire({
+                    title: 'Cannot Remove',
+                    text: 'At least one schedule is required.',
+                    icon: 'warning',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
+
+    // Initialize Goong Places for meeting points
+    function initializeGoongPlacesForElement(input) {
+        const suggestionsDiv = input.closest('.input-group').querySelector('.suggestions');
+        const mapContainer = input.closest('.schedule-item').querySelector('.schedule-map-container');
+        const mapDiv = mapContainer.querySelector('.schedule-map');
+        const coordinatesInput = input.closest('.schedule-item').querySelector('.schedule-coordinates');
+        let scheduleMap = null;
+        let marker = null;
+
+        input.addEventListener('input', debounce(async (e) => {
+            const query = e.target.value;
+            if (query.length < 2) {
+                suggestionsDiv.classList.add('hidden');
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    `https://rsapi.goong.io/Place/AutoComplete?api_key=${API_KEY}&input=${encodeURIComponent(query)}`
+                );
+                const data = await response.json();
+
+                if (data.status === 'OK') {
+                    suggestionsDiv.innerHTML = '';
+                    suggestionsDiv.classList.remove('hidden');
+
+                    data.predictions.forEach(prediction => {
+                        const div = document.createElement('div');
+                        div.className = 'suggestion-item p-3 text-sm text-gray-200';
+                        div.textContent = prediction.description;
+
+                        div.addEventListener('click', async () => {
+                            input.value = prediction.description;
+                            suggestionsDiv.classList.add('hidden');
+
+                            // Get place details and show map
+                            const placeDetails = await getPlaceDetail(prediction.place_id);
+                            if (placeDetails && placeDetails.result) {
+                                const location = placeDetails.result.geometry.location;
+                                showMap(location.lng, location.lat);
+                                coordinatesInput.value = `${location.lng},${location.lat}`;
+                            }
+                        });
+
+                        suggestionsDiv.appendChild(div);
+                    });
+                }
+            } catch (error) {
+                console.error('Error searching places:', error);
+            }
+        }, 300));
+
+        function showMap(lng, lat) {
+            mapContainer.classList.remove('hidden');
+
+            if (!scheduleMap) {
+                scheduleMap = new goongjs.Map({
+                    container: mapDiv,
+                    style: 'https://tiles.goong.io/assets/goong_map_web.json',
+                    center: [lng, lat],
+                    zoom: 15
+                });
+
+                scheduleMap.addControl(new goongjs.NavigationControl());
+            } else {
+                scheduleMap.setCenter([lng, lat]);
+            }
+
+            if (marker) {
+                marker.remove();
+            }
+
+            // Add marker
+            const el = document.createElement('div');
+            el.className = 'marker';
+            marker = new goongjs.Marker(el)
+                .setLngLat([lng, lat])
+                .addTo(scheduleMap);
+        }
+
+        // Hide suggestions when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!input.contains(e.target) && !suggestionsDiv.contains(e.target)) {
+                suggestionsDiv.classList.add('hidden');
+            }
+        });
+    }
+
+    // Initialize Goong Places for initial meeting point input
+    initializeGoongPlacesForElement(document.querySelector('.schedule-meeting-point'));
+
+    // Update schedule numbers
+    function updateScheduleNumbers() {
+        document.querySelectorAll('.schedule-item').forEach((item, index) => {
+            const dayNumber = index + 1;
+            item.querySelector('h3').textContent = `Schedule #${dayNumber}`;
+            // Thêm dòng này
+            item.querySelector('input[name$="[day_number]"]').value = dayNumber;
+
+            // Phần cập nhật name các field khác giữ nguyên
+            item.querySelectorAll('[name^="schedules["]').forEach(input => {
+                const fieldName = input.name.match(/\[([^\]]+)\]$/)[1];
+                input.name = `schedules[${index}][${fieldName}]`;
+            });
+        });
+        scheduleCount = document.querySelectorAll('.schedule-item').length;
+    }
+
+    function updateReview() {
+        // Basic Information Review
+        document.getElementById('review-tour-name').textContent = document.getElementById('tour_name').value;
+        document.getElementById('review-duration').textContent = document.getElementById('duration_days').value + ' days';
+        document.getElementById('review-category').textContent = document.getElementById('category').value;
+        document.getElementById('review-max-participants').textContent = document.getElementById('max_participants').value;
+        document.getElementById('review-description').textContent = document.getElementById('description').value;
+        document.getElementById('review-transportation').textContent = document.getElementById('transportation').value;
+        document.getElementById('review-highlight-places').textContent = document.getElementById('highlight_places').value;
+
+        // Location Details Review
+        document.getElementById('review-location-name').textContent = document.getElementById('location_name').value;
+        document.getElementById('review-location-address').textContent = document.getElementById('location_address').value;
+        document.getElementById('review-best-time').textContent = document.getElementById('best_time_to_visit').value;
+        document.getElementById('review-weather-notes').textContent = document.getElementById('weather_notes').value;
+
+        // Schedule Review
+        const reviewSchedules = document.getElementById('review-schedules');
+        reviewSchedules.innerHTML = '';
+
+        document.querySelectorAll('.schedule-item').forEach((schedule, index) => {
+            const departureDate = schedule.querySelector('[name$="[departure_date]"]').value;
+            const meetingTime = schedule.querySelector('[name$="[meeting_time]"]').value;
+            const meetingPoint = schedule.querySelector('[name$="[meeting_point]"]').value;
+            const description = schedule.querySelector('[name$="[description]"]').value;
+
+            const scheduleReview = document.createElement('div');
+            scheduleReview.className = 'border border-gray-200 rounded-lg p-4';
+            scheduleReview.innerHTML = `
+            <h4 class="font-medium text-gray-900 mb-2">Schedule #${index + 1}</h4>
+            <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Departure Date</dt>
+                    <dd class="mt-1 text-sm text-gray-900">${departureDate}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Meeting Time</dt>
+                    <dd class="mt-1 text-sm text-gray-900">${meetingTime}</dd>
+                </div>
+                <div class="col-span-2">
+                    <dt class="text-sm font-medium text-gray-500">Meeting Point</dt>
+                    <dd class="mt-1 text-sm text-gray-900">${meetingPoint}</dd>
+                </div>
+                <div class="col-span-2">
+                    <dt class="text-sm font-medium text-gray-500">Description</dt>
+                    <dd class="mt-1 text-sm text-gray-900">${description}</dd>
+                </div>
+            </dl>
+        `;
+            reviewSchedules.appendChild(scheduleReview);
+        });
+
+        // Image Review
+        const reviewImages = document.getElementById('review-images');
+        reviewImages.innerHTML = '';
+        document.querySelectorAll('#imagePreviewContainer img').forEach(img => {
+            const imgDiv = document.createElement('div');
+            imgDiv.innerHTML = `
+            <img src="${img.src}" class="w-full h-32 object-cover rounded-lg" alt="Tour image">
+        `;
+            reviewImages.appendChild(imgDiv);
+        });
+    }
 </script>
 @endsection

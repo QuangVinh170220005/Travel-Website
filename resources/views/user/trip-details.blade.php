@@ -107,9 +107,8 @@
     $maxCount = max($ratingDistribution);
 @endphp
 
-@section('content')
+
 @if($tour->schedules)
-@foreach($tour->schedules as $schedule)
 <div class="container mx-auto px-4 py-8">
     <!-- Header -->
     <div class="w-full flex items-center mb-6">
@@ -140,7 +139,6 @@
             </button>
         </div>
     </div>
-@endforeach
     <h1 class="text-2xl sm:text-3xl font-bold mb-2">{{ $tour->tour_name }}</h1>
    
    <!-- Image Gallery -->
@@ -165,7 +163,6 @@
 
     </div>
 </div>
-
 <script>
     function swapImages(clickedImage) {
         const mainImage = document.getElementById('mainImage');
@@ -217,6 +214,7 @@
             <div class="my-6">
                 <h3 class="text-lg sm:text-xl font-semibold mb-3">About this place</h3>
                 <p class="text-gray-700 text-sm sm:text-base">{{$tour->description}}</p>
+
             </div> 
             <h3 class="text-lg sm:text-xl font-semibold mb-3">Lịch trình của chuyến đi</h3>
             @if($tour->schedules->count() > 0)
@@ -233,7 +231,6 @@
             <!-- Map -->
             <div class="my-12">
                 <h3 class="text-lg sm:text-xl font-semibold mb-3">Where you'll be</h3>
-                
                 <div class="w-full rounded-lg overflow-hidden mb-4">
                     <div id="map" class="w-full h-[300px] sm:h-[400px]"></div>
                 </div>
@@ -251,7 +248,7 @@
             </div>
             <div class="border-b border-gray-200 mb-6"></div>
             @else
-                <p class="text-gray-500 text-sm sm:text-base">Chưa có lịch trình cho chuyến đi này.</p>
+            <p class="text-gray-500 text-sm sm:text-base">Chưa có lịch trình cho chuyến đi này.</p>
             @endif
             <!-- Reviews -->
             <div class="container mx-auto py-6">
@@ -267,16 +264,16 @@
                             <span class="text-3xl sm:text-4xl font-bold">{{ $villa['rating'] }}</span>
                             <div class="flex items-center mt-1">
                                 @for ($i = 1; $i <= 5; $i++)
-                                    @if ($i <= $villa['rating'])
+                                    @if ($i <=$villa['rating'])
                                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                     </svg>
                                     @else
                                     <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                     </svg>
                                     @endif
-                                @endfor
+                                    @endfor
                             </div>
                             <p class="text-sm text-gray-600 mt-1">{{ $villa['reviews_count'] }} Ratings</p>
                         </div>
@@ -284,15 +281,14 @@
                         {{-- Rating Bars --}}
                         <div class="space-y-2">
                             @foreach($ratingDistribution as $rating => $count)
-                                <div class="flex items-center gap-2">
-                                    <span class="w-3 text-sm">{{ $rating }}</span>
-                                    <div class="flex-1 h-2 bg-gray-200 rounded-full">
-                                        <div 
-                                            class="h-2 bg-yellow-400 rounded-full {{ $widthClasses[round(($count / $maxCount) * 12)] }}"
-                                        ></div>
-                                    </div>
-                                    <span class="text-xs sm:text-sm text-gray-600 w-8">({{ $count }})</span>
+                            <div class="flex items-center gap-2">
+                                <span class="w-3 text-sm">{{ $rating }}</span>
+                                <div class="flex-1 h-2 bg-gray-200 rounded-full">
+                                    <div
+                                        class="h-2 bg-yellow-400 rounded-full {{ $widthClasses[round(($count / $maxCount) * 12)] }}"></div>
                                 </div>
+                                <span class="text-xs sm:text-sm text-gray-600 w-8">({{ $count }})</span>
+                            </div>
                             @endforeach
                         </div>
                     </div>
@@ -304,18 +300,18 @@
                             <div class="border-b border-gray-200 pb-6 last:border-0">
                                 <div class="flex items-center gap-2 mb-2">
                                     @for ($i = 1; $i <= 5; $i++)
-                                        @if ($i <= $review['rating'])
+                                        @if ($i <=$review['rating'])
                                         <svg class="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                         </svg>
                                         @else
                                         <svg class="w-4 h-4 sm:w-5 sm:h-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                         </svg>
                                         @endif
-                                    @endfor
+                                        @endfor
                                 </div>
-                                
+
                                 <div class="flex items-center gap-3 mb-2">
                                     <div class="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-gray-200 flex items-center justify-center">
                                         <span class="text-gray-600 text-sm sm:text-base">{{ substr($review['author'], 0, 1) }}</span>
@@ -364,24 +360,24 @@
                 <form>
                     <div class="mb-4">
                         <label for="check-in" class="block text-sm font-medium text-gray-700">Check-in</label>
-                        <input type="date" id="check-in" name="check-in" 
+                        <input type="date" id="check-in" name="check-in"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-sm sm:text-base">
                     </div>
                     <div class="mb-4">
                         <label for="check-out" class="block text-sm font-medium text-gray-700">Check-out</label>
-                        <input type="date" id="check-out" name="check-out" 
+                        <input type="date" id="check-out" name="check-out"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-sm sm:text-base">
                     </div>
                     <div class="mb-4">
                         <label for="guests" class="block text-sm font-medium text-gray-700">Guests</label>
-                        <select id="guests" name="guests" 
+                        <select id="guests" name="guests"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50 text-sm sm:text-base">
                             @for ($i = 1; $i <= $villa['max_guests']; $i++)
                                 <option value="{{ $i }}">{{ $i }} {{ $i === 1 ? 'guest' : 'guests' }}</option>
-                            @endfor
+                                @endfor
                         </select>
                     </div>
-                    <button type="submit" 
+                    <button type="submit"
                         class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 text-sm sm:text-base">
                         Reserve
                     </button>
@@ -396,6 +392,7 @@
 <script>
     const API_KEY = 'wCJbks0Q8BSaJobLRuaVpxLTMR47V9PtGZFK9f7i';
     const MAPTILES_KEY = 'tN9ukc25KjSGFzfG41uzlgWP3AzHXN0TcsOd3A3K';
+
     
     // Thêm logging để debug
     console.log("Raw coordinates:", "{{ $tour->location->coordinates }}");
@@ -415,7 +412,6 @@
             center: [lng, lat], // Đúng thứ tự [longitude, latitude]
             zoom: 15
         });
-        
         new goongjs.Marker()
             .setLngLat([lng, lat])
             .addTo(map);

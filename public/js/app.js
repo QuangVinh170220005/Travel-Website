@@ -35,58 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-// Hàm xử lý gửi tin nhắn đến AI
-async function sendMessage() {
-    const userInput = document.getElementById('userInput');
-    const message = userInput.value.trim();
-    const chatBox = document.getElementById('chatBox');
-
-    if (message === '') return;
-
-    // Hiển thị tin nhắn của người dùng
-    appendMessage('user', message);
-    
-    // Hiển thị trạng thái đang xử lý
-    const loadingDiv = document.createElement('div');
-    loadingDiv.className = 'message ai-message loading';
-    loadingDiv.textContent = 'Đang xử lý...';
-    chatBox.appendChild(loadingDiv);
-
-    try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer YOUR_API_KEY_HERE' // Thay YOUR_API_KEY_HERE bằng API key của bạn
-            },
-            body: JSON.stringify({
-                model: "gpt-3.5-turbo",
-                messages: [{
-                    role: "user",
-                    content: message
-                }]
-            })
-        });
-
-        const data = await response.json();
-        
-        // Xóa loading message
-        loadingDiv.remove();
-        
-        // Hiển thị phản hồi từ AI
-        if (data.choices && data.choices.length > 0) {
-            appendMessage('ai', data.choices[0].message.content);
-        }
-
-        // Clear input
-        userInput.value = '';
-
-    } catch (error) {
-        console.error('Error:', error);
-        loadingDiv.remove();
-        appendMessage('ai', 'Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.');
-    }
-}
 
 // Hàm thêm tin nhắn vào chat box
 function appendMessage(sender, message) {

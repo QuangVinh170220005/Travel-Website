@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\ContactForm;
 
 class ContactController extends Controller
 {
@@ -24,8 +25,12 @@ class ContactController extends Controller
         }
 
         try {
-            // Xử lý logic gửi contact form ở đây
-            // Ví dụ: Lưu vào database hoặc gửi email
+            // Lưu vào database
+            ContactForm::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'message' => $request->message
+            ]);
 
             return response()->json([
                 'status' => 'success',
