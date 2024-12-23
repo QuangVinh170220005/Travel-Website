@@ -83,7 +83,6 @@ class TourController extends Controller
                 'category' => 'nullable|string', // Sửa từ tour_type thành category
                 'difficulty_level' => 'nullable|string', // Sửa từ difficulty thành difficulty_level
                 'inclusions' => 'nullable|array',
-                'start_location' => 'nullable|string',
                 'destination' => 'nullable|string', // Sửa từ destinations thành destination
                 'transportation' => 'nullable|string', // Thêm field transportation
                 'description' => 'nullable|string', // Thêm field description
@@ -91,14 +90,6 @@ class TourController extends Controller
                 'include_hotel' => 'nullable|boolean', // Thêm field include_hotel
                 'include_meal' => 'nullable|boolean', // Thêm field include_meal
                 'is_active' => 'nullable|boolean', // Thêm field is_active
-                'itinerary' => 'nullable|array', // Thêm validation cho itinerary
-                'itinerary.*.title' => 'nullable|string',
-                'itinerary.*.activities' => 'nullable|string',
-                'itinerary.*.accommodation' => 'nullable|string',
-                'itinerary.*.meals' => 'nullable|array',
-                'itinerary.*.meals.breakfast' => 'nullable|boolean',
-                'itinerary.*.meals.lunch' => 'nullable|boolean',
-                'itinerary.*.meals.dinner' => 'nullable|boolean'
             ]);
 
             // Lưu vào session
@@ -165,15 +156,12 @@ class TourController extends Controller
                 ];
             case 3:
                 return [
-                    'is_active' => 'boolean',
-                    'itinerary' => 'nullable|array',
-                    'itinerary.*.title' => 'required|string',  // Thay đổi từ day thành title
-                    'itinerary.*.activities' => 'required|string', // Thay đổi từ description thành activities
-                    'itinerary.*.accommodation' => 'nullable|string',
-                    'itinerary.*.meals' => 'nullable|array',
-                    'itinerary.*.meals.breakfast' => 'nullable|boolean',
-                    'itinerary.*.meals.lunch' => 'nullable|boolean',
-                    'itinerary.*.meals.dinner' => 'nullable|boolean'
+                    'schedules' => 'required|array|min:1',
+                    'schedules.*.day_number' => 'required|integer|min:1',
+                    'schedules.*.departure_date' => 'required|date',
+                    'schedules.*.meeting_time' => 'required',
+                    'schedules.*.meeting_point' => 'required|string|max:200',
+                    'schedules.*.description' => 'nullable|string'
                 ];
             default:
                 return [];
@@ -217,7 +205,7 @@ class TourController extends Controller
                 'best_time_to_visit' => $validated['best_time_to_visit'],
                 'weather_notes' => $validated['weather_notes'],
             ]);
-     
+
 
             DB::beginTransaction();
 
@@ -230,16 +218,39 @@ class TourController extends Controller
 
             $tour = Tour::create($validated);
 
-            // Xử lý upload ảnh
-            if ($request->hasFile('tour_images')) {  // Giữ nguyên tên field 'tour_images' nếu form đang dùng name="tour_images[]"
-                foreach ($request->file('tour_images') as $index => $image) {
-                    // Sửa cách lưu file và đường dẫn
-                    $path = $image->store('tours', 'public');  // Lưu vào storage/app/public/tours
+            if ($request->hasFile('tour_images')) {
+                // Tạo mảng lưu các hash của ảnh để kiểm tra trùng lặp
+                $processedImageHashes = [];
 
+                foreach ($request->file('tour_images') as $index => $image) {
+                    // Tạo hash từ nội dung file
+                    $imageHash = md5_file($image->getRealPath());
+
+                    // Kiểm tra nếu ảnh đã được xử lý
+                    if (in_array($imageHash, $processedImageHashes)) {
+                        continue; // Bỏ qua nếu ảnh trùng lặp
+                    }
+
+                    $path = $image->store('tours', 'public');
                     TourImage::create([
-                        'tour_id' => $tour->tour_id,  // Đảm bảo dùng đúng tên cột primary key của bảng tours
-                        'image_path' => $path,  // Không cần str_replace vì store() đã trả về đường dẫn tương đối
+                        'tour_id' => $tour->tour_id,
+                        'image_path' => $path,
                         'is_main' => $index === 0
+                    ]);
+
+                    // Thêm hash vào mảng đã xử lý
+                    $processedImageHashes[] = $imageHash;
+                }
+            }
+
+            if ($request->has('schedules')) {
+                foreach ($request->schedules as $schedule) {
+                    $tour->schedules()->create([
+                        'departure_date' => $schedule['departure_date'],
+                        'day_number' => $schedule['day_number'],
+                        'meeting_time' => $schedule['meeting_time'],
+                        'meeting_point' => $schedule['meeting_point'],
+                        'description' => $schedule['description'] ?? null
                     ]);
                 }
             }
@@ -339,7 +350,7 @@ class TourController extends Controller
 
             return view('user.explore', compact('tours'));
         } catch (\Exception $e) {
-            dd($e->getMessage()); 
+            dd($e->getMessage());
         }
     }
 
@@ -347,10 +358,10 @@ class TourController extends Controller
     public function scheduleTour($tour_id)
     {
         try {
-            $tour = Tour::with(['schedules','location'])->findOrFail($tour_id);
-            
+            $tour = Tour::with(['schedules', 'location'])->findOrFail($tour_id);
+
             Log::info('Tour data:', ['tour' => $tour->toArray()]);
-            
+
             return view('user.trip-details', compact('tour'));
         } catch (\Exception $e) {
             Log::error('Error in scheduleTour: ' . $e->getMessage());

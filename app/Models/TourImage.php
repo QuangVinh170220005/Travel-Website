@@ -20,4 +20,14 @@ class TourImage extends Model
     {
         return $this->belongsTo(Tour::class, 'tour_id');
     }
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($tourImage) {
+            if (empty($tourImage->tour_id)) {
+                throw new \Exception('Tour ID is required');
+            }
+        });
+    }
 }
