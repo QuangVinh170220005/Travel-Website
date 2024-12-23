@@ -231,7 +231,7 @@ class TourController extends Controller
             $validated['location_id'] = $location->location_id;
 
             $tour = Tour::create($validated);
-
+            // Xử lý upload ảnh
             if ($request->hasFile('tour_images')) {
                 // Tạo mảng lưu các hash của ảnh để kiểm tra trùng lặp
                 $processedImageHashes = [];
@@ -360,7 +360,7 @@ class TourController extends Controller
         try {
             $tours = Tour::with(['priceLists.priceDetails' => function ($query) {
                 $query->where('customer_type', 'ADULT');
-            }])->get();
+            }, 'mainImage'])->paginate(12);
 
             return view('user.explore', compact('tours'));
         } catch (\Exception $e) {
@@ -372,14 +372,38 @@ class TourController extends Controller
     public function scheduleTour($tour_id)
     {
         try {
-            $tour = Tour::with(['schedules', 'location'])->findOrFail($tour_id);
-
+            $tour = Tour::with(['schedules', 'location', 'images'])->findOrFail($tour_id); // Load thêm 'images'
             Log::info('Tour data:', ['tour' => $tour->toArray()]);
-
             return view('user.trip-details', compact('tour'));
         } catch (\Exception $e) {
             Log::error('Error in scheduleTour: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Không tìm thấy tour: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Không tìm thấy tour');
         }
     }
+    
+
+
+
+// Tour phổ biến
+// Thêm method mới trong TourController
+public function getPopularLocationTours()
+{
+    try {
+        $popularTours = Tour::with(['location', 'mainImage', 'priceLists.priceDetails' => function ($query) {
+            $query->where('customer_type', 'ADULT');
+        }])
+        ->whereHas('location', function($query) {
+            $query->where('is_popular', true);
+        })
+        ->get();
+
+        return view('user.home', compact('popularTours'));
+    } catch (\Exception $e) {
+        Log::error('Error in getPopularLocationTours: ' . $e->getMessage());
+        return view('user.home')->with('error', 'Không thể tải dữ liệu tour');
+    }
+}
+
+
+
 }

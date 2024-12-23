@@ -44,6 +44,12 @@ class Tour extends Model
     }
     public function schedules()
     {
-        return $this->hasMany(TourSchedule::class, 'tour_id');
+        return $this->hasMany(TourSchedule::class, 'tour_id', 'tour_id');
     }
-}
+
+    public function mainImage()
+    {
+        return $this->hasOne(TourImage::class, 'tour_id')->where('is_main', true);
+    }
+ }
+

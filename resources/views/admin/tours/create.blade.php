@@ -1036,6 +1036,10 @@
         const fileInput = document.getElementById('tourImages');
         const previewContainer = document.getElementById('imagePreviewContainer');
 
+        function handleFiles(files) {
+            [...files].forEach(previewFile);
+        }
+        
         // Prevent default drag behaviors
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropZone.addEventListener(eventName, preventDefaults, false);
@@ -1084,7 +1088,7 @@
         fileInput.addEventListener('change', function(e) {
             handleFiles(this.files);
         });
-
+        
         function previewFile(file) {
             // Validate file type
             if (!file.type.startsWith('image/')) {
@@ -1127,6 +1131,7 @@
 
     });
 
+    // Thêm vào phần script
     const API_KEY = '{{ config("services.goong.key") }}';
     const MAPTILES_KEY = '{{ config("services.goong.maptiles_key") }}';
 

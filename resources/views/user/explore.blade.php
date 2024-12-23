@@ -21,15 +21,15 @@
                             </path>
                         </svg>
                     </button>
-                    <img src="{{ $tour->image_url ?? 'https://i.pinimg.com/736x/70/35/00/703500d5da9cf9eb3d60e39844da7e5e.jpg' }}" 
+                    <img src="{{ asset('storage/' . ($tour->mainImage->image_path ?? 'default.jpg')) }}" 
                         class="w-full h-full object-cover transition-all duration-500 transform group-hover:scale-110 filter brightness-90" 
-                        alt="{{ $tour->tour_name ?? 'Tour image' }}">
+                        >
                 </div>
                 <div class="p-6">
-                    <h3 class="text-xl font-semibold mb-4 transition-all duration-300 hover:text-blue-600">
-                    <a href="{{ route('tour.schedule', $tour->tour_id) }}">
-                        {{ $tour->tour_name ?? 'Chưa có tên' }}
-                    </a>
+                    <h3 class="text-xl font-semibold mb-4">
+                        <a href="{{ route('tour.schedule', $tour->tour_id) }}">
+                            {{ $tour->tour_name ?? 'Chưa có tên' }} 
+                        </a>
                     </h3>
                     <div class="space-y-2">
                         @foreach([
@@ -49,7 +49,7 @@
                         </div>
                         @endforeach
                     </div>
-                    <div classt-4">
+                    <div>
                         <div class="flex items-center justify-between mb-2">
                             <span class="text-sm text-gray-500">Giá từ</span>
                             <div class="flex items-center">
@@ -71,13 +71,17 @@
                             Xem chi tiết
                         </a>
                     </div>
-                </div>
+                    </div>
             </div>
         @endforeach
     @else
-        <div class="col-span-full text-center py-10">
-            <p class="text-gray-500">Không có tour nào</p>
-        </div>
+        <p class="text-center col-span-full">Không có tour nào để hiển thị.</p>
     @endif
 </div>
-@endsection
+
+<!-- Pagination -->
+<div class="px-6 py-4 bg-white border-t border-gray-200">
+    <div class="w-full">
+        {{ $tours->onEachSide(1)->links('vendor.pagination.tailwind') }}
+    </div>
+</div>

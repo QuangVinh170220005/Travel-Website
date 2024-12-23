@@ -5,106 +5,106 @@
 @section('content')
 
 @php
-$villa = [
-'location' => 'Milano, Lombardia, Italy',
-'type' => 'Private Villa',
-'max_guests' => 8,
-'description' => 'Villa Pinewood is a spacious and elegant villa that offers a comfortable and relaxing stay for up to 8 guests. It features 4 bedrooms, 3 bathrooms, a fully-equipped kitchen, a living room, a dining room, and a private pool. The villa is located on a hilltop, overlooking the beautiful ocean and the lush greenery.',
-'chedule' => '',
-'main_image' => 'https://media.istockphoto.com/id/1429367591/vi/anh/m%E1%BB%99t-gia-%C4%91%C3%ACnh-trong-k%E1%BB%B3-ngh%E1%BB%89-h%C3%A8-%C4%91%E1%BB%A9ng-b%C3%AAn-h%E1%BB%93-b%C6%A1i-v%C3%A0-t%E1%BA%ADn-h%C6%B0%E1%BB%9Fng-c%E1%BA%A3nh-ho%C3%A0ng-h%C3%B4n-tuy%E1%BB%87t-%C4%91%E1%BA%B9p.jpg?s=2048x2048&w=is&k=20&c=8nfsgkJNVCzOainEs-Jlq-mTpaqHKQXVAWEjcM3eXDs=',
-'images' => [
-'https://media.istockphoto.com/id/1526986072/vi/anh/m%C3%A1y-bay-bay-tr%C3%AAn-bi%E1%BB%83n-nhi%E1%BB%87t-%C4%91%E1%BB%9Bi-l%C3%BAc-ho%C3%A0ng-h%C3%B4n.jpg?s=2048x2048&w=is&k=20&c=SdCIpE5SDaSfokbkqHttOykEHkzw6MKHSPFQZgMOshM=',
-'https://media.istockphoto.com/id/1412976847/vi/anh/anse-source-dargent-la-digue-seychelles-c%E1%BA%B7p-v%E1%BB%A3-ch%E1%BB%93ng-tr%E1%BA%BB-%C4%91%C3%A0n-%C3%B4ng-v%C3%A0-ph%E1%BB%A5-n%E1%BB%AF-tr%C3%AAn-m%E1%BB%99t-b%C3%A3i-bi%E1%BB%83n.jpg?s=2048x2048&w=is&k=20&c=wXUOy_UeoUHZvV9kpP96kC6ap2pdvI_6eAnQElNMbDY=',
-'https://media.istockphoto.com/id/1499760492/vi/anh/c%E1%BA%B7p-%C4%91%C3%B4i-du-l%E1%BB%8Bch-h%E1%BA%A1nh-ph%C3%BAc-l%C3%A3ng-m%E1%BA%A1n-%C3%B4m-nhau-v%C3%A0-th%E1%BB%B1c-hi%E1%BB%87n-%C4%91i%E1%BB%81u-%C6%B0%E1%BB%9Bc-trong-thung-l%C5%A9ng-tuy%E1%BB%87t-%C4%91%E1%BA%B9p-%E1%BB%9F.jpg?s=2048x2048&w=is&k=20&c=mQngIjqowGZxp19TsgmUosBGE5ld5WGmvkojXNbjVWk=',
-],
+    $villa = [
+        'location' => 'Milano, Lombardia, Italy',
+        'type' => 'Private Villa',
+        'max_guests' => 8,
+        'description' => 'Villa Pinewood is a spacious and elegant villa that offers a comfortable and relaxing stay for up to 8 guests. It features 4 bedrooms, 3 bathrooms, a fully-equipped kitchen, a living room, a dining room, and a private pool. The villa is located on a hilltop, overlooking the beautiful ocean and the lush greenery.',
+        'chedule' => '',
+        'main_image' => 'https://media.istockphoto.com/id/1429367591/vi/anh/m%E1%BB%99t-gia-%C4%91%C3%ACnh-trong-k%E1%BB%B3-ngh%E1%BB%89-h%C3%A8-%C4%91%E1%BB%A9ng-b%C3%AAn-h%E1%BB%93-b%C6%A1i-v%C3%A0-t%E1%BA%ADn-h%C6%B0%E1%BB%9Fng-c%E1%BA%A3nh-ho%C3%A0ng-h%C3%B4n-tuy%E1%BB%87t-%C4%91%E1%BA%B9p.jpg?s=2048x2048&w=is&k=20&c=8nfsgkJNVCzOainEs-Jlq-mTpaqHKQXVAWEjcM3eXDs=',
+        'images' => [
+            'https://media.istockphoto.com/id/1526986072/vi/anh/m%C3%A1y-bay-bay-tr%C3%AAn-bi%E1%BB%83n-nhi%E1%BB%87t-%C4%91%E1%BB%9Bi-l%C3%BAc-ho%C3%A0ng-h%C3%B4n.jpg?s=2048x2048&w=is&k=20&c=SdCIpE5SDaSfokbkqHttOykEHkzw6MKHSPFQZgMOshM=',
+            'https://media.istockphoto.com/id/1412976847/vi/anh/anse-source-dargent-la-digue-seychelles-c%E1%BA%B7p-v%E1%BB%A3-ch%E1%BB%93ng-tr%E1%BA%BB-%C4%91%C3%A0n-%C3%B4ng-v%C3%A0-ph%E1%BB%A5-n%E1%BB%AF-tr%C3%AAn-m%E1%BB%99t-b%C3%A3i-bi%E1%BB%83n.jpg?s=2048x2048&w=is&k=20&c=wXUOy_UeoUHZvV9kpP96kC6ap2pdvI_6eAnQElNMbDY=',
+            'https://media.istockphoto.com/id/1499760492/vi/anh/c%E1%BA%B7p-%C4%91%C3%B4i-du-l%E1%BB%8Bch-h%E1%BA%A1nh-ph%C3%BAc-l%C3%A3ng-m%E1%BA%A1n-%C3%B4m-nhau-v%C3%A0-th%E1%BB%B1c-hi%E1%BB%87n-%C4%91i%E1%BB%81u-%C6%B0%E1%BB%9Bc-trong-thung-l%C5%A9ng-tuy%E1%BB%87t-%C4%91%E1%BA%B9p-%E1%BB%9F.jpg?s=2048x2048&w=is&k=20&c=mQngIjqowGZxp19TsgmUosBGE5ld5WGmvkojXNbjVWk=',
+        ],
 
-'host' => [
-'name' => 'Zoyhra Ivalline',
-'avatar' => 'https://media.istockphoto.com/id/1526986072/vi/anh/m%C3%A1y-bay-bay-tr%C3%AAn-bi%E1%BB%83n-nhi%E1%BB%87t-%C4%91%E1%BB%9Bi-l%C3%BAc-ho%C3%A0ng-h%C3%B4n.jpg?s=2048x2048&w=is&k=20&c=SdCIpE5SDaSfokbkqHttOykEHkzw6MKHSPFQZgMOshM=',
-'country' => 'Italia',
-'years_hosting' => 5,
-],
-'facilities' => [
-['icon' => '🛏️', 'name' => '4 Bedrooms'],
-['icon' => '🚽', 'name' => '3 Bathrooms'],
-['icon' => '🍳', 'name' => 'Kitchen'],
-['icon' => '🛋️', 'name' => 'Living Room'],
-['icon' => '📶', 'name' => 'Wifi'],
-['icon' => '🏊', 'name' => 'Private Pool'],
-['icon' => '🚗', 'name' => 'Parking Area'],
-],
-'full_address' => 'Milano, Lombardia, Italy',
-'latitude' => 45.4642,
-'longitude' => 9.1900,
-'nearby_places' => [
-['description' => '10 minutes to supermarket'],
-['description' => 'Strategic area'],
-['description' => '15 minutes to coffee shop'],
-['description' => '20 minutes to the highway'],
-],
-'terms' => [
-['description' => 'Check In 02:00 PM and Check Out 12:00 PM'],
-['description' => 'No animals allowed'],
-['description' => 'Maximum 8 guests'],
-['description' => 'No Parties / Event'],
-],
-'price_per_night' => 100,
-'rating' => 4.8,
-'reviews_count' => 24,
-];
+        'host' => [
+            'name' => 'Zoyhra Ivalline',
+            'avatar' => 'https://media.istockphoto.com/id/1526986072/vi/anh/m%C3%A1y-bay-bay-tr%C3%AAn-bi%E1%BB%83n-nhi%E1%BB%87t-%C4%91%E1%BB%9Bi-l%C3%BAc-ho%C3%A0ng-h%C3%B4n.jpg?s=2048x2048&w=is&k=20&c=SdCIpE5SDaSfokbkqHttOykEHkzw6MKHSPFQZgMOshM=',
+            'country' => 'Italia',
+            'years_hosting' => 5,
+        ],
+        'facilities' => [
+            ['icon' => '🛏️', 'name' => ' Không gian phòng ngủ rộng rãi, thoải mái cho giấc ngủ ngon.'],
+            ['icon' => '🚪', 'name' => 'Check-in nhanh chóng, tiện lợi'],
+            ['icon' => '🥘', 'name' => 'Ẩm thực đặc sản - Tour ẩm thực'],
+            ['icon' => '🛎️', 'name' => 'Dịch vụ chu đáo, chuyên nghiệp'],
+            ['icon' => '🎨', 'name' => 'Văn hóa - Khám phá nghệ thuật, lịch sử'],
+            ['icon' => '🚗', 'name' => 'Phương tiện di chuyển tiện lợi, an toàn'],
+            ['icon' => '📞', 'name' => 'Hỗ trợ khách hàng 24/7'],
+        ],
+        'full_address' => 'Milano, Lombardia, Italy',
+        'latitude' => 45.4642,
+        'longitude' => 9.1900,
+        'nearby_places' => [
+            ['description' => '10 minutes to supermarket'],
+            ['description' => 'Strategic area'],
+            ['description' => '15 minutes to coffee shop'],
+            ['description' => '20 minutes to the highway'],
+        ],
+        'terms' => [
+            ['description' => 'Check In 02:00 PM and Check Out 12:00 PM'],
+            ['description' => 'No animals allowed'],
+            ['description' => 'Maximum 8 guests'],
+            ['description' => 'No Parties / Event'],
+        ],
+        'price_per_night' => 100,
+        'rating' => 4.8,
+        'reviews_count' => 24,
+    ];
 
-// Rating distribution và width classes
-$ratingDistribution = [
-5 => 40,
-4 => 61,
-3 => 5,
-2 => 2,
-1 => 0
-];
+    // Rating distribution và width classes
+    $ratingDistribution = [
+        5 => 40,
+        4 => 61,
+        3 => 5,
+        2 => 2,
+        1 => 0
+    ];
 
-$widthClasses = [
-'0' => 'w-0',
-'1' => 'w-1/12',
-'2' => 'w-2/12',
-'3' => 'w-3/12',
-'4' => 'w-4/12',
-'5' => 'w-5/12',
-'6' => 'w-6/12',
-'7' => 'w-7/12',
-'8' => 'w-8/12',
-'9' => 'w-9/12',
-'10' => 'w-10/12',
-'11' => 'w-11/12',
-'12' => 'w-full',
-];
+    $widthClasses = [
+        '0' => 'w-0',
+        '1' => 'w-1/12',
+        '2' => 'w-2/12',
+        '3' => 'w-3/12',
+        '4' => 'w-4/12',
+        '5' => 'w-5/12',
+        '6' => 'w-6/12',
+        '7' => 'w-7/12',
+        '8' => 'w-8/12',
+        '9' => 'w-9/12',
+        '10' => 'w-10/12',
+        '11' => 'w-11/12',
+        '12' => 'w-full',
+    ];
 
-$reviews = [
-[
-'rating' => 5,
-'author' => 'John Doe',
-'date' => 'October 2024',
-'title' => 'Amazing Stay!',
-'content' => 'We had a wonderful time at Villa Pinewood. The views are breathtaking and the facilities are top-notch. Would definitely recommend!'
-],
-[
-'rating' => 4,
-'author' => 'Jane Smith',
-'date' => 'September 2024',
-'title' => 'Great Location',
-'content' => 'Perfect location with beautiful surroundings. The villa is well-maintained and comfortable. The host was very responsive and helpful.'
-],
-[
-'rating' => 5,
-'author' => 'Mike Johnson',
-'date' => 'August 2024',
-'title' => 'Perfect Family Vacation',
-'content' => 'Spacious villa with all the amenities needed for a family vacation. The pool was a hit with the kids. Will definitely come back!'
-]
-];
+    $reviews = [
+        [
+            'rating' => 5,
+            'author' => 'John Doe',
+            'date' => 'October 2024',
+            'title' => 'Amazing Stay!',
+            'content' => 'We had a wonderful time at Villa Pinewood. The views are breathtaking and the facilities are top-notch. Would definitely recommend!'
+        ],
+        [
+            'rating' => 4,
+            'author' => 'Jane Smith',
+            'date' => 'September 2024',
+            'title' => 'Great Location',
+            'content' => 'Perfect location with beautiful surroundings. The villa is well-maintained and comfortable. The host was very responsive and helpful.'
+        ],
+        [
+            'rating' => 5,
+            'author' => 'Mike Johnson',
+            'date' => 'August 2024',
+            'title' => 'Perfect Family Vacation',
+            'content' => 'Spacious villa with all the amenities needed for a family vacation. The pool was a hit with the kids. Will definitely come back!'
+        ]
+    ];
 
-// Tính toán tổng số review và số review cao nhất
-$totalReviews = array_sum($ratingDistribution);
-$maxCount = max($ratingDistribution);
+    // Tính toán tổng số review và số review cao nhất
+    $totalReviews = array_sum($ratingDistribution);
+    $maxCount = max($ratingDistribution);
 @endphp
 
 
@@ -140,51 +140,50 @@ $maxCount = max($ratingDistribution);
         </div>
     </div>
     <h1 class="text-2xl sm:text-3xl font-bold mb-2">{{ $tour->tour_name }}</h1>
-
-    <!-- Image Gallery -->
-    <div class="mb-4 mt-4">
-        <div class="flex flex-col md:flex-row gap-2">
-            <div class="w-full md:w-2/3 relative">
-                <img id="mainImage"
-                    src="{{ $villa['main_image'] }}"
-                    alt="Villa Pinewood Main"
-                    class="w-full h-[300px] md:h-[525px] object-cover rounded-3xl">
-                <button class="absolute bottom-4 left-4 bg-white px-4 py-2 rounded-full shadow-md hover:bg-gray-50 text-sm">
-                    Show all photos
-                </button>
-            </div>
-            <div class="w-full md:w-1/3 flex flex-row md:flex-col gap-2 md:gap-4">
-                @foreach($villa['images'] as $index => $image)
-                <img src="{{ $image }}"
-                    alt="Villa Image {{ $index + 1 }}"
+   
+   <!-- Image Gallery -->
+<div class="mb-4 mt-4">
+    <div class="flex flex-col md:flex-row gap-2">
+        <div class="w-full md:w-2/3 relative">
+            <!-- Ảnh chính -->
+            <img id="mainImage" 
+                src="{{ asset('storage/' . ($tour->mainImage->image_path ?? 'default.jpg')) }}" 
+                alt="Main Tour Image" 
+                class="w-full h-[300px] md:h-[525px] object-cover rounded-3xl">
+        </div>
+        <div class="w-full md:w-1/3 flex flex-row md:flex-col gap-2 md:gap-4">
+            @foreach($tour->images->filter(fn($image) => $image->image_path !== $tour->mainImage->image_path)->take(3) as $index => $image)
+                <img src="{{ asset('storage/' . $image->image_path) }}" 
+                    alt="Tour Image {{ $index + 1 }}" 
                     onclick="swapImages(this)"
                     class="w-1/3 md:w-full h-[100px] md:h-[164px] object-cover rounded-2xl cursor-pointer hover:opacity-80 transition-opacity"
                     data-original-index="{{ $index }}">
-                @endforeach
-            </div>
+            @endforeach
         </div>
+
     </div>
+</div>
+<script>
+    function swapImages(clickedImage) {
+        const mainImage = document.getElementById('mainImage');
+        const mainImageSrc = mainImage.src;
+        const clickedImageSrc = clickedImage.src;
+        
+        // Hoán đổi ảnh
+        mainImage.src = clickedImageSrc;
+        clickedImage.src = mainImageSrc;
 
-    <script>
-        function swapImages(clickedImage) {
-            const mainImage = document.getElementById('mainImage');
-            const mainImageSrc = mainImage.src;
-            const clickedImageSrc = clickedImage.src;
+        // Hiệu ứng fade
+        mainImage.style.opacity = '0';
+        setTimeout(() => {
+            mainImage.style.opacity = '1';
+        }, 50);
+    }
 
-            // Thực hiện hoán đổi
-            mainImage.src = clickedImageSrc;
-            clickedImage.src = mainImageSrc;
+    // Thêm hiệu ứng transition cho ảnh chính
+    document.getElementById('mainImage').style.transition = 'opacity 0.3s ease-in-out';
+</script>
 
-            // Thêm hiệu ứng fade
-            mainImage.style.opacity = '0';
-            setTimeout(() => {
-                mainImage.style.opacity = '1';
-            }, 50);
-        }
-
-        // Thêm hiệu ứng transition cho main image
-        document.getElementById('mainImage').style.transition = 'opacity 0.3s ease-in-out';
-    </script>
 
     <!-- Main Content -->
     <div class="flex flex-col lg:flex-row gap-8">
@@ -215,22 +214,23 @@ $maxCount = max($ratingDistribution);
             <div class="my-6">
                 <h3 class="text-lg sm:text-xl font-semibold mb-3">About this place</h3>
                 <p class="text-gray-700 text-sm sm:text-base">{{$tour->description}}</p>
-            </div>
-            @if($tour->schedules->count() > 0)
+
+            </div> 
             <h3 class="text-lg sm:text-xl font-semibold mb-3">Lịch trình của chuyến đi</h3>
-            @foreach($tour->schedules as $schedule)
+            @if($tour->schedules->count() > 0)
+        
+        @foreach($tour->schedules as $schedule)
             <div class="my-6">
                 <p class="text-gray-700 text-sm sm:text-base">{{ $schedule->description }}</p>
             </div>
-            @endforeach
+        @endforeach
             @else
-            <p class="text-gray-500 text-sm sm:text-base">Chưa có lịch trình cho chuyến đi này.</p>
+                <p class="text-gray-500 text-sm sm:text-base">Chưa có lịch trình cho chuyến đi này.</p>
             @endif
 
             <!-- Map -->
             <div class="my-12">
                 <h3 class="text-lg sm:text-xl font-semibold mb-3">Where you'll be</h3>
-
                 <div class="w-full rounded-lg overflow-hidden mb-4">
                     <div id="map" class="w-full h-[300px] sm:h-[400px]"></div>
                 </div>
@@ -393,19 +393,17 @@ $maxCount = max($ratingDistribution);
     const API_KEY = 'wCJbks0Q8BSaJobLRuaVpxLTMR47V9PtGZFK9f7i';
     const MAPTILES_KEY = 'tN9ukc25KjSGFzfG41uzlgWP3AzHXN0TcsOd3A3K';
 
+    
     // Thêm logging để debug
     console.log("Raw coordinates:", "{{ $tour->location->coordinates }}");
-
+    
     try {
         // Tách chuỗi tọa độ và chuyển thành số
         const coordinates = "{{ $tour->location->coordinates }}".split(',').map(Number);
-        const lng = coordinates[0]; // Kinh độ (longitude) đầu tiên
-        const lat = coordinates[1]; // Vĩ độ (latitude) thứ hai
-
-        console.log("Parsed coordinates:", {
-            lng,
-            lat
-        });
+        const lng = coordinates[0]; // Kinh độ 
+        const lat = coordinates[1]; // Vĩ độ 
+        
+        console.log("Parsed coordinates:", {lng, lat});
 
         goongjs.accessToken = MAPTILES_KEY;
         const map = new goongjs.Map({
@@ -414,7 +412,6 @@ $maxCount = max($ratingDistribution);
             center: [lng, lat], // Đúng thứ tự [longitude, latitude]
             zoom: 15
         });
-
         new goongjs.Marker()
             .setLngLat([lng, lat])
             .addTo(map);

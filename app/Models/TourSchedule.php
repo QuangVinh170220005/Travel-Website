@@ -30,7 +30,6 @@ class TourSchedule extends Model
     {
         return $this->belongsTo(Tour::class, foreignKey: 'tour_id');
     }
-
     public function scopeOrdered($query)
     {
         return $query->orderBy('day_number');
