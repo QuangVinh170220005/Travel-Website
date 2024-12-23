@@ -17,6 +17,20 @@ use function Laravel\Prompts\alert;
 
 class TourController extends Controller
 {
+    public function index()
+    {
+        $tours = Tour::with(['images', 'location'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+        $locations = Location::all();
+
+        if (request()->ajax()) {
+            return view('admin.tours.index', compact('tours', 'locations'))->render();
+        }
+
+        return view('admin.tours.index', compact('tours', 'locations'));
+    }
+
     public function create()
     {
         $locations = Location::all();

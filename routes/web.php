@@ -98,6 +98,12 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::post('/temp-store', [TourController::class, 'tempStore'])->name('tours.temp.store');
         Route::post('/final-store', [TourController::class, 'finalStore'])->name('tours.final.store');
         Route::post('/validate-step-{step}', [TourController::class, 'validateStep'])->name('tours.validate.step');
+
+        // Thêm các routes mới
+        Route::get('/', [TourController::class, 'index'])->name('tours.index'); // Hiển thị danh sách
+        Route::get('/{tour}/edit', [TourController::class, 'edit'])->name('tours.edit'); // Form chỉnh sửa
+        Route::put('/{tour}', [TourController::class, 'update'])->name('tours.update'); // Cập nhật
+        Route::delete('/{tour}', [TourController::class, 'destroy'])->name('tours.destroy'); // Xóa
     });
 
     Route::prefix('bookings')->group(function () {
