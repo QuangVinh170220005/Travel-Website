@@ -29,20 +29,10 @@ class TourSchedule extends Model
         'available_slots' => 'integer'
     ];
 
-    // Định nghĩa các giá trị status có thể có
-    const STATUS_OPEN = 'OPEN';
-    const STATUS_FULL = 'FULL';
-    const STATUS_COMPLETED = 'COMPLETED';
-    const STATUS_CANCELLED = 'CANCELLED';
 
 
     public function tour(): BelongsTo
     {
         return $this->belongsTo(Tour::class, 'tour_id');
-    }
-
-    public function priceList(): BelongsTo
-    {
-        return $this->belongsTo(PriceList::class, 'price_list_id');
     }
 }

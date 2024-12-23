@@ -12,9 +12,10 @@ use App\Http\Controllers\ChatController;
 use Illuminate\Support\Facades\Auth;
 
 // Public routes
-Route::get('/home', function () {
-    return view('user.home');
-});
+// Route::get('/home', function () {
+//     return view('user.home');
+// });
+Route::get('/home', [TourController::class, 'getPopularLocationTours'])->name('home');
 
 // Auth routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -32,9 +33,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 // User routes
-Route::get('/explore', function () {
-    return view('user.explore');
-})->name('explore');
+
 
 Route::get('/explore/all', function () {
     return view('user.explore.all');
@@ -63,11 +62,6 @@ Route::get('/blog', function () {
 Route::get('/wishlist', function () {
     return view('user.wishlist');
 })->name('wishlist');
-
-Route::get('/trip-details', function () {
-    return view('user.trip-details');
-})->name('trip-details');
-
 // Admin routes
 Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::get('/', function () {
@@ -111,5 +105,5 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     Route::post('/tours/search-address', [TourController::class, 'searchAddress'])->name('tours.search.address');
     Route::post('/tours/place-detail', [TourController::class, 'getPlaceDetail'])->name('tours.place.detail');
 });
+Route::get('/tour/{tour}', [TourController::class, 'scheduleTour'])->name('tour.schedule');
 Route::get('/explore', [TourController::class, 'explore'])->name('explore');
-Route::get('/explore/schedule/{tour}', [TourController::class, 'scheduleTour'])->name('tour.schedule');

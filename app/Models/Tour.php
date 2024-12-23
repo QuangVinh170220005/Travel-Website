@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tour extends Model
 {
+    protected $primaryKey = 'tour_id';
+
     protected $fillable = [
         'tour_name',
         'description',
@@ -43,6 +45,12 @@ class Tour extends Model
     }
     public function schedules()
     {
-        return $this->hasMany(TourSchedule::class, 'tour_id');
+        return $this->hasMany(TourSchedule::class, 'tour_id', 'tour_id');
     }
-}
+
+    public function mainImage()
+    {
+        return $this->hasOne(TourImage::class, 'tour_id')->where('is_main', true);
+    }
+ }
+

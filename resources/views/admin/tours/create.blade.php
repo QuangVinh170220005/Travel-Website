@@ -1151,6 +1151,10 @@
         const fileInput = document.getElementById('tourImages');
         const previewContainer = document.getElementById('imagePreviewContainer');
 
+        function handleFiles(files) {
+            [...files].forEach(previewFile);
+        }
+        
         // Prevent default drag behaviors
         ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
             dropZone.addEventListener(eventName, preventDefaults, false);
@@ -1194,9 +1198,6 @@
             handleFiles(this.files);
         });
 
-        function handleFiles(files) {
-            [...files].forEach(previewFile);
-        }
 
         function previewFile(file) {
             // Validate file type
@@ -1241,8 +1242,8 @@
     });
 
     // Thêm vào phần script
-    const API_KEY = 'wCJbks0Q8BSaJobLRuaVpxLTMR47V9PtGZFK9f7i'; // Thay thế bằng API key của bạn
-    const MAPTILES_KEY = 'tN9ukc25KjSGFzfG41uzlgWP3AzHXN0TcsOd3A3K'; // Thay thế bằng Maptiles key của bạn
+    const API_KEY = '{{ config("services.goong.key") }}';
+    const MAPTILES_KEY = '{{ config("services.goong.maptiles_key") }}';
 
     let map = null;
     let currentMarker = null;
