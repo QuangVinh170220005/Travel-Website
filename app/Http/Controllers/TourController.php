@@ -378,31 +378,101 @@ class TourController extends Controller
             return redirect()->back()->with('error', 'Không tìm thấy tour');
         }
     }
-    
 
 
 
-// Tour phổ biến
-// Thêm method mới trong TourController
-public function getPopularLocationTours()
-{
-    try {
-        $popularTours = Tour::with(['location', 'mainImage', 'priceLists.priceDetails' => function ($query) {
-            $query->where('customer_type', 'ADULT');
-        }])
-        ->whereHas('location', function($query) {
-            $query->where('is_popular', true);
-        })
-        ->orderBy('created_at', 'desc')
-        ->get();
 
-        return view('user.home', compact('popularTours'));
-    } catch (\Exception $e) {
-        Log::error('Error in getPopularLocationTours: ' . $e->getMessage());
-        return view('user.home')->with('error', 'Không thể tải dữ liệu tour');
+    // Tour phổ biến
+    // Thêm method mới trong TourController
+    public function getPopularLocationTours()
+    {
+        try {
+            $popularTours = Tour::with([
+                'location',
+                'mainImage',
+                'priceLists.priceDetails' => function ($query) {
+                    $query->where('customer_type', 'ADULT');
+                }
+            ])
+                ->whereHas('location', function ($query) {
+                    $query->where('is_popular', true);
+                })
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return view('user.home', compact('popularTours'));
+        } catch (\Exception $e) {
+            Log::error('Error in getPopularLocationTours: ' . $e->getMessage());
+            return view('user.home')->with('error', 'Không thể tải dữ liệu tour');
+        }
     }
-}
 
+    public function pricing(Tour $tour)
+    {
+        return view('admin.tours.pricing.create', compact('tour'));
+    }
 
+    public function storePricing(Request $request, Tour $tour)
+    {
+        try {
+            $request->validate([
+                'price_list_name' => 'required|max:100',
+                'valid_from' => 'required|date',
+                'valid_to' => 'required|date|after:valid_from',
+                'description' => 'nullable',
+                'is_default' => 'boolean',
+                'prices' => 'required|array',
+                'prices.*.customer_type' => 'required|in:ADULT,CHILD',
+                'prices.*.price' => 'required|numeric|min:0',
+                'prices.*.note' => 'nullable'
+            ]);
 
+            DB::beginTransaction();
+
+            $isDefault = $request->boolean('is_default');
+
+            if ($isDefault) {
+                PriceList::where('tour_id', $tour->id)
+                    ->where('is_default', true)
+                    ->update(['is_default' => false]);
+            }
+
+            $priceList = $tour->priceLists()->create([
+                'price_list_name' => $request->price_list_name,
+                'valid_from' => $request->valid_from,
+                'valid_to' => $request->valid_to,
+                'description' => $request->description,
+                'is_default' => $isDefault,
+            ]);
+
+            foreach ($request->prices as $price) {
+                $priceList->priceDetails()->create([
+                    'customer_type' => $price['customer_type'],
+                    'price' => $price['price'],
+                    'note' => $price['note'] ?? null
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Tạo bảng giá thành công',
+                'redirect' => route('tours.index')
+            ]);
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'errors' => $e->errors()
+            ], 422);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 }

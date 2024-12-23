@@ -75,14 +75,10 @@
                         class="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5"
                         style="display: none;">
 
-                        <a href="{{ route('profile') }}"
-                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300">
-                            <i class="far fa-user mr-2"></i>Your Profile
-                        </a>
 
-                        <a href="{{ route('settings') }}"
+                        <a href="{{ route('settings')}}"
                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition duration-300">
-                            <i class="fas fa-cog mr-2"></i>Settings
+                            <i class="far fa-user mr-2"></i>Settings
                         </a>
 
                         <div class="border-t border-gray-100"></div>

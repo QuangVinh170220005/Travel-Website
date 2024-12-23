@@ -4,64 +4,36 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 
 class SettingsController extends Controller
 {
-    public function show()
+    public function index(Request $request)
     {
-        return view('settings.index', [
-            'user' => Auth::user()
+        return view('user.settings.index', [
+            'user' => Auth::user(),
         ]);
     }
 
-    // public function updateProfile(Request $request)
-    // {
-    //     $user = Auth::user();
-        
-    //     $validated = $request->validate([
-    //         'name' => ['required', 'string', 'max:255'],
-    //         'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-    //         'phone' => ['nullable', 'string', 'max:20'],
-    //         'address' => ['nullable', 'string', 'max:255'],
-    //     ]);
+    public function show($section = 'profile')
+    {
+        // Nếu request là AJAX, trả về partial view
+        if (request()->ajax()) {
+            try {
+                $user = Auth::user();
+                return view("user.settings.{$section}", compact('user'));
+            } catch (\Exception $e) {
+                Log::error('Settings section error: ' . $e->getMessage());
+                return response()->json(['error' => $e->getMessage()], 500);
+            }
+        }
 
-    //     $user->update($validated);
-
-    //     return redirect()->back()->with('success', 'Profile updated successfully');
-    // }
-
-    // public function updatePassword(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'current_password' => ['required', 'string'],
-    //         'password' => ['required', 'string', 'min:8', 'confirmed'],
-    //     ]);
-
-    //     $user = Auth::user();
-
-    //     if (!Hash::check($validated['current_password'], $user->password)) {
-    //         return back()->withErrors(['current_password' => 'The current password is incorrect.']);
-    //     }
-
-    //     $user->update([
-    //         'password' => Hash::make($validated['password'])
-    //     ]);
-
-    //     return redirect()->back()->with('success', 'Password updated successfully');
-    // }
-
-    // public function updateNotifications(Request $request)
-    // {
-    //     $validated = $request->validate([
-    //         'email_notifications' => ['boolean'],
-    //         'push_notifications' => ['boolean'],
-    //     ]);
-
-    //     Auth::user()->update($validated);
-
-    //     return redirect()->back()->with('success', 'Notification preferences updated successfully');
-    // }
+        // Nếu không phải AJAX request (truy cập trực tiếp hoặc F5)
+        // trả về view chính với section được chọn
+        return view('user.settings.index', [
+            'user' => Auth::user(),
+            'currentSection' => $section
+        ]);
+    }
 }
