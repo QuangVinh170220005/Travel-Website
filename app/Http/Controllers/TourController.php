@@ -354,11 +354,14 @@ class TourController extends Controller
     public function explore()
     {
         try {
-            $tours = Tour::with(['priceLists.priceDetails' => function ($query) {
-                $query->where('customer_type', 'ADULT');
-            }, 'mainImage'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
+            $tours = Tour::with([
+                'priceLists.priceDetails' => function ($query) {
+                    $query->where('customer_type', 'ADULT');
+                },
+                'mainImage'
+            ])
+                ->orderBy('created_at', 'desc')
+                ->paginate(12);
 
             return view('user.explore', compact('tours'));
         } catch (\Exception $e) {
@@ -370,7 +373,15 @@ class TourController extends Controller
     public function scheduleTour($tour_id)
     {
         try {
-            $tour = Tour::with(['schedules', 'location', 'images'])->findOrFail($tour_id);
+            $tour = Tour::with([
+                'schedules' => function ($query) {
+                    $query->ordered()->first(); // Lấy lịch trình đầu tiên
+                },
+                'location',
+                'images',
+                'priceLists.priceDetails'
+            ])->findOrFail($tour_id);
+
             Log::info('Tour data:', ['tour' => $tour->toArray()]);
             return view('user.trip-details', compact('tour'));
         } catch (\Exception $e) {
@@ -378,6 +389,7 @@ class TourController extends Controller
             return redirect()->back()->with('error', 'Không tìm thấy tour');
         }
     }
+
 
 
 
