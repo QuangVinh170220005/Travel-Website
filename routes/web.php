@@ -39,14 +39,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/my-bookings', [BookingController::class, 'myBookings'])->name('booking.my-bookings');
     Route::get('/booking/{booking}', [BookingController::class, 'show'])->name('booking.show');
     Route::post('/booking/{booking}/cancel', [BookingController::class, 'cancel'])->name('booking.cancel');
-    
+
     // Thêm các route mới
     // Route để lưu booking
     Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
-    
+
     // Route để hiển thị trang xác nhận booking
     Route::get('/booking/{tour}/confirm', [BookingController::class, 'showConfirmation'])->name('booking.confirm');
-    
+
     // Route để xử lý thanh toán (nếu có)
     Route::post('/booking/{booking}/payment', [BookingController::class, 'processPayment'])->name('booking.payment');
 });
@@ -128,6 +128,14 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::post('/{tour}/pricing', [TourController::class, 'storePricing'])->name('tours.pricing.store');
         Route::put('/{tour}/pricing/{price}', [TourController::class, 'updatePricing'])->name('tours.pricing.update');
         Route::delete('/{tour}/pricing/{price}', [TourController::class, 'deletePricing'])->name('tours.pricing.destroy');
+    });
+
+    Route::prefix('bookings')->group(function () {
+        Route::get('/all', [BookingController::class, 'all'])->name('admin.bookings.all');
+        Route::get('/{booking}', [BookingController::class, 'show'])->name('admin.bookings.show');
+        Route::patch('/{booking}/status', [BookingController::class, 'updateStatus'])->name('admin.bookings.updateStatus');
+        Route::get('/statistics', [BookingController::class, 'statistics'])->name('admin.bookings.statistics');
+        Route::get('/export', [BookingController::class, 'export'])->name('admin.bookings.export');
     });
 
     Route::post('/tours/search-address', [TourController::class, 'searchAddress'])->name('tours.search.address');

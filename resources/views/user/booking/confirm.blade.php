@@ -10,6 +10,33 @@
             <h1 class="text-2xl font-roboto font-bold mb-2">Xác nhận thông tin đặt tour</h1>
             <p class="text-gray-600">{{ $tour->tour_name }}</p>
         </div>
+        <!-- Thêm ngay sau div class="mb-8" của phần header -->
+
+        @if ($errors->any())
+            <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Có lỗi xảy ra!</strong>
+                <ul class="mt-2 list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        @if(session('success'))
+            <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Thành công!</strong>
+                <p>{{ session('success') }}</p>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+                <strong class="font-bold">Lỗi!</strong>
+                <p>{{ session('error') }}</p>
+            </div>
+        @endif
+
 
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 border-2 border-gray rounded-lg">
             <!-- Thông tin tour và giá -->
@@ -59,7 +86,6 @@
                     </table>
                 </div>
 
-
                 <!-- Bảng chi tiết giá -->
                 <div class="bg-white rounded-lg shadow-sm p-6">
                     <h2 class="text-lg font-roboto font-semibold mb-4">Chi tiết giá</h2>
@@ -104,11 +130,13 @@
                     <h2 class="text-lg font-roboto font-semibold mb-4">Thông tin liên hệ</h2>
                     <form action="{{ route('booking.store') }}" method="POST">
                         @csrf
-                        <input type="hidden" name="tour_id" value="{{ $tour->id }}">
+
+                        <!-- Hidden inputs -->
+                        <input type="hidden" name="tour_id" value="{{ $tour->tour_id }}">
+                        <input type="hidden" name="schedule_id" value="{{ $tour->schedules->first()->schedule_id }}">
+                        <input type="hidden" name="total_amount" value="{{ $totalAmount }}">
                         <input type="hidden" name="adult_count" value="{{ $validated['adult_count'] }}">
                         <input type="hidden" name="child_count" value="{{ $validated['child_count'] ?? 0 }}">
-                        <input type="hidden" name="total_amount" value="{{ $totalAmount }}">
-
 
                         <!-- Họ tên -->
                         <div class="mb-4">
@@ -138,10 +166,28 @@
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                         </div>
 
-                        <!-- Ghi chú -->
+                        <!-- Thêm một hidden input để đảm bảo need_pickup luôn được gửi -->
+                        <input type="hidden" name="need_pickup" value="0">
+                        <div class="mb-4">
+                            <label class="flex items-center">
+                                <input type="checkbox" name="need_pickup" value="1"
+                                    class="rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
+                                <span class="ml-2 text-sm text-gray-600">Yêu cầu đón</span>
+                            </label>
+                        </div>
+
+                        <div class="mb-4" id="pickup_location_container" style="display: none;">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Địa điểm đón</label>
+                            <input type="text" name="pickup_location"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                value="">
+                        </div>
+
+
+                        <!-- Yêu cầu đặc biệt -->
                         <div class="mb-6">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Ghi chú</label>
-                            <textarea name="notes" rows="3"
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Yêu cầu đặc biệt</label>
+                            <textarea name="special_requests" rows="3"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                         </div>
 
@@ -156,4 +202,33 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const needPickupCheckbox = document.querySelector('input[name="need_pickup"]');
+            const pickupLocationContainer = document.getElementById('pickup_location_container');
+            const pickupLocationInput = document.querySelector('input[name="pickup_location"]');
+
+            // Hàm xử lý hiển thị/ẩn pickup location
+            function togglePickupLocation() {
+                if (needPickupCheckbox.checked) {
+                    pickupLocationContainer.style.display = 'block';
+                    pickupLocationInput.setAttribute('required', '');
+                } else {
+                    pickupLocationContainer.style.display = 'none';
+                    pickupLocationInput.removeAttribute('required');
+                    pickupLocationInput.value = ''; // Reset về chuỗi rỗng
+                }
+            }
+
+            // Xử lý khi checkbox thay đổi
+            needPickupCheckbox.addEventListener('change', togglePickupLocation);
+
+            // Khởi tạo trạng thái ban đầu
+            togglePickupLocation();
+        });
+    </script>
+@endpush
+
 @endsection
