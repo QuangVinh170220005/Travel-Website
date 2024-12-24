@@ -22,14 +22,28 @@ class Booking extends Model
         'pickup_location'
     ];
 
-
+    protected $primaryKey = 'booking_id';
+    // Thêm dòng này vì booking_id là bigint
+    public $incrementing = true;
+    
+    public function bookingDetail()
+    {
+        return $this->hasOne(BookingDetail::class, 'booking_id', 'booking_id');
+    }
+    
     public function tour()
     {
-        return $this->belongsTo(Tour::class);
+        return $this->belongsTo(Tour::class, 'tour_id', 'tour_id');
+    }
+
+    public function schedule()
+    {
+        return $this->belongsTo(TourSchedule::class, 'schedule_id', 'schedule_id');
     }
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+
 }

@@ -16,8 +16,11 @@ class BookingDetail extends Model
         'child_count'
     ];
 
+    protected $table = 'booking_details';
+    protected $primaryKey = 'detail_id'; // Chú ý đây
+    
     public function booking()
     {
-        return $this->belongsTo(Booking::class);
+        return $this->belongsTo(Booking::class, 'booking_id', 'booking_id');
     }
 }

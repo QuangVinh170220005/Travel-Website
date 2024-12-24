@@ -6,6 +6,7 @@ use App\Http\Controllers\TourController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\AdminBookingController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ChatController;
@@ -131,11 +132,17 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     });
 
     Route::prefix('bookings')->group(function () {
-        Route::get('/all', [BookingController::class, 'all'])->name('admin.bookings.all');
-        Route::get('/{booking}', [BookingController::class, 'show'])->name('admin.bookings.show');
-        Route::patch('/{booking}/status', [BookingController::class, 'updateStatus'])->name('admin.bookings.updateStatus');
-        Route::get('/statistics', [BookingController::class, 'statistics'])->name('admin.bookings.statistics');
+        Route::get('/all', [AdminBookingController::class, 'index'])->name('admin.bookings.index');
+        Route::get('/{booking}', [AdminBookingController::class, 'show'])->name('admin.bookings.show');
+        Route::patch('/{booking}/status', [AdminBookingController::class, 'updateStatus'])->name('admin.bookings.updateStatus');
+        Route::get('/statistics', [AdminBookingController::class, 'statistics'])->name('admin.bookings.statistics');
         Route::get('/export', [BookingController::class, 'export'])->name('admin.bookings.export');
+        Route::get('/export-pdf', [AdminBookingController::class, 'exportPDF'])->name('admin.bookings.export-pdf');
+
+        // Thêm các route mới
+        Route::post('/{booking}/confirm', [AdminBookingController::class, 'confirm'])->name('admin.bookings.confirm');
+        Route::post('/{booking}/cancel', [AdminBookingController::class, 'cancel'])->name('admin.bookings.cancel');
+        Route::post('/{booking}/complete', [AdminBookingController::class, 'complete'])->name('admin.bookings.complete');
     });
 
     Route::post('/tours/search-address', [TourController::class, 'searchAddress'])->name('tours.search.address');

@@ -1,142 +1,180 @@
 @extends('admin.layouts.app')
 
 @section('content')
-<div class="container px-6 mx-auto">
-    <div class="flex justify-between items-center mb-6">
-        <h2 class="text-2xl font-semibold text-gray-700">Quản lý Booking</h2>
-        <div class="flex gap-3">
-            <select class="rounded-md border-gray-300" id="statusFilter">
-                <option value="">Tất cả trạng thái</option>
-                <option value="PENDING">Chờ xác nhận</option>
-                <option value="CONFIRMED">Đã xác nhận</option>
-                <option value="PAID">Đã thanh toán</option>
-                <option value="CANCELLED">Đã hủy</option>
-            </select>
-            <button class="bg-blue-600 text-white px-4 py-2 rounded-md">
-                Xuất dữ liệu
-            </button>
+<div class="container mx-auto px-4">
+    <h1 class="text-2xl font-bold mt-4 mb-6">Quản lý đặt tour</h1>
+    
+    <div class="bg-white rounded-lg shadow-md">
+        <div class="border-b border-gray-200 px-6 py-4 flex items-center">
+            <i class="fas fa-table mr-2"></i>
+            <span class="font-semibold">Danh sách đặt tour</span>
         </div>
-    </div>
 
-    <div class="bg-white shadow-md rounded-lg overflow-hidden">
-        <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
-                <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Ngày đặt</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Khách hàng</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tour</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Trạng thái</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tổng tiền</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-                @foreach($bookings as $booking)
-                <tr class="hover:bg-gray-50 cursor-pointer booking-row" data-booking-id="{{ $booking->booking_id }}">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        {{ $booking->booking_date?->format('d/m/Y H:i') ?? 'N/A' }}
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="flex items-center">
-                            <div class="h-8 w-8 rounded-full overflow-hidden mr-3">
-                                <img src="{{ $booking->user->avatar_url ?? asset('images/default-avatar.jpg') }}" 
-                                     alt="Avatar" class="h-full w-full object-cover">
-                            </div>
-                            <span>{{ $booking->user->name ?? 'N/A' }}</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $booking->tour->name ?? 'N/A' }}
-                    </td>
-                    <td class="px-6 py-4">
-                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                            @if($booking->status === 'PENDING') bg-yellow-100 text-yellow-800
-                            @elseif($booking->status === 'CONFIRMED') bg-blue-100 text-blue-800
-                            @elseif($booking->status === 'PAID') bg-green-100 text-green-800
-                            @else bg-red-100 text-red-800
-                            @endif">
-                            {{ $booking->status }}
-                        </span>
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ number_format($booking->total_amount, 0, ',', '.') }} đ
-                    </td>
-                </tr>
-                @endforeach
-            </tbody>
-        </table>
+        <div class="p-6">
+            <!-- Bộ lọc -->
+            <div class="bg-gray-50 rounded-lg p-6 mb-6">
+                <form action="{{ route('admin.bookings.index') }}" method="GET" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Trạng thái</label>
+                        <select name="status" class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="PENDING" {{ request('status') == 'PENDING' ? 'selected' : '' }}>Chờ xác nhận</option>
+                            <option value="CONFIRMED" {{ request('status') == 'CONFIRMED' ? 'selected' : '' }}>Đã xác nhận</option>
+                            <option value="CANCELLED" {{ request('status') == 'CANCELLED' ? 'selected' : '' }}>Đã hủy</option>
+                            <option value="COMPLETED" {{ request('status') == 'COMPLETED' ? 'selected' : '' }}>Đã hoàn thành</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Từ ngày</label>
+                        <input type="date" name="from_date" value="{{ request('from_date') }}" 
+                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Đến ngày</label>
+                        <input type="date" name="to_date" value="{{ request('to_date') }}"
+                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Tìm kiếm</label>
+                        <input type="text" name="search" value="{{ request('search') }}" 
+                            placeholder="Tìm theo mã, tên khách hàng..."
+                            class="w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors">
+                            <i class="fas fa-search mr-2"></i> Lọc
+                        </button>
+                    </div>
+                </form>
+            </div>
 
-        <div class="px-6 py-4">
-            {{ $bookings->links() }}
+            <!-- Bảng dữ liệu -->
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mã đặt tour</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Khách hàng</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tour</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày khởi hành</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tổng tiền</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trạng thái</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ngày đặt</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        @forelse($bookings as $booking)
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">{{ $booking->booking_id }}</td>
+                            <td class="px-6 py-4">
+                                @if($booking->bookingDetail)
+                                    <div class="text-sm font-medium text-gray-900">
+                                        {{ $booking->bookingDetail->name }}
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        {{ $booking->bookingDetail->email }}
+                                    </div>
+                                    <div class="text-sm text-gray-500">
+                                        {{ $booking->bookingDetail->phone }}
+                                    </div>
+                                @else
+                                    <!-- Thêm debug để xem booking_id -->
+                                    <div class="text-sm text-red-500">
+                                        No details found for booking ID: {{ $booking->booking_id }}
+                                    </div>
+                                @endif
+                            </td>
+
+
+                            <td class="px-6 py-4">{{ $booking->tour->tour_name }}</td>
+                            <td class="px-6 py-4">{{ $booking->schedule->departure_date->format('d/m/Y') }}</td>
+                            <td class="px-6 py-4">{{ number_format($booking->total_amount) }}đ</td>
+                            <td class="px-6 py-4">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full
+                                    @if($booking->status === 'PENDING') 
+                                        bg-yellow-100 text-yellow-800
+                                    @elseif($booking->status === 'CONFIRMED')
+                                        bg-green-100 text-green-800
+                                    @elseif($booking->status === 'CANCELLED')
+                                        bg-red-100 text-red-800
+                                    @elseif($booking->status === 'COMPLETED')
+                                        bg-blue-100 text-blue-800
+                                    @endif">
+                                    @switch($booking->status)
+                                        @case('PENDING')
+                                            Chờ xác nhận
+                                            @break
+                                        @case('CONFIRMED')
+                                            Đã xác nhận
+                                            @break
+                                        @case('CANCELLED')
+                                            Đã hủy
+                                            @break
+                                        @case('COMPLETED')
+                                            Đã hoàn thành
+                                            @break
+                                        @default
+                                            {{ $booking->status }}
+                                    @endswitch
+                                </span>
+                            </td>
+                            <td class="px-6 py-4">{{ $booking->created_at->format('d/m/Y H:i') }}</td>
+                            <td class="px-6 py-4">
+                                <div class="relative" x-data="{ open: false }">
+                                    <button @click="open = !open" class=" text-gray-700 p-2">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    
+                                    <div x-show="open" @click.away="open = false" 
+                                        class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-50">
+                                        <div class="py-1">
+                                            @if($booking->status === 'PENDING')
+                                                <form action="{{ route('admin.bookings.confirm', $booking->booking_id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                        <i class="fas fa-check mr-2"></i> Xác nhận
+                                                    </button>
+                                                </form>
+                                            @endif
+
+                                            @if(in_array($booking->status, ['PENDING', 'CONFIRMED']))
+                                                <form action="{{ route('admin.bookings.cancel', $booking->booking_id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                        <i class="fas fa-times mr-2"></i> Hủy
+                                                    </button>
+                                                </form>
+                                            @endif
+
+                                            @if($booking->status === 'CONFIRMED')
+                                                <form action="{{ route('admin.bookings.complete', $booking->booking_id) }}" method="POST" class="inline">
+                                                    @csrf
+                                                    <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                                        <i class="fas fa-check-double mr-2"></i> Hoàn thành
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        @empty
+                        <tr>
+                            <td colspan="9" class="px-6 py-4 text-center text-gray-500">Không có dữ liệu</td>
+                        </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Phân trang -->
+            <div class="mt-4">
+                {{ $bookings->links() }}
+            </div>
         </div>
     </div>
 </div>
 
-<!-- Modal Chi tiết -->
-<div id="bookingDetailModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50">
-    <div class="flex items-center justify-center min-h-screen px-4">
-        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl">
-            <div class="flex justify-between items-center px-6 py-4 border-b">
-                <h3 class="text-lg font-semibold text-gray-900">Chi tiết Booking</h3>
-                <button class="close-modal text-gray-400 hover:text-gray-500">
-                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                    </svg>
-                </button>
-            </div>
-            <div id="bookingDetailContent" class="p-6">
-                <!-- Nội dung chi tiết sẽ được load ở đây -->
-            </div>
-        </div>
-    </div>
-</div>
 @endsection
-
-@push('scripts')
-<script>
-$(document).ready(function() {
-    // Click vào hàng để xem chi tiết
-    $('.booking-row').on('click', function() {
-        const bookingId = $(this).data('booking-id');
-        const modal = $('#bookingDetailModal');
-        const content = $('#bookingDetailContent');
-
-        content.html('<div class="flex justify-center"><div class="loader">Loading...</div></div>');
-        modal.removeClass('hidden');
-
-        $.ajax({
-            url: `/admin/bookings/${bookingId}`,
-            method: 'GET',
-            success: function(response) {
-                if (response.success) {
-                    content.html(response.html);
-                } else {
-                    content.html('<div class="text-red-500 text-center">Không thể tải dữ liệu</div>');
-                }
-            },
-            error: function() {
-                content.html('<div class="text-red-500 text-center">Có lỗi xảy ra</div>');
-            }
-        });
-    });
-
-    // Đóng modal
-    $('.close-modal, #bookingDetailModal').on('click', function(e) {
-        if (e.target === this) {
-            $('#bookingDetailModal').addClass('hidden');
-        }
-    });
-
-    // Filter theo trạng thái
-    $('#statusFilter').on('change', function() {
-        const status = $(this).val();
-        const currentUrl = new URL(window.location.href);
-        if (status) {
-            currentUrl.searchParams.set('status', status);
-        } else {
-            currentUrl.searchParams.delete('status');
-        }
-        window.location.href = currentUrl.toString();
-    });
-});
-</script>
-@endpush

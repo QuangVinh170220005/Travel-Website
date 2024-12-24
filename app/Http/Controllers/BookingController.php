@@ -112,4 +112,13 @@ class BookingController extends Controller
             // ->with('error', 'Có lỗi xảy ra khi đặt tour. Vui lòng thử lại sau.');
         }
     }
+    public function myBookings()
+    {
+        $bookings = Booking::with(['tour', 'schedule'])
+            ->where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+
+        return view('user.booking.my-bookings', compact('bookings'));
+    }
 }
