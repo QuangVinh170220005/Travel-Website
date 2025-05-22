@@ -249,7 +249,7 @@ $latestPosts = [
                     <li>Cẩn thận với sứa khi tắm biển</li>
                 </ul>
             </div>',
-        'featured_image' => 'https://phuquocexpress.com/wp-content/uploads/2024/09/anh-phu-quoc.jpg',
+        'featured_image' => 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR00Frrso3srLuHpeu2Uv6pUURYWGXNXo9ihA&s',
         'category' => [
             'name' => 'Du lịch biển'
         ],

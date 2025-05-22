@@ -49,7 +49,7 @@
             ['description' => 'No Parties / Event'],
         ],
         'price_per_night' => 100,
-        'rating' => 4.8,
+        'rating' => 4.67,
         'reviews_count' => 24,
     ];
 

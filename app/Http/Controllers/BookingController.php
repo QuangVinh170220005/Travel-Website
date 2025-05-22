@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use App\Mail\BookingConfirmation;
+use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
 {
@@ -44,6 +46,7 @@ class BookingController extends Controller
 
     public function store(Request $request)
     {
+        $booking = null;
         // Đảm bảo need_pickup là boolean
         $needPickup = $request->boolean('need_pickup');
 
@@ -87,7 +90,7 @@ class BookingController extends Controller
 
                 // 2. Tạo booking detail
                 BookingDetail::create([
-                    'booking_id' => $booking->id,
+                    'booking_id' => $booking->booking_id,
                     'name' => $validated['name'],
                     'email' => $validated['email'],
                     'phone' => $validated['phone'],
@@ -96,7 +99,21 @@ class BookingController extends Controller
                     'child_count' => $validated['child_count'] ?? 0
                 ]);
 
-                // Có thể thêm logic gửi email xác nhận ở đây
+                if ($booking) {
+                    // Load relationships cần thiết cho email
+                    $booking->load(['tour', 'schedule', 'bookingDetail']);
+                    
+                    try {
+                        Mail::to($validated['email'])->send(new BookingConfirmation($booking));
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send booking confirmation email: '. $e->getMessage());
+                    }
+                } else {
+                    Log::error('Failed to create booking record');
+                    return back()
+                        ->withInput()
+                        ->with('error', 'Có lỗi xảy ra khi đặt tour. Vui lòng thử lại sau.');
+                }
             });
 
             return redirect()

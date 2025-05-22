@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Booking;
+use App\Mail\AdminBookingConfirmed;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 class AdminBookingController extends Controller
 {
     public function index(Request $request)
@@ -62,17 +65,26 @@ class AdminBookingController extends Controller
     {
         $booking = Booking::findOrFail($id);
 
-        // Kiểm tra xem có thể xác nhận không
         if ($booking->status !== 'PENDING') {
             return back()->with('error', 'Chỉ có thể xác nhận các đơn đang chờ xử lý');
         }
 
-        $booking->update([
-            'status' => 'CONFIRMED'
-        ]);
+        try {
+            // Cập nhật trạng thái
+            $booking->update([
+                'status' => 'CONFIRMED'
+            ]);
 
-        // Gửi email thông báo cho khách hàng
-        return back()->with('success', 'Đã xác nhận đơn đặt tour thành công');
+            Mail::send('emails.admin-booking-confirmed', ['booking' => $booking], function($message) use ($booking) {
+                $message->to($booking->bookingDetail->email)
+                        ->subject('Tour của bạn đã được xác nhận');
+            });
+
+            return back()->with('success', 'Đã xác nhận đơn đặt tour và gửi mail thành công');
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi xác nhận booking: ' . $e->getMessage());
+            return back()->with('warning', 'Đã xác nhận đơn đặt tour nhưng không gửi được email');
+        }
     }
 
     public function cancel($id)

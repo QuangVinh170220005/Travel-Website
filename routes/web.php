@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 //     return view('user.home');
 // });
 Route::get('/home', [TourController::class, 'getPopularLocationTours'])->name('home');
+Route::get('/search', [TourController::class, 'searchTours'])->name('tours.search');
 
 // Auth routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
