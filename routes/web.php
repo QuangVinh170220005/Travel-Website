@@ -6,6 +6,7 @@ use App\Http\Controllers\TourController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\AdminUserController;
+use App\Http\Controllers\AdminBookingController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\ChatController;
@@ -17,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 //     return view('user.home');
 // });
 Route::get('/home', [TourController::class, 'getPopularLocationTours'])->name('home');
+Route::get('/search', [TourController::class, 'searchTours'])->name('tours.search');
 
 // Auth routes
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -31,6 +33,26 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
     Route::get('/settings/{section?}', [SettingsController::class, 'show'])->name('settings.show');
 });
+
+// Trong nhóm middleware auth
+Route::middleware(['auth'])->group(function () {
+    // Các route booking hiện tại của bạn
+    Route::get('/booking/{tour}/create', [BookingController::class, 'create'])->name('booking.create');
+    Route::get('/my-bookings', [BookingController::class, 'myBookings'])->name('booking.my-bookings');
+    Route::get('/booking/{booking}', [BookingController::class, 'show'])->name('booking.show');
+    Route::post('/booking/{booking}/cancel', [BookingController::class, 'cancel'])->name('booking.cancel');
+
+    // Thêm các route mới
+    // Route để lưu booking
+    Route::post('/booking', [BookingController::class, 'store'])->name('booking.store');
+
+    // Route để hiển thị trang xác nhận booking
+    Route::get('/booking/{tour}/confirm', [BookingController::class, 'showConfirmation'])->name('booking.confirm');
+
+    // Route để xử lý thanh toán (nếu có)
+    Route::post('/booking/{booking}/payment', [BookingController::class, 'processPayment'])->name('booking.payment');
+});
+
 
 // User routes
 
@@ -111,11 +133,17 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
     });
 
     Route::prefix('bookings')->group(function () {
-        Route::get('/all', [BookingController::class, 'all'])->name('admin.bookings.all');
-        Route::get('/{booking}', [BookingController::class, 'show'])->name('admin.bookings.show');
-        Route::patch('/{booking}/status', [BookingController::class, 'updateStatus'])->name('admin.bookings.updateStatus');
-        Route::get('/statistics', [BookingController::class, 'statistics'])->name('admin.bookings.statistics');
+        Route::get('/all', [AdminBookingController::class, 'index'])->name('admin.bookings.index');
+        Route::get('/{booking}', [AdminBookingController::class, 'show'])->name('admin.bookings.show');
+        Route::patch('/{booking}/status', [AdminBookingController::class, 'updateStatus'])->name('admin.bookings.updateStatus');
+        Route::get('/statistics', [AdminBookingController::class, 'statistics'])->name('admin.bookings.statistics');
         Route::get('/export', [BookingController::class, 'export'])->name('admin.bookings.export');
+        Route::get('/export-pdf', [AdminBookingController::class, 'exportPDF'])->name('admin.bookings.export-pdf');
+
+        // Thêm các route mới
+        Route::post('/{booking}/confirm', [AdminBookingController::class, 'confirm'])->name('admin.bookings.confirm');
+        Route::post('/{booking}/cancel', [AdminBookingController::class, 'cancel'])->name('admin.bookings.cancel');
+        Route::post('/{booking}/complete', [AdminBookingController::class, 'complete'])->name('admin.bookings.complete');
     });
 
     Route::post('/tours/search-address', [TourController::class, 'searchAddress'])->name('tours.search.address');

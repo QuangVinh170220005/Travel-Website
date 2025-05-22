@@ -2,99 +2,140 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
+use App\Models\Tour;
 use App\Models\Booking;
+use App\Models\BookingDetail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+use App\Mail\BookingConfirmation;
+use Illuminate\Support\Facades\Mail;
 
 class BookingController extends Controller
 {
-    public function all()
+    public function create(Request $request, Tour $tour)
     {
-        $bookings = Booking::with(['tour', 'schedule', 'user'])
-            ->latest('booking_date')
-            ->paginate(10);
-            
-        return view('admin.bookings.all', compact('bookings'));
+        // Validate the request
+        $validated = $request->validate([
+            'adult_count' => 'required|integer|min:1|max:10',
+            'child_count' => 'nullable|integer|min:0|max:10',
+        ]);
+
+        // Get price details
+        $priceList = $tour->priceLists->first();
+        $adultPrice = $priceList->priceDetails->where('customer_type', 'ADULT')->first();
+        $childPrice = $priceList->priceDetails->where('customer_type', 'CHILD')->first();
+
+        // Calculate totals
+        $adultTotal = $validated['adult_count'] * $adultPrice->price;
+        $childTotal = ($validated['child_count'] ?? 0) * ($childPrice ? $childPrice->price : 0);
+        $totalAmount = $adultTotal + $childTotal;
+
+        return view('user.booking.confirm', compact(
+            'tour',
+            'adultPrice',
+            'childPrice',
+            'validated',
+            'adultTotal',
+            'childTotal',
+            'totalAmount'
+        ));
     }
 
-    public function show(Booking $booking)
+    public function store(Request $request)
     {
-        $booking->load(['tour', 'schedule', 'user']);
-        
-        if(request()->ajax()) {
-            $html = view('admin.bookings.partials.detail-modal', compact('booking'))->render();
-            return response()->json([
-                'success' => true,
-                'html' => $html
-            ]);
+        $booking = null;
+        // Đảm bảo need_pickup là boolean
+        $needPickup = $request->boolean('need_pickup');
+
+        // Merge lại request với giá trị boolean
+        $request->merge(['need_pickup' => $needPickup]);
+
+        // Nếu không cần đón, set pickup_location là null
+        if (!$needPickup) {
+            $request->merge(['pickup_location' => null]);
         }
 
-        return view('admin.bookings.show', compact('booking'));
-    }
-
-    public function updateStatus(Request $request, Booking $booking)
-    {
-        $request->validate([
-            'status' => 'required|in:PENDING,CONFIRMED,PAID,CANCELLED'
+        $validated = $request->validate([
+            'tour_id' => 'required|exists:tours,tour_id',
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'required|string|max:20',
+            'address' => 'required|string',
+            'adult_count' => 'required|integer|min:1|max:10',
+            'child_count' => 'nullable|integer|min:0|max:10',
+            'special_requests' => 'nullable|string',
+            'need_pickup' => 'boolean',
+            'pickup_location' => 'nullable|string|required_if:need_pickup,1',
+            'total_amount' => 'required|numeric|min:0',
+            'schedule_id' => 'required|exists:tour_schedules,schedule_id'
         ]);
 
         try {
-            DB::beginTransaction();
-            
-            $booking->update([
-                'status' => $request->status
-            ]);
-            
-            DB::commit();
+            DB::transaction(function () use ($validated) {
+                // 1. Tạo booking record
+                $booking = Booking::create([
+                    'tour_id' => $validated['tour_id'],
+                    'user_id' => Auth::id(),
+                    'schedule_id' => $validated['schedule_id'],
+                    'booking_date' => now(),
+                    'total_amount' => $validated['total_amount'],
+                    'status' => 'PENDING',
+                    'special_requests' => $validated['special_requests'] ?? null,
+                    'need_pickup' => $validated['need_pickup'] ?? false,
+                    'pickup_location' => $validated['need_pickup'] ? $validated['pickup_location'] : null
+                ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Cập nhật trạng thái thành công',
-                'status_badge' => $booking->status_badge
-            ]);
+                // 2. Tạo booking detail
+                BookingDetail::create([
+                    'booking_id' => $booking->booking_id,
+                    'name' => $validated['name'],
+                    'email' => $validated['email'],
+                    'phone' => $validated['phone'],
+                    'address' => $validated['address'],
+                    'adult_count' => $validated['adult_count'],
+                    'child_count' => $validated['child_count'] ?? 0
+                ]);
+
+                if ($booking) {
+                    // Load relationships cần thiết cho email
+                    $booking->load(['tour', 'schedule', 'bookingDetail']);
+                    
+                    try {
+                        Mail::to($validated['email'])->send(new BookingConfirmation($booking));
+                    } catch (\Exception $e) {
+                        Log::error('Failed to send booking confirmation email: '. $e->getMessage());
+                    }
+                } else {
+                    Log::error('Failed to create booking record');
+                    return back()
+                        ->withInput()
+                        ->with('error', 'Có lỗi xảy ra khi đặt tour. Vui lòng thử lại sau.');
+                }
+            });
+
+            return redirect()
+                ->route('booking.my-bookings')
+                ->with('success', 'Đặt tour thành công! Vui lòng kiểm tra email để xem chi tiết.');
+
         } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json([
-                'success' => false,
-                'message' => 'Có lỗi xảy ra khi cập nhật trạng thái'
-            ], 500);
+            Log::error('Booking creation failed: ' . $e->getMessage());
+
+            return back()
+                ->withInput()
+                ->with('error', $e->getMessage());
+            // ->with('error', 'Có lỗi xảy ra khi đặt tour. Vui lòng thử lại sau.');
         }
     }
-
-    public function statistics()
+    public function myBookings()
     {
-        $stats = [
-            'total' => Booking::count(),
-            'pending' => Booking::where('status', 'PENDING')->count(),
-            'confirmed' => Booking::where('status', 'CONFIRMED')->count(),
-            'paid' => Booking::where('status', 'PAID')->count(),
-            'cancelled' => Booking::where('status', 'CANCELLED')->count(),
-            
-            'revenue' => [
-                'total' => Booking::where('status', 'PAID')
-                    ->sum('total_amount'),
-                'deposit' => Booking::whereIn('status', ['CONFIRMED', 'PAID'])
-                    ->sum('deposit_amount')
-            ],
-            
-            'top_tours' => Booking::select('tour_id', DB::raw('count(*) as total'))
-                ->with('tour:tour_id,name')
-                ->groupBy('tour_id')
-                ->orderByDesc('total')
-                ->limit(5)
-                ->get()
-        ];
+        $bookings = Booking::with(['tour', 'schedule'])
+            ->where('user_id', Auth::id())
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
 
-        return view('admin.bookings.statistics', compact('stats'));
-    }
-
-    public function export()
-    {
-        $bookings = Booking::with(['tour', 'schedule', 'user'])
-            ->latest('booking_date')
-            ->get();
-        
-        return back()->with('success', 'Đang phát triển tính năng xuất file');
+        return view('user.booking.my-bookings', compact('bookings'));
     }
 }

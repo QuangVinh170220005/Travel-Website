@@ -351,26 +351,50 @@ class TourController extends Controller
                 ->withInput();
         }
     }
-    public function explore()
+    public function explore(Request $request)
     {
         try {
-            $tours = Tour::with(['priceLists.priceDetails' => function ($query) {
-                $query->where('customer_type', 'ADULT');
-            }, 'mainImage'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(12);
+            $query = Tour::with([
+                'priceLists.priceDetails' => function ($query) {
+                    $query->where('customer_type', 'ADULT');
+                },
+                'mainImage'
+            ]);
+
+            if ($request->has('search')) {
+                $searchTerm = $request->input('search');
+                $query->where(function ($q) use ($searchTerm) {
+                    $q->where('tour_name', 'LIKE', "%{$searchTerm}%")
+                        // ->orWhere('description', 'LIKE', "%{$searchTerm}%")
+                        ->orWhereHas('location', function ($q) use ($searchTerm) {
+                            $q->where('location_name', 'LIKE', "%{$searchTerm}%");
+                        });
+                });
+            }
+
+            $tours = $query->orderBy('created_at', 'desc')
+                ->paginate(12);
 
             return view('user.explore', compact('tours'));
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            return back()->with('error', 'Có lỗi xảy ra khi tìm kiếm tour');
         }
     }
+
 
     // lịch trình
     public function scheduleTour($tour_id)
     {
         try {
-            $tour = Tour::with(['schedules', 'location', 'images'])->findOrFail($tour_id);
+            $tour = Tour::with([
+                'schedules' => function ($query) {
+                    $query->ordered()->first(); // Lấy lịch trình đầu tiên
+                },
+                'location',
+                'images',
+                'priceLists.priceDetails'
+            ])->findOrFail($tour_id);
+
             Log::info('Tour data:', ['tour' => $tour->toArray()]);
             return view('user.trip-details', compact('tour'));
         } catch (\Exception $e) {
@@ -378,6 +402,7 @@ class TourController extends Controller
             return redirect()->back()->with('error', 'Không tìm thấy tour');
         }
     }
+
 
 
 
@@ -472,6 +497,31 @@ class TourController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+    public function searchTours(Request $request)
+    {
+        try {
+            $query = $request->input('query');
+
+            $tours = Tour::with(['mainImage', 'priceLists.priceDetails'])
+                ->where('tour_name', 'LIKE', "%{$query}%")
+                ->orWhere('description', 'LIKE', "%{$query}%")
+                ->orWhereHas('location', function ($q) use ($query) {
+                    $q->where('location_name', 'LIKE', "%{$query}%");
+                })
+                ->limit(10)
+                ->get();
+
+            return response()->json([
+                'success' => true,
+                'data' => $tours
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
             ], 500);
         }
     }
